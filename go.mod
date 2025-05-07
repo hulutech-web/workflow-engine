@@ -1,4 +1,4 @@
-module workflow-engine
+module github.com/hulutech-web/workflow-engine
 
 go 1.24.2
 
