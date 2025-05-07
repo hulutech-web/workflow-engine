@@ -1,59 +1,91 @@
 package main
 
 import (
+	"fmt"
 	"github.com/hulutech-web/workflow-engine/auth"
-	"github.com/hulutech-web/workflow-engine/core"
 	"github.com/hulutech-web/workflow-engine/database"
-	"github.com/hulutech-web/workflow-engine/http"
-	"github.com/hulutech-web/workflow-engine/http/middleware"
 	"github.com/hulutech-web/workflow-engine/logging"
-	"github.com/hulutech-web/workflow-engine/validation"
-	"github.com/hulutech-web/workflow-engine/workflow"
-	"time"
+	"github.com/redis/go-redis"
+	"workflow-engine/config"
 )
 
 func main() {
-	// 初始化应用
-	app := core.NewApplication()
+	// 加载配置
+	cfg, err := config.DefaultLoader().Load()
+	if err != nil {
+		panic(err)
+	}
 
-	// 注册服务提供者
-	app.Register(&database.GormProvider{
-		DSN: "user:password@tcp(127.0.0.1:3306)/workflow?charset=utf8mb4&parseTime=True&loc=Local",
+	// 解析数据库配置
+	var dbConfig config.DatabaseConfig
+	if err := cfg.Unmarshal(&dbConfig); err != nil {
+		panic(err)
+	}
+
+	// 初始化数据库
+	db, err := database.NewGormRepository(
+		dbConfig.Driver,
+		fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+			dbConfig.Username,
+			dbConfig.Password,
+			dbConfig.Host,
+			dbConfig.Port,
+			dbConfig.Database,
+			dbConfig.Params,
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	// 解析Redis配置
+	var redisConfig config.RedisConfig
+	if err := cfg.Unmarshal(&redisConfig); err != nil {
+		panic(err)
+	}
+
+	// 初始化Redis
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%d", redisConfig.Host, redisConfig.Port),
+		Password: redisConfig.Password,
+		DB:       redisConfig.DB,
 	})
 
-	app.Register(&auth.AuthProvider{
-		JwtSecret:     "your-secret-key",
-		AccessExpiry:  time.Hour,
-		RefreshExpiry: time.Hour * 24 * 7,
-		TokenRotation: true,
-	})
+	// 解析JWT配置
+	var jwtConfig config.JWTConfig
+	if err := cfg.Unmarshal(&jwtConfig); err != nil {
+		panic(err)
+	}
 
-	app.Register(&logging.LoggingProvider{
-		Production: false,
-	})
+	// 初始化认证
+	authManager := auth.NewJwtAuth(
+		redisClient,
+		auth.JwtConfig{
+			Secret:        jwtConfig.Secret,
+			AccessExpiry:  jwtConfig.AccessExpiry,
+			RefreshExpiry: jwtConfig.RefreshExpiry,
+			TokenRotation: true,
+		},
+		NewUserRepository(db),
+	)
 
-	app.Register(&validation.ValidationProvider{})
+	// 解析日志配置
+	var logConfig config.LoggingConfig
+	if err := cfg.Unmarshal(&logConfig); err != nil {
+		panic(err)
+	}
 
-	app.Register(&workflow.WorkflowProvider{})
+	// 初始化日志
+	logger := logging.NewZapLogger(logConfig.Level == "debug")
+	if logConfig.FilePath != "" {
+		logger.AddFileOutput(logConfig.FilePath)
+	}
 
-	// 启动应用
-	app.Boot()
-
-	// 初始化路由
-	router := http.NewGinRouter()
-
-	// 公共路由
-	router.POST("/login", auth.LoginHandler)
-	router.POST("/refresh", auth.RefreshHandler)
-
-	// 需要认证的路由
-	authGroup := router.Group("/api", middleware.Auth(app.GetContainer()))
-
-	// 工作流路由
-	workflowHandlers := workflow.NewHandlers(app.GetContainer().Make("workflow.engine").(*workflow.Engine))
-	authGroup.POST("/process", workflowHandlers.StartProcess)
-	authGroup.POST("/approve", workflowHandlers.ApproveStep)
-
-	// 启动服务器
-	router.Run(":8080")
+	// 监听配置变化
+	go func() {
+		for range cfg.Watch() {
+			logger.Info("configuration changed, reloading...")
+			// 重新加载配置并更新相关组件
+		}
+	}()
 }

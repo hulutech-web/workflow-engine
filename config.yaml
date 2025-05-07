@@ -1,0 +1,23 @@
+database:
+  driver: mysql
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: password
+  database: workflow
+  params: "charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: "your-secret-key"
+  access_expiry: 1h
+  refresh_expiry: 168h # 7 days
+
+logging:
+  level: "info"
+  file_path: "./logs/app.log"
