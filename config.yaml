@@ -1,9 +1,14 @@
+server:
+  port: 8080
+  host: 0.0.0.0
+  mode: debug
+
 database:
   driver: mysql
   host: 127.0.0.1
   port: 3306
-  username: root
-  password: password
+  username: workflow
+  password: 5MpFR8d6ZkJH5etF
   database: workflow
   params: "charset=utf8mb4&parseTime=True&loc=Local"
 
