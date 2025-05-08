@@ -1,12 +1,13 @@
 package orm
 
 import (
+	"github.com/hulutech-web/workflow-engine/app/models"
 	"gorm.io/gorm"
 )
 
 func autoMigrate(db *gorm.DB) error {
-	models := dst()
-	err := db.AutoMigrate(models...)
+	m := dst()
+	err := db.AutoMigrate(m...)
 	if err != nil {
 		return err
 	}
@@ -14,5 +15,7 @@ func autoMigrate(db *gorm.DB) error {
 }
 
 func dst() []interface{} {
-	return []interface{}{}
+	return []interface{}{
+		&models.User{},
+	}
 }
