@@ -1,33 +1,39 @@
-package cache
+package queue
 
 import (
 	"context"
 	"errors"
+	"github.com/hulutech-web/workflow-engine/core/cache"
+	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/redis/go-redis/v9"
 	"log"
+	"strconv"
+	"sync"
 	"time"
 )
 
 type DelayQueue struct {
-	QueueName string
-	C         *Redis
-	PollInterval time.Duration // 轮询间隔
+	C            *cache.Redis
+	PollInterval time.Duration  // 轮询间隔
+	mu           sync.Mutex     // 互斥锁保障并发安全
+	config       *config.Config // 配置
 }
 
 // NewDelayQueue 创建延时队列
-func NewDelayQueue(queueName string, r *Redis) *DelayQueue {
+func NewDelayQueue(r *cache.Redis, config *config.Config) *DelayQueue {
 	return &DelayQueue{
-		QueueName:    queueName,
 		C:            r,
 		PollInterval: time.Second, // 默认1秒轮询间隔
+		config:       config,
 	}
 }
 
 // Add 添加延时消息
-func (dq *DelayQueue) Add(message string, delay time.Duration) error {
+func (dq *DelayQueue) Add(queueName string, message string, delay time.Duration) error {
 	// 计算到期时间戳
 	score := time.Now().Add(delay).UnixNano()
-	_, err := dq.C.Instance.ZAdd(context.Background(), dq.QueueName, redis.Z{
+	fullKey := dq.config.Redis.Prefix + queueName
+	_, err := dq.C.Instance.ZAdd(context.Background(), fullKey, redis.Z{
 		Score:  float64(score),
 		Member: message,
 	}).Result()
@@ -35,14 +41,18 @@ func (dq *DelayQueue) Add(message string, delay time.Duration) error {
 }
 
 // Poll 消费到期消息
-func (dq *DelayQueue) Poll(handle func(message string) error) error {
+func (dq *DelayQueue) Poll(queueName string, handle func(message string) error) error {
 	// 获取当前时间戳
 	now := time.Now().UnixNano()
-	
+
 	// 查询到期消息
-	messages, err := dq.C.Instance.ZRangeByScore(context.Background(), dq.QueueName, &redis.ZRangeBy{
+	dq.mu.Lock()
+	defer dq.mu.Unlock()
+
+	fullKey := dq.config.Redis.Prefix + queueName
+	messages, err := dq.C.Instance.ZRangeByScore(context.Background(), fullKey, &redis.ZRangeBy{
 		Min:    "0",
-		Max:    string(rune(now)),
+		Max:    strconv.FormatInt(now, 10),
 		Offset: 0,
 		Count:  1,
 	}).Result()
@@ -62,7 +72,7 @@ func (dq *DelayQueue) Poll(handle func(message string) error) error {
 
 	// 原子操作：获取并删除消息
 	message := messages[0]
-	removed, err := dq.C.Instance.ZRem(context.Background(), dq.QueueName, message).Result()
+	removed, err := dq.C.Instance.ZRem(context.Background(), fullKey, message).Result()
 	if err != nil {
 		log.Printf("Remove message error: %v", err)
 		return err
@@ -75,14 +85,16 @@ func (dq *DelayQueue) Poll(handle func(message string) error) error {
 }
 
 // Remove 移除指定消息
-func (dq *DelayQueue) Remove(message string) error {
-	_, err := dq.C.Instance.ZRem(context.Background(), dq.QueueName, message).Result()
+func (dq *DelayQueue) Remove(queueName string, message string) error {
+	fullKey := dq.config.Redis.Prefix + queueName
+	_, err := dq.C.Instance.ZRem(context.Background(), fullKey, message).Result()
 	return err
 }
 
 // Size 获取队列长度
-func (dq *DelayQueue) Size() int64 {
-	count, err := dq.C.Instance.ZCard(context.Background(), dq.QueueName).Result()
+func (dq *DelayQueue) Size(queueName string) int64 {
+	fullKey := dq.config.Redis.Prefix + queueName
+	count, err := dq.C.Instance.ZCard(context.Background(), fullKey).Result()
 	if err != nil {
 		log.Printf("Size error: %v", err)
 	}
@@ -90,9 +102,27 @@ func (dq *DelayQueue) Size() int64 {
 }
 
 // Clear 清空队列
-func (dq *DelayQueue) Clear() {
-	_, err := dq.C.Instance.Del(context.Background(), dq.QueueName).Result()
+func (dq *DelayQueue) Clear(queueName string) {
+	fullKey := dq.config.Redis.Prefix + queueName
+	_, err := dq.C.Instance.Del(context.Background(), fullKey).Result()
 	if err != nil {
 		log.Printf("Clear error: %v", err)
 	}
 }
+
+/**
+e.g.:
+dq := NewDelayQueue(redisClient)
+// 添加5秒后到期的消息
+dq.Add("queue1","message1", 5*time.Second)
+
+// 消费消息
+go func() {
+    for {
+        dq.Poll("queue1",func(msg string) error {
+            // 处理消息
+            return nil
+        })
+    }
+}()
+*/

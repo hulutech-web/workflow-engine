@@ -43,6 +43,8 @@ type Redis struct {
 	Port     int    `yaml:"port" json:"port"`
 	Password string `yaml:"password" json:"password"`
 	Db       int    `yaml:"db" json:"db"`
+	Prefix   string `yaml:"prefix" json:"prefix"`
+	PoolSize int    `yaml:"pool_size" json:"pool_size"`
 }
 
 type Jwt struct {

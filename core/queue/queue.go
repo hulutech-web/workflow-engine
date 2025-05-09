@@ -1,34 +1,34 @@
-package cache
+package queue
 
 import "C"
 import (
 	"errors"
+	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/redis/go-redis/v9"
 	"log"
 	"time"
 )
 
 type Queue struct {
-	QueueName string
-	C         *Redis
+	C *cache.Redis
 }
 
 // NewQueue 创建队列
-func NewQueue(queueName string, r *Redis) *Queue {
-	return &Queue{QueueName: queueName, C: r}
+func NewQueue(r *cache.Redis) *Queue {
+	return &Queue{C: r}
 }
 
 // Push 推送消息
-func (q *Queue) Push(message string) {
-	_, err := q.C.Instance.RPush(C.Ctx, q.QueueName, message).Result()
+func (q *Queue) Push(queueName string, message string) {
+	_, err := q.C.Instance.RPush(C.Ctx, queueName, message).Result()
 	if err != nil {
 		log.Println("Push err: ", err)
 	}
 }
 
 // RPop 消费消息
-func (q *Queue) RPop(handle func(message string) error) error {
-	message, err := q.C.Instance.RPop(C.Ctx, q.QueueName).Result()
+func (q *Queue) RPop(queueName string, handle func(message string) error) error {
+	message, err := q.C.Instance.RPop(C.Ctx, queueName).Result()
 	if errors.Is(err, redis.Nil) {
 		time.Sleep(1 * time.Second)
 		return nil
@@ -44,8 +44,8 @@ func (q *Queue) RPop(handle func(message string) error) error {
 }
 
 // LPop 消费消息
-func (q *Queue) LPop(handle func(message string) error) error {
-	message, err := q.C.Instance.LPop(C.Ctx, q.QueueName).Result()
+func (q *Queue) LPop(queueName string, handle func(message string) error) error {
+	message, err := q.C.Instance.LPop(C.Ctx, queueName).Result()
 	if errors.Is(err, redis.Nil) {
 		time.Sleep(1 * time.Second)
 		return nil
@@ -62,8 +62,8 @@ func (q *Queue) LPop(handle func(message string) error) error {
 }
 
 // Len 队列长度
-func (q *Queue) Len() int64 {
-	l, err := q.C.Instance.LLen(C.Ctx, q.QueueName).Result()
+func (q *Queue) Len(queueName string) int64 {
+	l, err := q.C.Instance.LLen(C.Ctx, queueName).Result()
 	if err != nil {
 		log.Println("Len err: ", err)
 	}
@@ -71,8 +71,8 @@ func (q *Queue) Len() int64 {
 }
 
 // Clear 清空队列
-func (q *Queue) Clear() {
-	_, err := q.C.Instance.Del(C.Ctx, q.QueueName).Result()
+func (q *Queue) Clear(queueName string) {
+	_, err := q.C.Instance.Del(C.Ctx, queueName).Result()
 	if err != nil {
 		log.Println("Clear err: ", err)
 	}
