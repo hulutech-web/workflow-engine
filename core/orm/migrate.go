@@ -6,8 +6,8 @@ import (
 )
 
 func autoMigrate(db *gorm.DB) error {
-	models := dst()
-	err := db.AutoMigrate(models...)
+	m := dst()
+	err := db.AutoMigrate(m...)
 	if err != nil {
 		return err
 	}
@@ -16,7 +16,12 @@ func autoMigrate(db *gorm.DB) error {
 
 func dst() []interface{} {
 	return []interface{}{
-		models.User{},
+		&models.User{},
+		&models.AuthTenant{},
+		&models.AuthMenu{},
+		&models.AuthRole{},
+		&models.AuthPerm{},
+		&models.AuthDept{},
 		models.Dept{},
 		models.Emp{},
 		models.Entry{},

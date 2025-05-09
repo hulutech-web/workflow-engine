@@ -10,20 +10,20 @@ import (
 	"go.uber.org/fx"
 )
 
-type auth struct {
+type account struct {
 	fx.In
-	Srv service.AuthService
+	Srv service.AccountService
 }
 
-func authRoutes(a auth, r *types.ApiRouter) {
+func accountRoutes(a account, r *types.ApiRouter) {
 	r.POST("/login", a.login)
 	r.GET("/refresh", a.refresh)
 	r.GET("/logout", a.logout)
 	r.GET("/info", a.info)
 }
 
-func (a auth) login(c *gin.Context) {
-	var loginReq req.AuthLoginReq
+func (a account) login(c *gin.Context) {
+	var loginReq req.AccountLoginReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &loginReq)) {
 		return
 	}
@@ -31,8 +31,8 @@ func (a auth) login(c *gin.Context) {
 	response.CheckAndRespWithData(c, res, err)
 }
 
-func (a auth) refresh(c *gin.Context) {
-	var refreshReq req.AuthTokenReq
+func (a account) refresh(c *gin.Context) {
+	var refreshReq req.AccountTokenReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &refreshReq)) {
 		return
 	}
@@ -40,8 +40,8 @@ func (a auth) refresh(c *gin.Context) {
 	response.CheckAndRespWithData(c, res, err)
 }
 
-func (a auth) logout(c *gin.Context) {
-	var logoutReq req.AuthTokenReq
+func (a account) logout(c *gin.Context) {
+	var logoutReq req.AccountTokenReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &logoutReq)) {
 		return
 	}
@@ -49,8 +49,8 @@ func (a auth) logout(c *gin.Context) {
 	response.CheckAndResp(c, err)
 }
 
-func (a auth) info(c *gin.Context) {
-	var infoReq req.AuthTokenReq
+func (a account) info(c *gin.Context) {
+	var infoReq req.AccountTokenReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &infoReq)) {
 		return
 	}
