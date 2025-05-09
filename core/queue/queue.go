@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/redis/go-redis/v9"
-	"log"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -22,7 +22,7 @@ func NewQueue(r *cache.Redis) *Queue {
 func (q *Queue) Push(queueName string, message string) {
 	_, err := q.C.Instance.RPush(C.Ctx, queueName, message).Result()
 	if err != nil {
-		log.Println("Push err: ", err)
+		zap.S().Warn("Push err: ", err)
 	}
 }
 
@@ -33,7 +33,7 @@ func (q *Queue) RPop(queueName string, handle func(message string) error) error 
 		time.Sleep(1 * time.Second)
 		return nil
 	} else if err != nil {
-		log.Println("Pop err: ", err)
+		zap.S().Warn("Pop err: ", err)
 		return err
 	}
 	err = handle(message)
@@ -50,7 +50,7 @@ func (q *Queue) LPop(queueName string, handle func(message string) error) error 
 		time.Sleep(1 * time.Second)
 		return nil
 	} else if err != nil {
-		log.Println("Pop err: ", err)
+		zap.S().Warn("Pop err: ", err)
 		return err
 	}
 	err = handle(message)
@@ -65,7 +65,7 @@ func (q *Queue) LPop(queueName string, handle func(message string) error) error 
 func (q *Queue) Len(queueName string) int64 {
 	l, err := q.C.Instance.LLen(C.Ctx, queueName).Result()
 	if err != nil {
-		log.Println("Len err: ", err)
+		zap.S().Warn("Len err: ", err)
 	}
 	return l
 }
@@ -74,6 +74,6 @@ func (q *Queue) Len(queueName string) int64 {
 func (q *Queue) Clear(queueName string) {
 	_, err := q.C.Instance.Del(C.Ctx, queueName).Result()
 	if err != nil {
-		log.Println("Clear err: ", err)
+		zap.S().Warn("Del err: ", err)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/redis/go-redis/v9"
-	"log"
+	"go.uber.org/zap"
 	"strconv"
 	"sync"
 	"time"
@@ -61,7 +61,7 @@ func (dq *DelayQueue) Poll(queueName string, handle func(message string) error) 
 		time.Sleep(dq.PollInterval)
 		return nil
 	} else if err != nil {
-		log.Printf("Poll error: %v", err)
+		zap.S().Warn("Poll error: %v", err)
 		return err
 	}
 
@@ -74,7 +74,7 @@ func (dq *DelayQueue) Poll(queueName string, handle func(message string) error) 
 	message := messages[0]
 	removed, err := dq.C.Instance.ZRem(context.Background(), fullKey, message).Result()
 	if err != nil {
-		log.Printf("Remove message error: %v", err)
+		zap.S().Warn("Remove message error: %v", err)
 		return err
 	}
 	if removed == 0 {
@@ -96,7 +96,7 @@ func (dq *DelayQueue) Size(queueName string) int64 {
 	fullKey := dq.config.Redis.Prefix + queueName
 	count, err := dq.C.Instance.ZCard(context.Background(), fullKey).Result()
 	if err != nil {
-		log.Printf("Size error: %v", err)
+		zap.S().Warn("Size error: %v", err)
 	}
 	return count
 }
@@ -106,7 +106,7 @@ func (dq *DelayQueue) Clear(queueName string) {
 	fullKey := dq.config.Redis.Prefix + queueName
 	_, err := dq.C.Instance.Del(context.Background(), fullKey).Result()
 	if err != nil {
-		log.Printf("Clear error: %v", err)
+		zap.S().Warn("Clear error: %v", err)
 	}
 }
 
