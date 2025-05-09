@@ -12,5 +12,5 @@ type TemplateForm struct {
 	FieldRules        common.Rule       `gorm:"column:field_rules;" json:"field_rules" form:"field_rules"`
 	Sort              int               `gorm:"column:sort;not null;default:100;comment:'排序'" json:"sort" form:"sort"`
 	TemplateID        uint              `gorm:"column:template_id;not null;default:0;comment:'模板ID'" json:"template_id" form:"template_id"`
-	Template          Template
+	Template          *Template
 }

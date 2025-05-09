@@ -59,7 +59,8 @@ func (r *dept) Store(ctx *gin.Context) {
 	ctx.Bind(&dpt)
 	store, err := r.Srv.Store(dpt)
 	if err != nil {
-		response.Fail(ctx, response.Failed)
+		response.FailWithMsg(ctx, response.Failed, err.Error())
+		return
 	}
 	response.OkWithData(ctx, store)
 }
@@ -70,11 +71,12 @@ func (r *dept) Update(ctx *gin.Context) {
 
 func (r *dept) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
-	destroy, err := r.Srv.Destroy(cast.ToInt(id))
+	err := r.Srv.Destroy(cast.ToInt(id))
 	if err != nil {
 		response.Fail(ctx, response.Failed)
+		return
 	}
-	response.OkWithData(ctx, destroy)
+	response.OkWithData(ctx, "操作成功")
 }
 func (r *dept) BindManager(ctx *gin.Context) {
 	type BindManagerReq struct {
@@ -96,6 +98,7 @@ func (r *dept) BindDirector(ctx *gin.Context) {
 	manager, err := r.Srv.BindManager(bindDirectorReq.DirectorID, bindDirectorReq.DeptID)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
+		return
 	}
 	response.OkWithData(ctx, manager)
 }

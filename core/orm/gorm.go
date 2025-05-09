@@ -33,6 +33,7 @@ func NewOrm(config *config.Config) (*gorm.DB, error) {
 			TablePrefix:   config.Database.TablePrefix, // 表名前缀
 			SingularTable: false,                       // 使用单一表名, eg. `User` => `user`
 		},
+		DisableForeignKeyConstraintWhenMigrating: true,
 	}
 	var db *gorm.DB
 	switch config.Database.Driver {

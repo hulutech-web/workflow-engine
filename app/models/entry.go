@@ -12,12 +12,12 @@ type Entry struct {
 	EnterProcessID int         `gorm:"column:enter_process_id;not null;default:0" json:"enter_process_id" form:"enter_process_id"`
 	EnterProcID    int         `gorm:"column:enter_proc_id;not null;default:0" json:"enter_proc_id" form:"enter_proc_id"`
 	Child          int         `gorm:"column:child;not null;default:0" json:"child" form:"child"`
-	Flow           Flow        `gorm:"foreignKey:flow_id"` // 关联的Flow
-	Emp            Emp         `gorm:"foreignKey:emp_id"`  // 关联的Emp
+	Flow           *Flow       `gorm:"foreignKey:flow_id"` // 关联的Flow
+	Emp            *Emp        `gorm:"foreignKey:emp_id"`  // 关联的Emp
 	Procs          []*Proc     // HasMany Proc
-	Process        Process     `gorm:"foreignKey:process_id"` // 关联的Process
+	Process        *Process    `gorm:"foreignKey:process_id"` // 关联的Process
 	EntryDatas     []EntryData // HasMany EntryData
 	ParentEntry    *Entry      `gorm:"foreignKey:pid"`              // 关联的父Entry
 	Children       []Entry     `gorm:"foreignKey:pid"`              // HasMany Entry, 级联删除
-	EnterProcess   Process     `gorm:"foreignKey:enter_process_id"` // 关联的进入步骤Process
+	EnterProcess   *Process    `gorm:"foreignKey:enter_process_id"` // 关联的进入步骤Process
 }

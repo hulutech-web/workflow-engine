@@ -386,7 +386,7 @@ func (w *Engine) Transfer(process_id int, user models.Emp, content string) error
 		}
 		var PreloadFlowlink models.Flowlink
 		w.db.Model(&models.Flowlink{}).Preload("NextProcess").Where("id=?", flowlink.ID).Find(&PreloadFlowlink)
-		auditor_ids := w.GetProcessAuditorIds(proc.Entry, PreloadFlowlink.NextProcessID)
+		auditor_ids := w.GetProcessAuditorIds(*proc.Entry, PreloadFlowlink.NextProcessID)
 		if len(auditor_ids) == 0 {
 			return errors.New("未找到下一步骤审批人")
 		}
@@ -544,7 +544,7 @@ func (w *Engine) Transfer(process_id int, user models.Emp, content string) error
 					tx.Model(&models.Proc{}).Where("id=?", proc.ID).Find(&notifyProc)
 				}
 			} else {
-				auditor_ids := w.GetProcessAuditorIds(proc.Entry, fklink.NextProcessID)
+				auditor_ids := w.GetProcessAuditorIds(*proc.Entry, fklink.NextProcessID)
 				auditors := []models.Emp{}
 				tx.Model(&models.Emp{}).Where("id in (?)", auditor_ids).Preload("Dept").Find(&auditors)
 				if len(auditors) < 1 {

@@ -7,8 +7,8 @@ database:
   driver: mysql
   host: 127.0.0.1
   port: 3306
-  username: workflow
-  password: 5MpFR8d6ZkJH5etF
+  username: root
+  password: Dazhouquxian2012.
   database: workflow
   auto_migrate: "true"
   params: "charset=utf8mb4&parseTime=True&loc=Local"

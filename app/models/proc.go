@@ -21,9 +21,9 @@ type Proc struct {
 	Circle      int              `gorm:"column:circle;not null;default:1" json:"circle" form:"circle"`
 	Beizhu      string           `gorm:"column:beizhu;type:text;comment:'备注'" json:"beizhu" form:"beizhu"`
 	Concurrence *carbon.DateTime `gorm:"column:concurrence;not null;default:0;comment:'并行查找解决字段， 部门 角色 指定 分组用'" json:"concurrence" form:"concurrence"`
-	Emp         Emp              `gorm:"foreignKey:EmpID"`                                                  // 关联的Emp
-	Entry       Entry            `gorm:"foreignKey:EntryID"`                                                // 关联的Entry
-	Process     Process          `gorm:"foreignKey:ProcessID"`                                              // 关联的Process
-	Flow        Flow             `gorm:"foreignKey:FlowID"`                                                 // 关联的Flow
-	SubProcs    []Proc           `gorm:"foreignkey:EntryID;constraint:OnUpdate:CASCADE,OnDelete:NO ACTION"` // HasMany Proc
+	Emp         *Emp             `gorm:"foreignKey:EmpID"`                                                  // 关联的Emp
+	Entry       *Entry           `gorm:"foreignKey:EntryID"`                                                // 关联的Entry
+	Process     *Process         `gorm:"foreignKey:ProcessID"`                                              // 关联的Process
+	Flow        *Flow            `gorm:"foreignKey:FlowID"`                                                 // 关联的Flow
+	SubProcs    []*Proc          `gorm:"foreignkey:EntryID;constraint:OnUpdate:CASCADE,OnDelete:NO ACTION"` // HasMany Proc
 }

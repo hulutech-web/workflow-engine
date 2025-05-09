@@ -7,10 +7,10 @@ type Flowlink struct {
 	Expression string `gorm:"column:expression;not null;default:'';comment:'条件判断表达式\\n为1表示true，通过的话直接进入下一步骤'"`            // 条件判断表达式
 	Sort       int    `gorm:"column:sort;not null;comment:'条件判断顺序'"`                                                      // 判断顺序
 
-	FlowID        uint    `gorm:"column:flow_id"`                         // 流程ID
-	ProcessID     uint    `gorm:"column:process_id"`                      // 当前步骤ID
-	NextProcessID int     `gorm:"column:next_process_id;default:2"`       // 下一步骤ID
-	Process       Process `gorm:"foreignKey:ProcessID;references:id"`     // HasOne Process
-	NextProcess   Process `gorm:"foreignKey:NextProcessID;references:id"` // HasOne NextProcess
-	Flow          Flow    `gorm:"foreignKey:FlowID;references:id"`        // BelongsTo Flow
+	FlowID        uint     `gorm:"column:flow_id"`                         // 流程ID
+	ProcessID     uint     `gorm:"column:process_id"`                      // 当前步骤ID
+	NextProcessID int      `gorm:"column:next_process_id;default:2"`       // 下一步骤ID
+	Process       *Process `gorm:"foreignKey:ProcessID;references:id"`     // HasOne Process
+	NextProcess   *Process `gorm:"foreignKey:NextProcessID;references:id"` // HasOne NextProcess
+	Flow          *Flow    `gorm:"foreignKey:FlowID;references:id"`        // BelongsTo Flow
 }
