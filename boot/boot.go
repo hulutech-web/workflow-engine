@@ -9,6 +9,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/http"
 	"github.com/hulutech-web/workflow-engine/core/logging"
 	"github.com/hulutech-web/workflow-engine/core/orm"
+	"github.com/hulutech-web/workflow-engine/core/queue"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -23,6 +24,8 @@ var Module = fx.Options(
 	logging.Module,
 	// 缓存模块
 	cache.Module,
+	// 队列模块
+	queue.Module,
 	// 数据库模块
 	orm.Module,
 	// http模块

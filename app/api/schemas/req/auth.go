@@ -1,10 +1,10 @@
 package req
 
-type AuthLoginReq struct {
+type AccountLoginReq struct {
 	Username string `json:"username" validate:"required,min=4,max=32"`
 	Password string `json:"password" validate:"required,min=6,max=32"`
 }
 
-type AuthTokenReq struct {
+type AccountTokenReq struct {
 	Token string `json:"token" form:"token"`
 }

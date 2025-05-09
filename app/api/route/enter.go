@@ -6,10 +6,11 @@ import (
 	"go.uber.org/fx"
 )
 
-var Module = fx.Module("route",
+var Module = fx.Module("api.route",
 	fx.Provide(NewRoutes),
 	fx.Invoke(authRoutes),
 	fx.Invoke(deptRoutes),
+	fx.Invoke(accountRoutes),
 )
 
 type Routes struct {

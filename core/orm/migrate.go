@@ -6,8 +6,8 @@ import (
 )
 
 func autoMigrate(db *gorm.DB) error {
-	models := dst()
-	err := db.AutoMigrate(models...)
+	m := dst()
+	err := db.AutoMigrate(m...)
 	if err != nil {
 		return err
 	}
@@ -17,17 +17,22 @@ func autoMigrate(db *gorm.DB) error {
 func dst() []interface{} {
 	return []interface{}{
 		&models.User{},
-		&models.Emp{},
-		&models.Dept{},
-		&models.Entry{},
-		&models.EntryData{},
-		&models.Flow{},
-		&models.Flowlink{},
-		&models.Flowtype{},
-		&models.Template{},
-		&models.Proc{},
-		&models.Process{},
-		&models.ProcessVar{},
-		&models.TemplateForm{},
+		&models.AuthTenant{},
+		&models.AuthMenu{},
+		&models.AuthRole{},
+		&models.AuthPerm{},
+		&models.AuthDept{},
+		models.Dept{},
+		models.Emp{},
+		models.Entry{},
+		models.EntryData{},
+		models.Flow{},
+		models.Flowlink{},
+		models.Flowtype{},
+		models.Template{},
+		models.Proc{},
+		models.Process{},
+		models.ProcessVar{},
+		models.TemplateForm{},
 	}
 }
