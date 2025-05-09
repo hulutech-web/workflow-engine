@@ -22,5 +22,17 @@ func dst() []interface{} {
 		&models.AuthRole{},
 		&models.AuthPerm{},
 		&models.AuthDept{},
+		models.Dept{},
+		models.Emp{},
+		models.Entry{},
+		models.EntryData{},
+		models.Flow{},
+		models.Flowlink{},
+		models.Flowtype{},
+		models.Template{},
+		models.Proc{},
+		models.Process{},
+		models.ProcessVar{},
+		models.TemplateForm{},
 	}
 }

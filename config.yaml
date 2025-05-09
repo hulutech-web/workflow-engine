@@ -10,6 +10,7 @@ database:
   username: workflow
   password: 5MpFR8d6ZkJH5etF
   database: workflow
+  auto_migrate: "true"
   params: "charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:

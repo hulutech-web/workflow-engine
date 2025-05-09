@@ -32,7 +32,7 @@ type Database struct {
 	Database     string `yaml:"database" json:"database"`
 	TablePrefix  string `yaml:"table_prefix" json:"table_prefix"`
 	Params       string `yaml:"params" json:"params"`
-	AutoMigrate  bool   `yaml:"auto_migrate" json:"auto_migrate"`
+	AutoMigrate  bool   `mapstructure:"auto_migrate"` // 显式映射字段名
 	MaxOpenConns int    `yaml:"max_open_conns" json:"max_open_conns"`
 	MaxIdleConns int    `yaml:"max_idle_conns" json:"max_idle_conns"`
 	MaxLifeTime  int    `yaml:"max_life_time" json:"max_life_time"`

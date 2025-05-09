@@ -3,6 +3,7 @@ module github.com/hulutech-web/workflow-engine
 go 1.24.2
 
 require (
+	github.com/dromara/carbon/v2 v2.6.4
 	github.com/gin-contrib/cors v1.7.5
 	github.com/gin-gonic/gin v1.10.0
 	github.com/glebarez/sqlite v1.11.0
