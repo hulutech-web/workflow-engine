@@ -9,7 +9,6 @@ import (
 var Module = fx.Module("route",
 	fx.Provide(NewRoutes),
 	fx.Invoke(authRoutes),
-	fx.Invoke(workflowRoutes),
 )
 
 type Routes struct {
