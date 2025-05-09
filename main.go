@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// 替你提交测试一下自动贡献者在Readme中展示
 	fx.New(
 		boot.Module,
 		fx.WithLogger(func(logger *zap.Logger) fxevent.Logger {
