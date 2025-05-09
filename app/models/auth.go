@@ -9,7 +9,7 @@ type AuthTenant struct {
 	Domain      string `gorm:"not null;default:'';comment:'域名''"`
 	Logo        string `gorm:"not null;default:'';comment:'logo''"`
 	Description string `gorm:"not null;default:'';comment:'描述''"`
-	IsStop      uint8  `gorm:"not null;default:0;comment:'状态''"`
+	IsDisable   uint8  `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
 	ExpiredAt   int64  `gorm:"not null;default:0;comment:'过期时间''"`
 	SoftDelete
 }
@@ -38,7 +38,26 @@ type AuthRole struct {
 	Remark    string `gorm:"not null;default:'';comment:'备注信息'"`
 	IsDisable uint8  `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
 	Sort      uint16 `gorm:"not null;default:0;comment:'角色排序'"`
-	TenantID  uint   `gorm:"not null;default:0;comment:'租户ID'"`
+	TenantId  uint   `gorm:"not null;default:0;comment:'租户ID'"`
 	IsAdmin   uint8  `gorm:"not null;default:0;comment:'是否管理员'"`
+	SoftDelete
+}
+
+type AuthPerm struct {
+	ID     string `gorm:"not null;default:'';primary_key;comment:'权限标识'"`
+	Type   string `gorm:"not null;default:'';comment:'权限类型: role=角色, tenant=租户';index"`
+	TypeId uint   `gorm:"not null;default:0;comment:'权限类型ID'"`
+	MenuId uint   `gorm:"not null;default:0;comment:'菜单ID'"`
+}
+
+type AuthDept struct {
+	Model
+	Pid       uint   `gorm:"not null;default:0;comment:'上级主键'"`
+	Name      string `gorm:"not null;default:'';comment:'部门名称''"`
+	Duty      string `gorm:"not null;default:'';comment:'负责人名'"`
+	Mobile    string `gorm:"not null;default:'';comment:'联系电话'"`
+	Sort      uint16 `gorm:"not null;default:0;comment:'排序编号'"`
+	IsDisable uint8  `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
+	TenantId  uint   `gorm:"not null;default:0;comment:'创建人'"`
 	SoftDelete
 }

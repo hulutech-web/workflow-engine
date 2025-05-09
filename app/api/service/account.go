@@ -12,9 +12,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthService interface {
-	Login(loginReq *req.AuthLoginReq) (*resp.AuthLoginResp, error)
-	Info(token string) (*resp.AuthLoginInfoResp, error)
+type AccountService interface {
+	Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginResp, error)
+	Info(token string) (*resp.AccountLoginInfoResp, error)
 	Logout(token string) error
 	RefreshToken(token string) (string, error)
 }
@@ -24,7 +24,7 @@ type authService struct {
 	cfg *config.Config
 }
 
-func (a authService) Login(loginReq *req.AuthLoginReq) (*resp.AuthLoginResp, error) {
+func (a authService) Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginResp, error) {
 	var user models.User
 	if err := a.db.Where("username = ?", loginReq.Username).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -39,9 +39,9 @@ func (a authService) Login(loginReq *req.AuthLoginReq) (*resp.AuthLoginResp, err
 	if err != nil {
 		return nil, fmt.Errorf("生成token失败")
 	}
-	var res resp.AuthLoginResp
+	var res resp.AccountLoginResp
 	res.Token = token
-	var info resp.AuthLoginInfoResp
+	var info resp.AccountLoginInfoResp
 	response.Copy(&info, user)
 	res.Info = info
 	return &res, nil
@@ -64,7 +64,7 @@ func (a authService) RefreshToken(token string) (string, error) {
 	return newToken, nil
 }
 
-func (a authService) Info(token string) (*resp.AuthLoginInfoResp, error) {
+func (a authService) Info(token string) (*resp.AccountLoginInfoResp, error) {
 	claims, err := util.JwtUtil.ParseToken(token)
 	if err != nil {
 		return nil, fmt.Errorf("token解析失败")
@@ -74,11 +74,11 @@ func (a authService) Info(token string) (*resp.AuthLoginInfoResp, error) {
 	if err := a.db.First(&user, userId).Error; err != nil {
 		return nil, fmt.Errorf("用户不存在")
 	}
-	var res resp.AuthLoginInfoResp
+	var res resp.AccountLoginInfoResp
 	response.Copy(&res, user)
 	return &res, nil
 }
 
-func NewAuthService(db *gorm.DB, cfg *config.Config) AuthService {
+func NewAccountService(db *gorm.DB, cfg *config.Config) AccountService {
 	return &authService{db: db, cfg: cfg}
 }

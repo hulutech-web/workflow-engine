@@ -1,6 +1,5 @@
 package queue
 
-import "C"
 import (
 	"errors"
 	"github.com/hulutech-web/workflow-engine/core/cache"
@@ -20,7 +19,7 @@ func NewQueue(r *cache.Redis) *Queue {
 
 // Push 推送消息
 func (q *Queue) Push(queueName string, message string) {
-	_, err := q.C.Instance.RPush(C.Ctx, queueName, message).Result()
+	_, err := q.C.Instance.RPush(q.C.Ctx, queueName, message).Result()
 	if err != nil {
 		zap.S().Warn("Push err: ", err)
 	}
@@ -28,7 +27,7 @@ func (q *Queue) Push(queueName string, message string) {
 
 // RPop 消费消息
 func (q *Queue) RPop(queueName string, handle func(message string) error) error {
-	message, err := q.C.Instance.RPop(C.Ctx, queueName).Result()
+	message, err := q.C.Instance.RPop(q.C.Ctx, queueName).Result()
 	if errors.Is(err, redis.Nil) {
 		time.Sleep(1 * time.Second)
 		return nil
@@ -45,7 +44,7 @@ func (q *Queue) RPop(queueName string, handle func(message string) error) error 
 
 // LPop 消费消息
 func (q *Queue) LPop(queueName string, handle func(message string) error) error {
-	message, err := q.C.Instance.LPop(C.Ctx, queueName).Result()
+	message, err := q.C.Instance.LPop(q.C.Ctx, queueName).Result()
 	if errors.Is(err, redis.Nil) {
 		time.Sleep(1 * time.Second)
 		return nil
@@ -63,7 +62,7 @@ func (q *Queue) LPop(queueName string, handle func(message string) error) error 
 
 // Len 队列长度
 func (q *Queue) Len(queueName string) int64 {
-	l, err := q.C.Instance.LLen(C.Ctx, queueName).Result()
+	l, err := q.C.Instance.LLen(q.C.Ctx, queueName).Result()
 	if err != nil {
 		zap.S().Warn("Len err: ", err)
 	}
@@ -72,7 +71,7 @@ func (q *Queue) Len(queueName string) int64 {
 
 // Clear 清空队列
 func (q *Queue) Clear(queueName string) {
-	_, err := q.C.Instance.Del(C.Ctx, queueName).Result()
+	_, err := q.C.Instance.Del(q.C.Ctx, queueName).Result()
 	if err != nil {
 		zap.S().Warn("Del err: ", err)
 	}

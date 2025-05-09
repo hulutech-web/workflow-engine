@@ -17,5 +17,10 @@ func autoMigrate(db *gorm.DB) error {
 func dst() []interface{} {
 	return []interface{}{
 		&models.User{},
+		&models.AuthTenant{},
+		&models.AuthMenu{},
+		&models.AuthRole{},
+		&models.AuthPerm{},
+		&models.AuthDept{},
 	}
 }
