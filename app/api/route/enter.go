@@ -8,6 +8,7 @@ import (
 
 var Module = fx.Module("api.route",
 	fx.Provide(NewRoutes),
+	fx.Invoke(deptRoutes),
 	fx.Invoke(accountRoutes),
 	fx.Invoke(userRoutes),
 )

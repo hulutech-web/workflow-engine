@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 type Dept struct {
 	Model
 	DeptName   string `gorm:"column:dept_name;not null;default:''" json:"dept_name"`
@@ -11,4 +13,17 @@ type Dept struct {
 	Level      int    `gorm:"column:level;null;default:0" json:"level"`
 	Director   *Emp   `gorm:"foreignkey:DirectorID"` // 关联主管
 	Manager    *Emp   `gorm:"foreignkey:ManagerID"`  // 关联经理
+}
+
+func (d *Dept) Recursion(models []Dept, html string, pid uint, level int) []Dept {
+	var result []Dept
+	for i, dept := range models {
+		if dept.Pid == pid {
+			dept.Html = strings.Repeat(html, level)
+			dept.Level = level + 1
+			result = append(result, dept)
+			result = append(result, d.Recursion(append([]Dept{}, models[i+1:]...), html, dept.ID, level+1)...)
+		}
+	}
+	return result
 }
