@@ -1,4 +1,4 @@
-package config
+package types
 
 type admin struct {
 	BackstageManageKey       string

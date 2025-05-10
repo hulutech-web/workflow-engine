@@ -15,4 +15,6 @@ type User struct {
 	IsMultipoint uint8       `gorm:"not null;default:0;comment:'多端登录: 0=否, 1=是''"`
 	IsDisable    uint8       `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
 	TenantId     uint        `gorm:"not null;default:0;comment:'租户ID'"`
+	Role         *AuthRole   `gorm:"foreignKey:RoleId;references:ID"`
+	Tenant       *AuthTenant `gorm:"foreignKey:TenantId;references:ID"`
 }

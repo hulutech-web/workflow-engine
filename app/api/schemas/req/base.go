@@ -1,5 +1,10 @@
 package req
 
+import (
+	"fmt"
+	"github.com/gin-gonic/gin"
+)
+
 // PageReq 分页请求参数
 type PageReq struct {
 	Page  int `form:"page,default=1" validate:"omitempty,gte=1"`         // 页码
@@ -19,8 +24,16 @@ type KeyReq struct {
 }
 
 type AuthReq struct {
-	UserId        uint `json:"id"`
+	UserId        uint `json:"user_id"`
 	TenantId      uint `json:"tenant_id"`
 	IsSuperTenant bool `json:"is_super_tenant"`
 	IsAdmin       bool `json:"is_admin"`
+}
+
+func GetAuth(c *gin.Context) (*AuthReq, error) {
+	auth, exists := c.Get("auth")
+	if !exists {
+		return nil, fmt.Errorf("获取认证信息失败")
+	}
+	return auth.(*AuthReq), nil
 }
