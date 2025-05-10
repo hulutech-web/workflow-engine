@@ -6,5 +6,5 @@ type AccountLoginReq struct {
 }
 
 type AccountTokenReq struct {
-	Token string `json:"token" form:"token"`
+	Token string `json:"token" form:"token" validate:"demo" label:"demo token"`
 }

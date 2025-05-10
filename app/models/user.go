@@ -4,6 +4,7 @@ import "github.com/hulutech-web/workflow-engine/pkg/plugin/types"
 
 type User struct {
 	Model
+	Username     string      `json:"username" gorm:"type:varchar(255);not null;comment:'用户名'"`
 	Phone        types.Phone `json:"phone" gorm:"type:varchar(11);unique;comment:'手机号'"`
 	Password     string      `json:"password" gorm:"type:varchar(32);not null"`
 	Salt         string      `gorm:"not null;default:'';comment:'加密盐巴'"`

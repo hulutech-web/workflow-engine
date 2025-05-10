@@ -4,20 +4,26 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/hulutech-web/workflow-engine/core/http/validator"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"io/ioutil"
 	"mime/multipart"
 )
 
-var VerifyUtil = verifyUtil{}
+var VerifyUtil = verifyUtil{
+	validator: validator.NewService(),
+}
 
 // verifyUtil 参数验证工具类
-type verifyUtil struct{}
+type verifyUtil struct {
+	validator *validator.Service
+}
 
 func (vu verifyUtil) VerifyJSON(c *gin.Context, obj any) (e error) {
-	if err := c.ShouldBindBodyWith(obj, binding.JSON); err != nil {
-		e = response.ParamsValidError.MakeData(err.Error())
-		return
+	_ = c.ShouldBindBodyWith(obj, binding.JSON)
+	msgs := vu.validator.Validate(obj)
+	if len(msgs) > 0 {
+		e = response.ParamsValidError.MakeData(msgs[0])
 	}
 	return
 }
@@ -33,29 +39,36 @@ func (vu verifyUtil) VerifyJSONArray(c *gin.Context, obj any) (e error) {
 		e = response.ParamsValidError.MakeData(err.Error())
 		return
 	}
+	msgs := vu.validator.Validate(obj)
+	if len(msgs) > 0 {
+		e = response.ParamsValidError.MakeData(msgs[0])
+	}
 	return
 }
 
 func (vu verifyUtil) VerifyBody(c *gin.Context, obj any) (e error) {
-	if err := c.ShouldBind(obj); err != nil {
-		e = response.ParamsValidError.MakeData(err.Error())
-		return
+	_ = c.ShouldBind(obj)
+	msgs := vu.validator.Validate(obj)
+	if len(msgs) > 0 {
+		e = response.ParamsValidError.MakeData(msgs[0])
 	}
 	return
 }
 
 func (vu verifyUtil) VerifyHeader(c *gin.Context, obj any) (e error) {
-	if err := c.ShouldBindHeader(obj); err != nil {
-		e = response.ParamsValidError.MakeData(err.Error())
-		return
+	_ = c.ShouldBindHeader(obj)
+	msgs := vu.validator.Validate(obj)
+	if len(msgs) > 0 {
+		e = response.ParamsValidError.MakeData(msgs[0])
 	}
 	return
 }
 
 func (vu verifyUtil) VerifyQuery(c *gin.Context, obj any) (e error) {
-	if err := c.ShouldBindQuery(obj); err != nil {
-		e = response.ParamsValidError.MakeData(err.Error())
-		return
+	_ = c.ShouldBindQuery(obj)
+	msgs := vu.validator.Validate(obj)
+	if len(msgs) > 0 {
+		e = response.ParamsValidError.MakeData(msgs[0])
 	}
 	return
 }

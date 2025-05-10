@@ -25,5 +25,5 @@ jwt:
   refresh_expiry: 168h # 7 days
 
 logging:
-  level: "error"
+  level: "debug"
   file_path: "./logs/app.log"
