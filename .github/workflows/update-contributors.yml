@@ -25,16 +25,16 @@ jobs:
       # 步骤2：使用GitHub官方API生成贡献者列表
       - name: Generate Contributors
         run: |
-          echo -e "\n# Workflow Engine>> README.md
-          
+          echo -e "\n# Workflow Engine" >> README.md
+  
           echo -e "\n[![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)" >> README.md
           echo -e "\n[![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)" >> README.md
           echo -e "\n[![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)" >> README.md
-          
+            
           echo -e "\n## 🏆 贡献者" >> README.md
-          echo '<a href="https://github.com/hulutech-web/workflow-engine/graphs/contributors">' >> README.md
-          echo '  <img src="https://contrib.rocks/image?repo=hulutech-web/workflow-engine&columns=6&width=600" />' >> README.md
-          echo '</a>' >> README.md
+          echo -e '<a href="https://github.com/hulutech-web/workflow-engine/graphs/contributors">' >> README.md
+          echo -e '  <img src="https://contrib.rocks/image?repo=hulutech-web/workflow-engine&columns=6&width=600" />' >> README.md
+          echo -e '</a>' >> README.md
       # 步骤3：提交更改
       - name: Commit Changes
         run: |
