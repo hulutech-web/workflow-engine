@@ -19,7 +19,7 @@ jobs:
 
       # 使用经过验证的 contrib.rocks 方案
       - name: Generate Contributors
-        uses: contrib.rocks/preview@main
+        uses: contrib.rocks/preview@master
         with:
           repo: hulutech-web/workflow-engine
           columns: 7
