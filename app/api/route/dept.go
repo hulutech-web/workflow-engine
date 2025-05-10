@@ -8,7 +8,6 @@ import (
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
-
 	"go.uber.org/fx"
 )
 
@@ -23,24 +22,25 @@ func deptRoutes(a dept, r *types.ApiRouter) {
 	r.GET("/dept", a.Index)
 	r.DELETE("/dept/:id", a.Destroy)
 	r.GET("/dept/:id", a.Show)
-	r.GET("/list", a.List)
+	r.GET("/dept/list", a.List)
 	r.POST("/bindmanager", a.BindManager)
 	r.POST("/binddirector", a.BindDirector)
 }
 
 func (r *dept) Index(ctx *gin.Context) {
-	index, err := r.Srv.Index()
+	index, err := r.Srv.Index(ctx)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
+		return
 	}
 	logrus.WithFields(logrus.Fields{
-		"len": len(index),
+		"index": index,
 	}).Info("返回成功")
 	response.OkWithData(ctx, index)
 }
 
 func (r *dept) List(ctx *gin.Context) {
-	list, err := r.Srv.List()
+	list, err := r.Srv.List(ctx)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 	}
@@ -50,14 +50,14 @@ func (r *dept) List(ctx *gin.Context) {
 func (r *dept) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idInt := cast.ToInt(id)
-	show := r.Srv.Show(idInt)
+	show := r.Srv.Show(ctx, idInt)
 	response.OkWithData(ctx, show)
 }
 
 func (r *dept) Store(ctx *gin.Context) {
 	var dpt models.Dept
 	ctx.Bind(&dpt)
-	store, err := r.Srv.Store(dpt)
+	store, err := r.Srv.Store(ctx, dpt)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
@@ -66,12 +66,19 @@ func (r *dept) Store(ctx *gin.Context) {
 }
 
 func (r *dept) Update(ctx *gin.Context) {
-	return
+	var dpt models.Dept
+	ctx.Bind(&dpt)
+	store, err := r.Srv.Update(ctx, dpt)
+	if err != nil {
+		response.FailWithMsg(ctx, response.Failed, err.Error())
+		return
+	}
+	response.OkWithData(ctx, store)
 }
 
 func (r *dept) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
-	err := r.Srv.Destroy(cast.ToInt(id))
+	err := r.Srv.Destroy(ctx, cast.ToInt(id))
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
@@ -85,7 +92,7 @@ func (r *dept) BindManager(ctx *gin.Context) {
 	}
 	var bindManagerReq BindManagerReq
 	ctx.BindJSON(&bindManagerReq)
-	r.Srv.BindManager(bindManagerReq.ManagerID, bindManagerReq.DeptID)
+	r.Srv.BindManager(ctx, bindManagerReq.ManagerID, bindManagerReq.DeptID)
 }
 
 func (r *dept) BindDirector(ctx *gin.Context) {
@@ -95,7 +102,7 @@ func (r *dept) BindDirector(ctx *gin.Context) {
 	}
 	var bindDirectorReq BindDirectorReq
 	ctx.BindJSON(&bindDirectorReq)
-	manager, err := r.Srv.BindManager(bindDirectorReq.DirectorID, bindDirectorReq.DeptID)
+	manager, err := r.Srv.BindManager(ctx, bindDirectorReq.DirectorID, bindDirectorReq.DeptID)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return

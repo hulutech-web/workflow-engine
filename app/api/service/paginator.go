@@ -33,8 +33,8 @@ type PageResult struct {
 }
 
 type paginateServiceImpl interface {
-	SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) *PaginateService
-	ResultPagination(dest any, withes ...string) error
+	SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl
+	ResultPagination(dest any, withes ...string) (error, *PageResult)
 }
 
 type PaginateService struct {
@@ -42,96 +42,55 @@ type PaginateService struct {
 	Ctx   *gin.Context
 }
 
+func NewPaginatorServiceImpl(db *gorm.DB, ctx *gin.Context) paginateServiceImpl {
+	return &PaginateService{Query: db, Ctx: ctx}
+}
+
 // SearchByParams
 // example SearchByParams(map[string]{}{"name":"user"}, map[string]interface{}{"state",1}, []string{"age"}...)
 // ?name=xxx&pageSize=1&currentPage=1&sort=xxx&order=xxx
-func (h *PaginateService) SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) *PaginateService {
+func (h *PaginateService) SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl {
 	for _, except := range excepts {
 		delete(params, except)
 	}
-	if h.Query != nil {
-		query := h.Query
-		// 再处理url查询
 
-		h.Query = func(q *gorm.DB) *gorm.DB {
-			//处理日期时间
-			// 先处理过滤条件
-			for key, val := range conditionMap {
-				q.Where(fmt.Sprintf("%s=?%v", key, val))
-			}
-			for key, value := range params {
-				//如果key包含了[]符号
-
-				if strings.Contains(key, "[]") || value == "" || key == "pageSize" || key == "total" || key == "currentPage" || key == "sort" || key == "order" {
-					continue
-				} else {
-					q = q.Where(gorm.Expr(key+" LIKE ?", "%"+value+"%"))
-				}
-				//则表示是日期时间范围
-				/**
-				created_at[]: 2024-10-21 00:00:00
-				created_at[]: 2024-10-21 23:59:59
-				*/
-				if strings.Contains(key, "[]") {
-					key = strings.Replace(key, "[]", "", -1)
-					if value == "" {
-						continue
-					}
-					//按照，拆分value
-					ranges := strings.Split(value, ",")
-					if len(ranges) == 2 {
-						q = q.Where(key+" BETWEEN ? AND ?", ranges[0], ranges[1])
-					} else {
-						continue
-					}
-				}
-			}
-
-			return q
-		}(query)
-	} else {
-		h.Query = func(q *gorm.DB) *gorm.DB {
-			//处理日期时间
-			// 先处理过滤条件
-			for key, val := range conditionMap {
-				q.Where(fmt.Sprintf("%s=?%v", key, val))
-			}
-			for key, value := range params {
-				//如果key包含了[]符号
-
-				if strings.Contains(key, "[]") || value == "" || key == "pageSize" || key == "total" || key == "currentPage" || key == "sort" || key == "order" {
-					continue
-				} else {
-					q = q.Where(gorm.Expr(key+" LIKE ?", "%"+value+"%"))
-				}
-				//则表示是日期时间范围
-				/**
-				created_at[]: 2024-10-21 00:00:00
-				created_at[]: 2024-10-21 23:59:59
-				*/
-				if strings.Contains(key, "[]") {
-					key = strings.Replace(key, "[]", "", -1)
-					if value == "" {
-						continue
-					}
-					//按照，拆分value
-					ranges := strings.Split(value, ",")
-					if len(ranges) == 2 {
-						q = q.Where(key+" BETWEEN ? AND ?", ranges[0], ranges[1])
-					} else {
-						continue
-					}
-				}
-			}
-
-			return q
-		}(h.Query)
+	if h.Query == nil {
+		return h
 	}
 
+	query := h.Query
+
+	// 处理过滤条件
+	for key, val := range conditionMap {
+		query = query.Where(fmt.Sprintf("%s = ?", key), val)
+	}
+
+	// 处理URL查询参数
+	for key, value := range params {
+		if strings.Contains(key, "[]") || value == "" ||
+			key == "pageSize" || key == "total" ||
+			key == "currentPage" || key == "sort" || key == "order" {
+			continue
+		}
+
+		if strings.Contains(key, "[]") {
+			key = strings.Replace(key, "[]", "", -1)
+			if value == "" {
+				continue
+			}
+			ranges := strings.Split(value, ",")
+			if len(ranges) == 2 {
+				query = query.Where(key+" BETWEEN ? AND ?", ranges[0], ranges[1])
+			}
+		} else {
+			query = query.Where(gorm.Expr(key+" LIKE ?", "%"+value+"%"))
+		}
+	}
+
+	h.Query = query
 	return h
 }
-
-func (r *PaginateService) ResultPagination(dest any, withes ...string) error {
+func (r *PaginateService) ResultPagination(dest any, withes ...string) (error, *PageResult) {
 	pageSize := r.Ctx.DefaultQuery("pageSize", "10")
 	pageSizeInt := cast.ToInt(pageSize)
 	currentPage := r.Ctx.DefaultQuery("currentPage", "1")
@@ -149,14 +108,14 @@ func (r *PaginateService) ResultPagination(dest any, withes ...string) error {
 		r.Ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "count failed",
 		})
-		return err
+		return err, nil
 	}
 
 	if err := r.Query.Offset(offset).Limit(pageSizeInt).Find(dest).Error; err != nil {
 		r.Ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": "query failed",
 		})
-		return err
+		return err, nil
 	}
 
 	URL_PATH := r.Ctx.Request.URL.Path
@@ -185,8 +144,18 @@ func (r *PaginateService) ResultPagination(dest any, withes ...string) error {
 	links := Links{
 		First: query(1),
 		Last:  query(totalPage),
-		Prev:  query(currentPageInt - 1),
-		Next:  query(currentPageInt + 1),
+		Prev: func() string {
+			if currentPageInt > 1 {
+				return query(currentPageInt - 1)
+			}
+			return ""
+		}(),
+		Next: func() string {
+			if currentPageInt < totalPage {
+				return query(currentPageInt + 1)
+			}
+			return ""
+		}(),
 	}
 
 	meta := Meta{
@@ -196,17 +165,14 @@ func (r *PaginateService) ResultPagination(dest any, withes ...string) error {
 		Total:       total,
 	}
 
-	pageResult := PageResult{
+	pageResult := &PageResult{
 		Data:  dest,
 		Total: total,
 		Links: links,
 		Meta:  meta,
 	}
-
-	r.Ctx.JSON(http.StatusOK, pageResult)
-	return nil
+	return nil, pageResult
 }
-
 func NewPaginatorService(db *gorm.DB, ctx *gin.Context) paginateServiceImpl {
 	return &PaginateService{Query: db, Ctx: ctx}
 }

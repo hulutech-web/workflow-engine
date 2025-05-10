@@ -4,8 +4,8 @@ import "github.com/hulutech-web/workflow-engine/app/models/common"
 
 type Model struct {
 	ID        uint                  `gorm:"primary_key" json:"id"`
-	CreatedAt common.CarbonDateTime `json:"created_at" gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt common.CarbonDateTime `json:"updated_at" gorm:"column:updated_at;autoUpdateTime"`
+	CreatedAt common.CarbonDateTime `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt common.CarbonDateTime `json:"updated_at" gorm:"autoUpdateTime"`
 }
 
 type SoftDelete struct {
