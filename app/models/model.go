@@ -2,13 +2,25 @@ package models
 
 import (
 	"github.com/dromara/carbon/v2"
+	"gorm.io/gorm"
 )
 
-type Model struct {
-	ID        uint             `gorm:"primary_key" json:"id"`
-	CreatedAt carbon.Timestamp `json:"created_at" gorm:"type:bigint;column:created_at;autoCreateTime"`
-	UpdatedAt carbon.Timestamp `json:"updated_at" gorm:"type:bigint;column:updated_at;autoUpdateTime"`
+func init() {
+	// 设置默认时区为上海（中国标准时间）
+	carbon.SetTimezone(carbon.PRC) // PRC 代表中华人民共和国时区
+	carbon.SetLocale("zh-CN")
 }
-type SoftDelete struct {
-	DeletedAt carbon.Timestamp `json:"deleted_at" gorm:"type:datetime;column:deleted_at;index"`
+
+type Model struct {
+	ID uint `gorm:"primaryKey" json:"id" form:"id"`
+	Timestamps
+}
+
+type SoftDeletes struct {
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
+}
+
+type Timestamps struct {
+	CreatedAt carbon.DateTime `gorm:"autoCreateTime;column:created_at" form:"created_at" json:"created_at"`
+	UpdatedAt carbon.DateTime `gorm:"autoUpdateTime;column:updated_at" form:"updated_at" json:"updated_at"`
 }
