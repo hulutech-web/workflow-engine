@@ -1,60 +1,45 @@
+
 name: Update Contributors
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时运行一次
-  workflow_dispatch:
+    - cron: "0 12 * * *"  # 每天UTC时间12点自动运行
+  workflow_dispatch:      # 允许手动触发
   push:
-    branches: [ master ]    # 主分支名称改为 master
+    branches:
+      - master            # 主分支名称
 
 jobs:
   update-contributors:
     runs-on: ubuntu-latest
     permissions:
-      contents: write      # 必须开启写权限
+      contents: write     # 必须赋予写入权限
 
     steps:
-      - uses: actions/checkout@v4
+      # 步骤1：检出代码
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          ref: master      # 明确指定检出 master 分支
-          fetch-depth: 0   # 获取完整提交历史
+          ref: master
+          fetch-depth: 0
 
-      # 使用稳定版贡献者生成工具
+      # 步骤2：使用GitHub官方API生成贡献者列表
       - name: Generate Contributors
-        uses: contrib.rocks/preview@v2  # 使用固定版本
-        with:
-          repo: hulutech-web/workflow-engine
-          columns: 7
-          image-size: 80
-          font-size: 14
-          template: table   # 明确指定表格模板
-          output-file: CONTRIBUTORS.md
-
-      # 可靠的内容替换方案
-      - name: Update README
         run: |
-          # 提取贡献者内容（兼容 macOS/linux）
-          CONTENT=$(sed -n '/<!-- START CONTRIBUTORS -->/,/<!-- END CONTRIBUTORS -->/{/<!--/d;p;}' CONTRIBUTORS.md)
+          echo -e "\n# Workflow Engine>> README.md
           
-          # 替换 README 中的占位符
-          awk -v content="$CONTENT" '
-            BEGIN {RS="<!-- CONTRIBUTORS-LIST:START -->[^>]*<!-- CONTRIBUTORS-LIST:END -->";ORS=""}
-            {print $0 RT}
-          ' RT="<!-- CONTRIBUTORS-LIST:START -->\n" content "\n<!-- CONTRIBUTORS-LIST:END -->" \
-          README.md > tmp && mv tmp README.md
-
-      # 强化提交逻辑
-      - name: Commit changes
+          echo -e "\n[![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)" >> README.md
+          echo -e "\n[![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)" >> README.md
+          echo -e "\n[![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)" >> README.md
+          
+          echo -e "\n## 🏆 贡献者" >> README.md
+          echo '<a href="https://github.com/hulutech-web/workflow-engine/graphs/contributors">' >> README.md
+          echo '  <img src="https://contrib.rocks/image?repo=hulutech-web/workflow-engine&columns=6&width=600" />' >> README.md
+          echo '</a>' >> README.md
+      # 步骤3：提交更改
+      - name: Commit Changes
         run: |
-          # 配置 Git 身份
-          git config --global user.name "Workflow Bot"
-          git config --global user.email "bot@hulutech.com"
-          
-          # 检测变更并提交
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
           git add README.md
-          if ! git diff --cached --quiet; then
-            git commit -m "🔄 Auto-update contributors [skip ci]" --no-verify
-            git pull --rebase origin master  # 防止并发冲突
-            git push origin master
-          else
-            echo "No changes to commit"
-          fi
+          git commit -m "docs: Update contributors [skip ci]"
+          git push origin HEAD:master
