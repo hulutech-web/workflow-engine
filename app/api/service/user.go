@@ -21,7 +21,7 @@ type UserService interface {
 	Edit(userReq *req.UserEditReq, auth *req.AuthReq) error
 	Update(userReq *req.UserUpdateReq) error
 	Delete(userId uint, auth *req.AuthReq) error
-	Disable(userId uint) error
+	Disable(userId uint, auth *req.AuthReq) error
 	CacheUserById(userId uint) error
 }
 
@@ -167,8 +167,11 @@ func (u userServiceImpl) Delete(userId uint, auth *req.AuthReq) error {
 	return nil
 }
 
-func (u userServiceImpl) Disable(userId uint) error {
+func (u userServiceImpl) Disable(userId uint, auth *req.AuthReq) error {
 	var user models.User
+	if userId == auth.UserId {
+		return fmt.Errorf("不能禁用自己")
+	}
 	if err := u.db.First(&user, userId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return fmt.Errorf("用户不存在")

@@ -1,7 +1,6 @@
 package req
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,10 +29,10 @@ type AuthReq struct {
 	IsAdmin       bool `json:"is_admin"`
 }
 
-func GetAuth(c *gin.Context) (*AuthReq, error) {
+func GetAuth(c *gin.Context) *AuthReq {
 	auth, exists := c.Get("auth")
 	if !exists {
-		return nil, fmt.Errorf("获取认证信息失败")
+		return nil
 	}
-	return auth.(*AuthReq), nil
+	return auth.(*AuthReq)
 }

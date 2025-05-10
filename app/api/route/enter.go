@@ -9,6 +9,7 @@ import (
 var Module = fx.Module("api.route",
 	fx.Provide(NewRoutes),
 	fx.Invoke(accountRoutes),
+	fx.Invoke(userRoutes),
 )
 
 type Routes struct {
