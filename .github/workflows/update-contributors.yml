@@ -4,51 +4,57 @@ on:
     - cron: '0 */6 * * *'  # 每6小时运行一次
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master ]    # 主分支名称改为 master
 
 jobs:
   update-contributors:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write      # 必须开启写权限
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: master      # 明确指定检出 master 分支
+          fetch-depth: 0   # 获取完整提交历史
 
-      # 使用经过验证的 contrib.rocks 方案
+      # 使用稳定版贡献者生成工具
       - name: Generate Contributors
-        uses: contrib.rocks/preview@master
+        uses: contrib.rocks/preview@v2  # 使用固定版本
         with:
           repo: hulutech-web/workflow-engine
           columns: 7
           image-size: 80
           font-size: 14
+          template: table   # 明确指定表格模板
           output-file: CONTRIBUTORS.md
 
-      # 更新 README 的贡献者区块
-      - name: Inject Contributors
+      # 可靠的内容替换方案
+      - name: Update README
         run: |
-          # 提取生成的贡献者内容
-          CONTENT=$(sed -n '/<!-- START CONTRIBUTORS -->/,/<!-- END CONTRIBUTORS -->/{//!p;}' CONTRIBUTORS.md)
-
+          # 提取贡献者内容（兼容 macOS/linux）
+          CONTENT=$(sed -n '/<!-- START CONTRIBUTORS -->/,/<!-- END CONTRIBUTORS -->/{/<!--/d;p;}' CONTRIBUTORS.md)
+          
           # 替换 README 中的占位符
-          sed -i "/<!-- CONTRIBUTORS-LIST:START -->/,/<!-- CONTRIBUTORS-LIST:END -->/c\\
-          <!-- CONTRIBUTORS-LIST:START -->\\
-          $CONTENT\\
-          <!-- CONTRIBUTORS-LIST:END -->" README.md
+          awk -v content="$CONTENT" '
+            BEGIN {RS="<!-- CONTRIBUTORS-LIST:START -->[^>]*<!-- CONTRIBUTORS-LIST:END -->";ORS=""}
+            {print $0 RT}
+          ' RT="<!-- CONTRIBUTORS-LIST:START -->\n" content "\n<!-- CONTRIBUTORS-LIST:END -->" \
+          README.md > tmp && mv tmp README.md
 
-      # 智能提交
-      - name: Commit Changes
+      # 强化提交逻辑
+      - name: Commit changes
         run: |
+          # 配置 Git 身份
           git config --global user.name "Workflow Bot"
           git config --global user.email "bot@hulutech.com"
-          git add README.md
           
-          if ! git diff --staged --quiet; then
-            git commit -m "🔄 Auto-update contributors [skip ci]"
-            git push
+          # 检测变更并提交
+          git add README.md
+          if ! git diff --cached --quiet; then
+            git commit -m "🔄 Auto-update contributors [skip ci]" --no-verify
+            git pull --rebase origin master  # 防止并发冲突
+            git push origin master
           else
             echo "No changes to commit"
           fi

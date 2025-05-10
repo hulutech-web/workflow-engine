@@ -6,6 +6,7 @@
 
 ## 👥 Contributors
 
+
 <!-- CONTRIBUTORS-LIST:START -->
-<!-- 这里会被自动替换为贡献者列表 -->
+<!-- 该区域将由 GitHub Actions 自动填充 -->
 <!-- CONTRIBUTORS-LIST:END -->
