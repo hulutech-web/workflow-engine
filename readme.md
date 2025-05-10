@@ -1,3 +1,11 @@
-## 🧑‍💻 贡献者
+# Workflow Engine
 
-[![Contributors](https://contrib.rocks/image?repo=hulutech-web/workflow-engine)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
+[![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/main)
+[![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)
+
+## 👥 Contributors
+
+<!-- CONTRIBUTORS-LIST:START -->
+<!-- 这里会被自动替换为贡献者列表 -->
+<!-- CONTRIBUTORS-LIST:END -->
