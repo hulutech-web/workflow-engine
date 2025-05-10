@@ -1,0 +1,54 @@
+name: Update Contributors
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # 每6小时运行一次
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  update-contributors:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 使用经过验证的 contrib.rocks 方案
+      - name: Generate Contributors
+        uses: contrib.rocks/preview@main
+        with:
+          repo: hulutech-web/workflow-engine
+          columns: 7
+          image-size: 80
+          font-size: 14
+          output-file: CONTRIBUTORS.md
+
+      # 更新 README 的贡献者区块
+      - name: Inject Contributors
+        run: |
+          # 提取生成的贡献者内容
+          CONTENT=$(sed -n '/<!-- START CONTRIBUTORS -->/,/<!-- END CONTRIBUTORS -->/{//!p;}' CONTRIBUTORS.md)
+
+          # 替换 README 中的占位符
+          sed -i "/<!-- CONTRIBUTORS-LIST:START -->/,/<!-- CONTRIBUTORS-LIST:END -->/c\\
+          <!-- CONTRIBUTORS-LIST:START -->\\
+          $CONTENT\\
+          <!-- CONTRIBUTORS-LIST:END -->" README.md
+
+      # 智能提交
+      - name: Commit Changes
+        run: |
+          git config --global user.name "Workflow Bot"
+          git config --global user.email "bot@hulutech.com"
+          git add README.md
+          
+          if ! git diff --staged --quiet; then
+            git commit -m "🔄 Auto-update contributors [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
