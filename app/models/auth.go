@@ -49,15 +49,3 @@ type AuthPerm struct {
 	TypeId uint   `gorm:"not null;default:0;comment:'权限类型ID'"`
 	MenuId uint   `gorm:"not null;default:0;comment:'菜单ID'"`
 }
-
-type AuthDept struct {
-	Model
-	Pid       uint   `gorm:"not null;default:0;comment:'上级主键'"`
-	Name      string `gorm:"not null;default:'';comment:'部门名称''"`
-	Duty      string `gorm:"not null;default:'';comment:'负责人名'"`
-	Mobile    string `gorm:"not null;default:'';comment:'联系电话'"`
-	Sort      uint16 `gorm:"not null;default:0;comment:'排序编号'"`
-	IsDisable uint8  `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
-	TenantId  uint   `gorm:"not null;default:0;comment:'创建人'"`
-	SoftDelete
-}
