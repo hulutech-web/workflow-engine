@@ -21,7 +21,6 @@ func dst() []interface{} {
 		&models.AuthMenu{},
 		&models.AuthRole{},
 		&models.AuthPerm{},
-		&models.AuthDept{},
 		models.Dept{},
 		models.Emp{},
 		models.Entry{},

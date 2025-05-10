@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/jinzhu/copier"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
 )
@@ -53,6 +54,11 @@ func NewConfig() *Config {
 	viper.SetConfigType(configType)
 	viper.SetConfigFile(configFile)
 	if err := viper.ReadInConfig(); err != nil {
+		return defaultConfig
+	}
+	// 写入默认配置
+	err := copier.Copy(defaultConfig, conf)
+	if err != nil {
 		return defaultConfig
 	}
 	// 可补充动态配置
