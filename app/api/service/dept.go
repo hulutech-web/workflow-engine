@@ -47,7 +47,7 @@ func (d deptService) Store(ctx *gin.Context, dept models.Dept) (*models.Dept, er
 }
 
 func (d deptService) Update(ctx *gin.Context, dept models.Dept) (*models.Dept, error) {
-	tx := d.db.Model(&models.Dept{}).Where("id=?", dept.ID).Save(&dept)
+	tx := d.db.Model(&models.Dept{}).Where("id=?", dept.ID).Updates(&dept)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
