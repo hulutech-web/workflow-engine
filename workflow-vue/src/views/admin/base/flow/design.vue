@@ -1,13 +1,12 @@
 <template>
   <div>
-    <a-card>
-      <div>
+      <div class="h-8 text-right">
         <a-space>
-          <a-button type="primary" @click="saveDesign">保存位置</a-button>
-          <a-button type="primary" @click="publishDesign">发布流程</a-button>
+          <a-button type="primary" danger size="small" @click="initAll">刷新</a-button>
+          <a-button type="primary" size="small" @click="saveDesign">保存位置</a-button>
+          <a-button type="primary" size="small" @click="publishDesign">发布流程</a-button>
         </a-space>
       </div>
-    </a-card>
     <div id="flow-chart-container">
       <hulu-menu :flow_id="+id" :init="initAll" ref="menuRef" />
       <!-- 动态生成节点 -->
@@ -29,7 +28,7 @@
             :name="node.icon"
             color="#66CDAA"
           />
-          <span class="font-bold text-lg">{{ node.process_name }}</span>
+          <span class="font-bold text-md">{{ node.process_name }}</span>
           <a-button
             type="primary"
             style="color: #ffffff; z-index: 20; background-color: #ffa500"
@@ -141,42 +140,57 @@ const publishDesign = async () => {
 };
 </script>
 
-<style>
+<style lang="scss">
 #flow-chart-container {
   width: 100%;
-  height: 750px;
-  border: 1px solid #ccc;
+  height: 1200px;
+  border: 1px solid rgba(255, 255, 255, 0.1); // 调整边框透明度
   position: relative;
-  background-image: linear-gradient(
-      90deg,
-      rgba(200, 200, 200, 0.2) 1px,
-      transparent 1px
-    ),
-    linear-gradient(180deg, rgba(200, 200, 200, 0.2) 1px, transparent 1px);
+  background-color: #1a1a1a; // 主背景色
+  background-image: 
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); // 网格线调整为白色透明度
   background-size: 20px 20px;
-  /* 这控制了网格线之间的间距 */
 }
 
 .node {
   position: absolute;
   text-align: center;
+  // 溢出隐藏
 }
 
 /* 1、节点颜色 */
 .node-element {
-  /* 设置节点的基础样式 */
-  background-color: #fffacd;
-  border: 1px solid #fffacd;
-  border-radius: 5px;
-  padding: 10px;
-}
+  background-color: #1a1a1a; // 主背景色
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  // 文字溢出隐藏，并使用省略号
+  overflow: hidden;
+  font-size: small;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: grab;
 
-/* 如果需要针对特定状态（如鼠标悬停）设置样式 */
-.node-element:hover {
-  background-color: #08140e;
-  cursor: move;
-}
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-color: #4a8cff;
+  }
 
+  .ant-btn-primary {
+    background: linear-gradient(45deg, #4a8cff, #2d5aa3); // 按钮渐变调整
+    border: none;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(74, 140, 255, 0.3);
+    }
+  }
+}
 .node-setting {
   cursor: pointer;
 }

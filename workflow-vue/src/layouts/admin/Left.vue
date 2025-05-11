@@ -147,7 +147,7 @@ export default defineComponent({
   <div>
     <div class='logo'>
       <img src="@/assets/logo/charging.png" style="width:44px;" alt="">
-      <span :class="active == true ? 'block' : 'hidden'" class="sys-title">goravel-workflow</span>
+      <span :class="active == true ? 'block' : 'hidden'" class="sys-title">Workflow Engine</span>
     </div>
     <a-menu mode='inline' theme='dark' @click='routeTo'  v-model:open-keys="menuStore.openKeys"
       v-model:selectedKeys="menuStore.selectedKeys">
