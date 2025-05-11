@@ -102,6 +102,9 @@ func (u userServiceImpl) Add(userReq *req.UserAddReq, auth *req.AuthReq) error {
 	response.Copy(&user, userReq)
 	// 哪个租户创建的用户，就默认是该租户的用户
 	user.TenantId = auth.TenantId
+	salt := util.ToolsUtil.RandomString(5)
+	user.Password = util.ToolsUtil.MakeMd5(fmt.Sprintf("%s%s", userReq.Password, salt))
+	user.Salt = salt
 	if err := u.db.Create(&user).Error; err != nil {
 		return fmt.Errorf("数据库插入错误: %v", err)
 	}

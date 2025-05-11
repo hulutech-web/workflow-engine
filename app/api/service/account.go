@@ -11,9 +11,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"github.com/spf13/cast"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"runtime/debug"
 	"time"
 )
 
@@ -42,19 +40,7 @@ func (a authService) Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginRes
 	if user.IsDisable == 1 {
 		return nil, fmt.Errorf("用户已被禁用")
 	}
-	defer func() {
-		if r := recover(); r != nil {
-			switch r.(type) {
-			// 自定义类型
-			case response.RespType:
-				panic(r)
-			// 其他类型
-			default:
-				zap.S().Errorf("stacktrace from panic: %+v\n%s", r, string(debug.Stack()))
-				panic(response.Failed)
-			}
-		}
-	}()
+
 	token := util.ToolsUtil.MakeToken()
 	key := fmt.Sprintf("%d", user.ID)
 	// 不是多点登录

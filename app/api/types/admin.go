@@ -28,11 +28,11 @@ var Admin = admin{
 	BackstageTokenExpireTime: 86400,
 	// 未登录的URI
 	NotLoginUri: []string{
-		"/login",
-		"/logout",
-		"/register",
+		"account_login",
+		"account_register",
+		"account_tenant",
 	},
-	// 未授权的URI
+	// 无需授权的URI
 	NotAuthUri: []string{},
 	// 白名单URI
 	CommonUri: []string{},
