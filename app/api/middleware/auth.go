@@ -47,7 +47,7 @@ func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
 			return
 		}
 		// 用户信息缓存
-		uidStr := cr.Get(token)
+		uidStr := cr.Get(tk)
 		var uid uint
 		if uidStr != "" {
 			i, err := strconv.ParseUint(uidStr, 10, 32)
@@ -72,7 +72,7 @@ func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
 		var mapping resp.UserResp
 		err := util.ToolsUtil.JsonToObj(cr.HGet(admin.BackstageManageKey, uidStr), &mapping)
 		if err != nil {
-			zap.S().Errorf("TokenAuth Unmarshal err: err=[%+v]", err)
+			zap.S().Errorf("鉴权失败，[%+v]", err)
 			response.Fail(c, response.SystemError)
 			c.Abort()
 			return
@@ -95,6 +95,7 @@ func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
 			IsSuperTenant: mapping.Tenant.ID == 1,
 			IsAdmin:       mapping.Role.IsAdmin == 1,
 		}
+		c.Set("auth", &auth)
 		// 免权限验证接口
 		if util.ToolsUtil.Contains(admin.NotAuthUri, auths) || uid == 1 {
 			c.Next()
@@ -127,7 +128,6 @@ func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
 			return
 		}
 
-		c.Set("auth", &auth)
 		c.Next()
 	}
 }

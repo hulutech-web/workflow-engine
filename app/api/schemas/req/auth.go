@@ -73,7 +73,7 @@ type UserQueryReq struct {
 }
 
 type MenuAddReq struct {
-	Pid           uint         `json:"pid" form:"pid" validate:"required,gte=0" label:"父菜单ID"`
+	Pid           uint         `json:"pid" form:"pid" validate:"gte=0" label:"父菜单ID"`
 	Name          string       `json:"name" form:"name" validate:"required,max=125" label:"菜单名称"`
 	Path          string       `json:"path" form:"path" validate:"required,max=255" label:"菜单路径"`
 	Redirect      string       `json:"redirect" form:"redirect" validate:"max=255" label:"重定向地址"`
@@ -93,7 +93,7 @@ type MenuAddReq struct {
 }
 type MenuEditReq struct {
 	ID            uint         `json:"id" form:"id"`
-	Pid           uint         `json:"pid" form:"pid" validate:"required,gte=0" label:"父菜单ID"`
+	Pid           uint         `json:"pid" form:"pid" validate:"gte=0" label:"父菜单ID"`
 	Name          string       `json:"name" form:"name" validate:"required,max=125" label:"菜单名称"`
 	Path          string       `json:"path" form:"path" validate:"required,max=255" label:"菜单路径"`
 	Redirect      string       `json:"redirect" form:"redirect" validate:"max=255" label:"重定向地址"`

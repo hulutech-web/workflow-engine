@@ -42,6 +42,7 @@ func setup(
 	server *http.Service,
 	db *gorm.DB,
 	event *event.Service,
+	cache *cache.Redis,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(context.Context) error {
@@ -60,6 +61,29 @@ func setup(
 			_ = closeDb(db)
 			event.Shutdown()
 			return server.Server.Shutdown(ctx)
+		},
+	})
+	lifecycle.Append(fx.Hook{
+		OnStart: func(context.Context) error {
+			go func() {
+				err := cache.Ping()
+				if err != nil {
+					zap.S().Errorln("无法连接Redis！", err)
+					return
+				}
+			}()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			go func() {
+				zap.S().Infoln("关闭Redis连接...")
+				err := cache.Close()
+				if err != nil {
+					zap.S().Errorln("无法关闭Redis连接！", err)
+					return
+				}
+			}()
+			return nil
 		},
 	})
 }
