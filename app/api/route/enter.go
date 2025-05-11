@@ -12,8 +12,12 @@ import (
 
 var Module = fx.Module("api.route",
 	fx.Provide(NewRoutes),
+	fx.Invoke(deptRoutes),
 	fx.Invoke(accountRoutes),
 	fx.Invoke(userRoutes),
+	fx.Invoke(templateRoutes),
+	fx.Invoke(templateFormRoutes),
+	fx.Invoke(empRoutes),
 	fx.Invoke(tenantRoutes),
 	fx.Invoke(roleRoutes),
 	fx.Invoke(menuRoutes),

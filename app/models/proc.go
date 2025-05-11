@@ -26,4 +26,5 @@ type Proc struct {
 	Process     Process           `gorm:"foreignKey:ProcessID"`                                              // 关联的Process
 	Flow        Flow              `gorm:"foreignKey:FlowID"`                                                 // 关联的Flow
 	SubProcs    []Proc            `gorm:"foreignkey:EntryID;constraint:OnUpdate:CASCADE,OnDelete:NO ACTION"` // HasMany Proc
+
 }
