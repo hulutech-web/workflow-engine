@@ -16,13 +16,13 @@ type role struct {
 }
 
 func roleRoutes(t role, r *types.ApiRouter) {
-	api := r.Group("/api/auth/role")
+	api := r.Group("/auth/role")
 	api.GET("/all", t.all)
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)
-	api.POST("/add", t.add)
-	api.POST("/edit", t.edit)
-	api.POST("/delete", t.delete)
+	api.POST("/add", t.add, r.Log("添加角色"))
+	api.POST("/edit", t.edit, r.Log("编辑角色"))
+	api.POST("/delete", t.delete, r.Log("删除角色"))
 }
 
 func (t role) all(ctx *gin.Context) {

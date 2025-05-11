@@ -16,14 +16,14 @@ type menu struct {
 }
 
 func menuRoutes(t menu, r *types.ApiRouter) {
-	menu := r.Group("/api/auth/menu")
+	menu := r.Group("/auth/menu")
 
 	menu.GET("/route", t.route)
 	menu.GET("/list", t.list)
 	menu.GET("/detail", t.detail)
-	menu.POST("/add", t.add)
-	menu.POST("/edit", t.edit)
-	menu.POST("/delete", t.delete)
+	menu.POST("/add", t.add, r.Log("添加菜单"))
+	menu.POST("/edit", t.edit, r.Log("编辑菜单"))
+	menu.POST("/delete", t.delete, r.Log("删除菜单"))
 }
 
 func (t menu) route(c *gin.Context) {

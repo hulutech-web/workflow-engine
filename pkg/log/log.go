@@ -1,10 +1,12 @@
-package middleware
+package log
 
 import (
 	"bytes"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -22,13 +24,16 @@ func (w bodyLogWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func NewLogCollector(bufferSize int) *LogCollector {
-	return &LogCollector{
+func NewLogCollector(db *gorm.DB, bufferSize int) *LogCollector {
+	lc := &LogCollector{
 		LogChan: make(chan models.Log, bufferSize),
 	}
+	c := NewLogConsumer(db, lc.LogChan)
+	c.Start(context.Background())
+	return lc
 }
 
-func (lc *LogCollector) Collect(source string) gin.HandlerFunc {
+func (lc *LogCollector) Log(source string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Method == "OPTIONS" {
 			c.Next()

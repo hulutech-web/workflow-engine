@@ -16,15 +16,15 @@ type user struct {
 }
 
 func userRoutes(t user, r *types.ApiRouter) {
-	api := r.Group("/api/user")
+	api := r.Group("/user")
 
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)
-	api.POST("/add", t.add)
-	api.POST("/edit", t.edit)
-	api.POST("/update", t.update)
-	api.POST("/delete", t.delete)
-	api.POST("/disable", t.disable)
+	api.POST("/add", t.add, r.Log("添加用户"))
+	api.POST("/edit", t.edit, r.Log("编辑用户"))
+	api.POST("/update", t.update, r.Log("更新用户"))
+	api.POST("/delete", t.delete, r.Log("删除用户"))
+	api.POST("/disable", t.disable, r.Log("禁用用户"))
 }
 
 func (t user) list(ctx *gin.Context) {

@@ -203,6 +203,6 @@ func (a authPermImpl) BatchDeleteTenantMenuByMenuId(menuId uint, db *gorm.DB) (e
 	return nil
 }
 
-func NewAuthPerm(db *gorm.DB, cache *cache.Redis) AuthPermService {
+func NewAuthPermService(db *gorm.DB, cache *cache.Redis) AuthPermService {
 	return &authPermImpl{db: db, cache: cache}
 }

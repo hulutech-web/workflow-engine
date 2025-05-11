@@ -5,7 +5,7 @@ import "go.uber.org/fx"
 var Module = fx.Module("api.service",
 	fx.Provide(NewUserService),
 	fx.Provide(NewAccountService),
-	fx.Provide(NewAuthPerm),
+	fx.Provide(NewAuthPermService),
 	fx.Provide(NewAuthMenuService),
 	fx.Provide(NewAuthTenantService),
 	fx.Provide(NewAuthRoleService),

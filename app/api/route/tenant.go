@@ -16,13 +16,13 @@ type tenant struct {
 }
 
 func tenantRoutes(t tenant, r *types.ApiRouter) {
-	api := r.Group("/api/auth/tenant")
+	api := r.Group("/auth/tenant")
 	api.GET("/all", t.all)
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)
-	api.POST("/add", t.add)
-	api.POST("/edit", t.edit)
-	api.POST("/delete", t.delete)
+	api.POST("/add", t.add, r.Log("添加租户"))
+	api.POST("/edit", t.edit, r.Log("编辑租户"))
+	api.POST("/delete", t.delete, r.Log("删除租户"))
 }
 
 func (t tenant) all(ctx *gin.Context) {

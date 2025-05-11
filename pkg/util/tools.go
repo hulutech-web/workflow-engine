@@ -100,3 +100,19 @@ func (tu toolsUtil) MakeToken() string {
 func (tu toolsUtil) ParseDuration(durationStr string) (time.Duration, error) {
 	return time.ParseDuration(durationStr)
 }
+
+// Contains 判断src是否包含elem元素
+func (tu toolsUtil) Contains(src interface{}, elem interface{}) bool {
+	srcArr := reflect.ValueOf(src)
+	if srcArr.Kind() == reflect.Ptr {
+		srcArr = srcArr.Elem()
+	}
+	if srcArr.Kind() == reflect.Slice {
+		for i := 0; i < srcArr.Len(); i++ {
+			if srcArr.Index(i).Interface() == elem {
+				return true
+			}
+		}
+	}
+	return false
+}

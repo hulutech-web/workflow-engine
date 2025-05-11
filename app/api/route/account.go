@@ -16,7 +16,7 @@ type account struct {
 }
 
 func accountRoutes(a account, r *types.ApiRouter) {
-	api := r.Group("/api/account")
+	api := r.Group("/account")
 	api.POST("/login", a.login)
 	api.GET("/logout", a.logout)
 	api.GET("/tenant", a.tenant)

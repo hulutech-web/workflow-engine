@@ -27,8 +27,9 @@ type UserResp struct {
 	IsMultipoint uint8  `json:"is_multipoint" structs:"is_multipoint"`
 	IsDisable    uint8  `json:"is_disable" structs:"is_disable"`
 	Role         struct {
-		ID   uint   `json:"id" structs:"id"`
-		Name string `json:"name" structs:"name"`
+		ID      uint   `json:"id" structs:"id"`
+		Name    string `json:"name" structs:"name"`
+		IsAdmin uint8  `json:"is_admin" structs:"is_admin"`
 	} `json:"role" structs:"role"`
 	Tenant struct {
 		ID   uint   `json:"id" structs:"id"`
