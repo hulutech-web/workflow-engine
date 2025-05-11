@@ -16,7 +16,7 @@ type user struct {
 }
 
 func userRoutes(t user, r *types.ApiRouter) {
-	api := r.Group("/user")
+	api := r.Group("/api/user")
 
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)

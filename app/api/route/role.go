@@ -10,13 +10,13 @@ import (
 	"go.uber.org/fx"
 )
 
-type tenant struct {
+type role struct {
 	fx.In
-	Srv service.AuthTenantService
+	Srv service.AuthRoleService
 }
 
-func tenantRoutes(t tenant, r *types.ApiRouter) {
-	api := r.Group("/tenant")
+func roleRoutes(t role, r *types.ApiRouter) {
+	api := r.Group("/api/auth/role")
 	api.GET("/all", t.all)
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)
@@ -25,48 +25,48 @@ func tenantRoutes(t tenant, r *types.ApiRouter) {
 	api.POST("/delete", t.delete)
 }
 
-func (t tenant) all(ctx *gin.Context) {
-	res, err := t.Srv.All()
+func (t role) all(ctx *gin.Context) {
+	res, err := t.Srv.All(req.GetAuth(ctx))
 	response.CheckAndRespWithData(ctx, res, err)
 }
 
-func (t tenant) list(c *gin.Context) {
+func (t role) list(c *gin.Context) {
 	var detailReq req.IdReq
 	if response.IsFailWithResp(c, util.VerifyUtil.VerifyQuery(c, &detailReq)) {
 		return
 	}
-	res, err := t.Srv.Detail(detailReq.ID)
+	res, err := t.Srv.Detail(detailReq.ID, req.GetAuth(c))
 	response.CheckAndRespWithData(c, res, err)
 }
 
-func (t tenant) detail(c *gin.Context) {
+func (t role) detail(c *gin.Context) {
 	var detailReq req.IdReq
 	if response.IsFailWithResp(c, util.VerifyUtil.VerifyQuery(c, &detailReq)) {
 		return
 	}
-	res, err := t.Srv.Detail(detailReq.ID)
+	res, err := t.Srv.Detail(detailReq.ID, req.GetAuth(c))
 	response.CheckAndRespWithData(c, res, err)
 }
 
-func (t tenant) add(c *gin.Context) {
-	var addReq req.TenantAddReq
+func (t role) add(c *gin.Context) {
+	var addReq req.RoleAddReq
 	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &addReq)) {
 		return
 	}
-	err := t.Srv.Add(addReq, req.GetAuth(c))
+	err := t.Srv.Add(&addReq, req.GetAuth(c))
 	response.CheckAndResp(c, err)
 }
 
-func (t tenant) edit(c *gin.Context) {
-	var editReq req.TenantEditReq
+func (t role) edit(c *gin.Context) {
+	var editReq req.RoleEditReq
 	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &editReq)) {
 		return
 	}
-	err := t.Srv.Edit(editReq, req.GetAuth(c))
+	err := t.Srv.Edit(&editReq, req.GetAuth(c))
 	response.CheckAndResp(c, err)
 }
 
-func (t tenant) delete(c *gin.Context) {
+func (t role) delete(c *gin.Context) {
 	var delReq req.IdReq
 	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &delReq)) {
 		return

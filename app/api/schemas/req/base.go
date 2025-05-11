@@ -6,8 +6,8 @@ import (
 
 // PageReq 分页请求参数
 type PageReq struct {
-	Page  int `form:"page,default=1" validate:"omitempty,gte=1"`         // 页码
-	Limit int `form:"limit,default=20" validate:"omitempty,gt=0,lte=60"` // 每页大小
+	PageNo   int `form:"pageNo,default=1" validate:"omitempty,gte=1"`          // 页码
+	PageSize int `form:"pageSize,default=20" validate:"omitempty,gt=0,lte=60"` // 每页大小
 }
 
 type IdReq struct {
@@ -25,6 +25,7 @@ type KeyReq struct {
 type AuthReq struct {
 	UserId        uint `json:"user_id"`
 	TenantId      uint `json:"tenant_id"`
+	RoleId        uint `json:"role_id"`
 	IsSuperTenant bool `json:"is_super_tenant"`
 	IsAdmin       bool `json:"is_admin"`
 }

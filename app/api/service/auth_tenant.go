@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"gorm.io/gorm"
 )
 
-type TenantService interface {
+type AuthTenantService interface {
 	All() ([]resp.TenantResp, error)
 	List(page req.PageReq, listReq req.TenantQueryReq) (response.PageResp, error)
 	Detail(id uint) (resp.TenantResp, error)
@@ -20,7 +22,9 @@ type TenantService interface {
 }
 
 type tenantServiceImpl struct {
-	db *gorm.DB
+	db      *gorm.DB
+	cache   *cache.Redis
+	permSrv AuthPermService
 }
 
 func (t tenantServiceImpl) All() ([]resp.TenantResp, error) {
@@ -106,6 +110,8 @@ func (t tenantServiceImpl) Edit(editReq req.TenantEditReq, auth *req.AuthReq) er
 	if err := t.db.Save(&tenant).Error; err != nil {
 		return fmt.Errorf("数据库更新错误: %v", err)
 	}
+	_ = t.permSrv.BatchDeleteByTenantId(editReq.ID, t.db)
+	t.cache.HDel(types.Admin.BackstageTenantsKey, fmt.Sprintf("%d", editReq.ID))
 	return nil
 }
 
@@ -116,9 +122,11 @@ func (t tenantServiceImpl) Del(id uint, auth *req.AuthReq) error {
 	if err := t.db.Delete(&models.AuthTenant{}, "id = ?", id).Error; err != nil {
 		return fmt.Errorf("数据库删除错误: %v", err)
 	}
+	_ = t.permSrv.BatchDeleteByTenantId(id, t.db)
+	t.cache.HDel(types.Admin.BackstageTenantsKey, fmt.Sprintf("%d", id))
 	return nil
 }
 
-func NewTenantService(db *gorm.DB) TenantService {
-	return &tenantServiceImpl{db: db}
+func NewAuthTenantService(db *gorm.DB, cache *cache.Redis, permSrv AuthPermService) AuthTenantService {
+	return &tenantServiceImpl{db: db, cache: cache, permSrv: permSrv}
 }

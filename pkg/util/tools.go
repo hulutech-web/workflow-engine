@@ -10,7 +10,9 @@ import (
 	"math"
 	"math/rand"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type toolsUtil struct{}
@@ -84,4 +86,17 @@ func (tu toolsUtil) ObjsToMaps(objs interface{}) []map[string]interface{} {
 		}
 	}
 	return maps
+}
+
+// MakeToken 生成唯一Token
+func (tu toolsUtil) MakeToken() string {
+	ms := time.Now().UnixMilli()
+	token := tu.MakeMd5(tu.MakeUuid() + strconv.FormatInt(ms, 10) + tu.RandomString(8))
+	tokenSecret := token + "zhoudm1743"
+	return tu.MakeMd5(tokenSecret) + tu.RandomString(6)
+}
+
+// ParseDuration 解析时间字符串
+func (tu toolsUtil) ParseDuration(durationStr string) (time.Duration, error) {
+	return time.ParseDuration(durationStr)
 }
