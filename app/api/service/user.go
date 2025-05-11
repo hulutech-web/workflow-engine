@@ -11,6 +11,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type UserService interface {
@@ -23,11 +24,13 @@ type UserService interface {
 	Delete(userId uint, auth *req.AuthReq) error
 	Disable(userId uint, auth *req.AuthReq) error
 	CacheUserById(userId uint) error
+	Self(auth *req.AuthReq) (*resp.UserSelfResp, error)
 }
 
 type userServiceImpl struct {
-	db    *gorm.DB
-	cache *cache.Redis
+	db      *gorm.DB
+	cache   *cache.Redis
+	permSrv AuthPermService
 }
 
 func (u userServiceImpl) FindByUsername(username string, tenantId uint) (*models.User, error) {
@@ -201,6 +204,66 @@ func (u userServiceImpl) CacheUserById(userId uint) error {
 	return nil
 }
 
-func NewUserService(db *gorm.DB, cache *cache.Redis) UserService {
-	return &userServiceImpl{db: db, cache: cache}
+func (u userServiceImpl) Self(auth *req.AuthReq) (*resp.UserSelfResp, error) {
+	var user models.User
+	var e error
+	if err := u.db.Preload("Role").Preload("Tenant").First(&user, auth.UserId).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("用户不存在")
+		}
+		return nil, fmt.Errorf("数据库查询错误: %v", err)
+	}
+	var auths []string
+	if !auth.IsAdmin && !auth.IsSuperTenant {
+		roleId := user.RoleId
+		var menuIds []uint
+		if menuIds, e = u.permSrv.SelectMenuIdsByRoleId(roleId); e != nil {
+			return nil, fmt.Errorf("获取权限菜单ID错误: %v", e)
+		}
+		if len(menuIds) > 0 {
+			var menus []models.AuthMenu
+			err := u.db.Where(
+				"id in ? AND menuType in ?", menuIds, 0, []string{"dir", "page"}).Order(
+				"sort asc, id desc").Find(&menus).Error
+			if e = response.CheckErr(err, "Self SystemAuthMenu Find err"); e != nil {
+				return nil, e
+			}
+			if len(menus) > 0 {
+				for _, v := range menus {
+					auths = append(auths, strings.Trim(v.Name, " "))
+				}
+			}
+		}
+		if !auth.IsSuperTenant {
+			var tentMenus []uint
+			var menus []models.AuthMenu
+			tentMenus, e = u.permSrv.SelectMenuIdsByTenantId(auth.TenantId)
+			err := u.db.Where(
+				"id in ? AND menuType in ?", tentMenus, 0, []string{"dir", "page"}).Order(
+				"sort asc, id desc").Find(&menus).Error
+			if e = response.CheckErr(err, "Self SystemAuthMenu Find err"); e != nil {
+				return nil, e
+			}
+			if len(menus) > 0 {
+				for _, v := range menus {
+					auths = append(auths, strings.Trim(v.Name, " "))
+				}
+			}
+		}
+		if len(auths) > 0 {
+			auths = append(auths, "")
+		}
+	} else {
+		auths = append(auths, "*")
+	}
+	var userRes resp.UserResp
+	response.Copy(&userRes, user)
+	return &resp.UserSelfResp{
+		User:        userRes,
+		Permissions: auths,
+	}, nil
+}
+
+func NewUserService(db *gorm.DB, cache *cache.Redis, permSrv AuthPermService) UserService {
+	return &userServiceImpl{db: db, cache: cache, permSrv: permSrv}
 }

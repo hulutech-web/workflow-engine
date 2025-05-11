@@ -1,0 +1,3 @@
+INSERT INTO `users` (`id`, `created_at`, `updated_at`, `username`, `phone`, `password`, `salt`, `email`, `avatar`, `nickname`, `role_id`, `is_multipoint`, `is_disable`, `tenant_id`) VALUES
+     (1, '2025-05-11 16:18:50.855', '2025-05-11 16:18:50.855', 'admin', 'RE1qJYUpfiFz1zU5DwM7enkV2BEGuustgqGl', '387163814144a48d4fa49b44ae767883', 'J55Qa', 'pgknz9.lhx@gmail.com', '', '', 1, 0, 0, 1),
+     (2, '2025-05-11 16:21:02.003', '2025-05-11 16:21:02.003', 'test', 't30r3XTpR3_w_LixTmyy_OJUeQCt_xISXE5g', '25c4ce8f44feb2717af7440e16c60560', 'WGFe0', 'pgknz8.lhx@gmail.com', '', '', 2, 0, 0, 1);
