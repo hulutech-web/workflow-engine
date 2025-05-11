@@ -40,6 +40,7 @@ func dst() []interface{} {
 		models.Process{},
 		models.ProcessVar{},
 		models.TemplateForm{},
+		models.Log{},
 	}
 }
 

@@ -65,7 +65,7 @@ func (t menu) edit(c *gin.Context) {
 
 func (t menu) delete(c *gin.Context) {
 	var delReq req.IdReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &delReq)) {
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyJSON(c, &delReq)) {
 		return
 	}
 	err := t.MenuSrv.Del(delReq.ID, req.GetAuth(c))

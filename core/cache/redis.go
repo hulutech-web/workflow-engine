@@ -31,12 +31,6 @@ func NewRedis(config *config.Config) (*Redis, error) {
 	}
 	ctx := context.Background()
 	client := redis.NewClient(opt)
-	pCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
-	defer cancel()
-	_, err = client.Ping(pCtx).Result()
-	if err != nil {
-		return nil, fmt.Errorf("redis 连接失败: %v", err)
-	}
 	return &Redis{
 		config:   config,
 		Instance: client,
@@ -45,3 +39,18 @@ func NewRedis(config *config.Config) (*Redis, error) {
 }
 
 var Module = fx.Provide(NewRedis)
+
+func (r *Redis) Close() error {
+	return r.Instance.Close()
+}
+
+// Ping 测试redis连接
+func (r *Redis) Ping() error {
+	pCtx, cancel := context.WithTimeout(r.Ctx, 3*time.Second)
+	defer cancel()
+	_, err := r.Instance.Ping(pCtx).Result()
+	if err != nil {
+		return fmt.Errorf("redis 连接失败: %v", err)
+	}
+	return nil
+}

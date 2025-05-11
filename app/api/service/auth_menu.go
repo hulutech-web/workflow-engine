@@ -233,8 +233,8 @@ func (a authMenuServiceImpl) Del(id uint, auth *req.AuthReq) (e error) {
 	return nil
 }
 
-func NewAuthMenuService(db *gorm.DB, cache *cache.Redis) AuthMenuService {
-	return &authMenuServiceImpl{db: db, cache: cache}
+func NewAuthMenuService(db *gorm.DB, cache *cache.Redis, permSrv AuthPermService) AuthMenuService {
+	return &authMenuServiceImpl{db: db, cache: cache, permSrv: permSrv}
 }
 
 func commonIds(ids []uint, ids2 []uint) []uint {
