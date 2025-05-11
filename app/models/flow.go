@@ -10,8 +10,8 @@ type Flow struct {
 	TypeID      int           `gorm:"column:type_id;not null;default:0" json:"type_id" form:"type_id"`
 	IsPublish   bool          `gorm:"column:is_publish;not null;default:0" json:"is_publish" form:"is_publish"`
 	IsShow      bool          `gorm:"column:is_show;not null;default:1" json:"is_show" form:"is_show"`
-	Processes   []*Process    `gorm:"foreignKey:FlowID"`     // HasMany Process
-	ProcessVars []*ProcessVar `gorm:"foreignKey:FlowID"`     // HasMany ProcessVar
-	Template    *Template     `gorm:"foreignKey:TemplateID"` // BelongsTo Template
-	Flowtype    *Flowtype     `gorm:"foreignKey:TypeID"`     // BelongsTo FlowType
+	Processes   []*Process    `gorm:"foreignKey:FlowID" json:"processes" form:"processes"` // HasMany Process
+	ProcessVars []*ProcessVar `gorm:"foreignKey:FlowID"`                                   // HasMany ProcessVar
+	Template    *Template     `gorm:"foreignKey:TemplateID"`                               // BelongsTo Template
+	Flowtype    *Flowtype     `gorm:"foreignKey:TypeID"`                                   // BelongsTo FlowType
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/service"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
-	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/app/api/workflow/common"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
@@ -19,12 +19,12 @@ type process struct {
 
 func processRoutes(a process, r *types.ApiRouter) {
 	r.POST("/process", a.Store)
-	r.PUT("/process", a.Update)
+	r.PUT("/process/:id", a.Update)
 	r.GET("/process", a.Index)
 	r.DELETE("/process/:id", a.Destroy)
 	r.GET("/process/:id", a.Show)
 	r.POST("/process/list", a.List)
-	r.POST("/process/attribute", a.Attribute)
+	r.GET("/process/attribute", a.Attribute)
 	r.POST("/process/con", a.Condition)
 }
 
@@ -57,9 +57,14 @@ func (r *process) Show(ctx *gin.Context) {
 }
 
 func (r *process) Store(ctx *gin.Context) {
-	var dpt models.Process
-	ctx.Bind(&dpt)
-	err := r.Srv.Store(ctx, dpt)
+
+	var prc req.ProReq
+	if err2 := ctx.ShouldBindJSON(&prc); err2 != nil {
+		response.FailWithMsg(ctx, response.Failed, err2.Error())
+		return
+	}
+
+	err := r.Srv.Store(ctx, prc)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
@@ -68,9 +73,14 @@ func (r *process) Store(ctx *gin.Context) {
 }
 
 func (r *process) Update(ctx *gin.Context) {
-	var dpt models.Process
-	ctx.Bind(&dpt)
-	err := r.Srv.Update(ctx, dpt)
+	id := cast.ToInt(ctx.Param("id"))
+	logrus.WithFields(logrus.Fields{
+		"id": id,
+	}).Info("id值")
+	var processRequest common.ProcessRequest
+	ctx.Bind(&processRequest)
+
+	err := r.Srv.Update(ctx, id, processRequest)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
@@ -88,14 +98,15 @@ func (r *process) Destroy(ctx *gin.Context) {
 	response.OkWithData(ctx, "操作成功")
 }
 func (r *process) Attribute(ctx *gin.Context) {
-	id := ctx.Param("id")
-	err := r.Srv.Destroy(ctx, cast.ToInt(id))
+	id := ctx.DefaultQuery("id", "0")
+	err, data := r.Srv.Attribute(ctx, cast.ToInt(id))
 	if err != nil {
-		response.Fail(ctx, response.Failed)
+		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, "操作成功")
+	response.OkWithData(ctx, data)
 }
+
 func (r *process) Condition(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := r.Srv.Destroy(ctx, cast.ToInt(id))

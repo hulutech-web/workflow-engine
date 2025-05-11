@@ -55,7 +55,7 @@ func (f *flowService) Show(ctx *gin.Context, id int) *models.Flow {
 }
 func (f *flowService) FlowDesign(ctx *gin.Context, id int) (error, models.Flow) {
 	flow := models.Flow{}
-	tx := f.db.Model(&models.Flow{}).Where("id=?", id).Find(&flow)
+	tx := f.db.Model(&models.Flow{}).Where("id=?", id).Preload("Processes").Find(&flow)
 	if tx.Error != nil {
 		return tx.Error, flow
 	}
