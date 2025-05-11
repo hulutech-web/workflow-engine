@@ -1,0 +1,181 @@
+package service
+
+import (
+	"fmt"
+	"github.com/fatih/structs"
+	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
+	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/types"
+	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/core/cache"
+	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
+
+	"gorm.io/gorm"
+
+	"strings"
+)
+
+type AuthRoleService interface {
+	All(auth *req.AuthReq) (res []resp.RoleSimpleResp, e error)
+	List(page req.PageReq, auth *req.AuthReq) (res response.PageResp, e error)
+	Detail(id uint, auth *req.AuthReq) (res resp.RoleResp, e error)
+	Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error)
+	Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
+	Del(id uint, auth *req.AuthReq) (e error)
+}
+
+type roleService struct {
+	db      *gorm.DB
+	permSrv AuthPermService
+	cache   *cache.Redis
+}
+
+func (r roleService) All(auth *req.AuthReq) (res []resp.RoleSimpleResp, e error) {
+	var roles []models.AuthRole
+	sql := r.db.Model(&models.AuthRole{})
+	err := sql.Order("sort desc, id desc").Find(&roles).Error
+	if e = response.CheckErr(err, "All Find err"); e != nil {
+		return
+	}
+	response.Copy(&res, roles)
+	return
+}
+
+func (r roleService) List(page req.PageReq, auth *req.AuthReq) (res response.PageResp, e error) {
+	limit := page.PageSize
+	offset := page.PageSize * (page.PageNo - 1)
+	sql := r.db.Model(&models.AuthRole{})
+
+	var count int64
+	err := sql.Count(&count).Error
+	if e = response.CheckErr(err, "List Count err"); e != nil {
+		return
+	}
+	var roles []models.AuthRole
+	err = sql.Limit(limit).Offset(offset).Order("sort desc, id desc").Find(&roles).Error
+	if e = response.CheckErr(err, "List Find err"); e != nil {
+		return
+	}
+	var roleResp []resp.RoleResp
+	response.Copy(&roleResp, roles)
+
+	return response.PageResp{
+		PageNo:   page.PageNo,
+		PageSize: page.PageSize,
+		Count:    count,
+		Lists:    roleResp,
+	}, nil
+}
+
+func (r roleService) Detail(id uint, auth *req.AuthReq) (res resp.RoleResp, e error) {
+	var role models.AuthRole
+	sql := r.db.Model(&models.AuthRole{})
+	err := sql.Where("id = ?", id).Limit(1).First(&role).Error
+	if e = response.CheckErr(err, "Detail First err"); e != nil {
+		return
+	}
+	response.Copy(&res, role)
+	res.Menus, e = r.permSrv.SelectMenuIdsByRoleId(role.ID)
+	return
+}
+
+func (r roleService) Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error) {
+	var role models.AuthRole
+	sql := r.db.Model(&models.AuthRole{})
+	if r := sql.Where("name = ?", strings.Trim(addReq.Name, " ")).Limit(1).First(&role); r.RowsAffected > 0 {
+		return response.AssertArgumentError.Make("角色名称已存在!")
+	}
+	response.Copy(&role, addReq)
+	role.Name = strings.Trim(addReq.Name, " ")
+	role.TenantId = auth.TenantId
+	// 事务
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		txErr := tx.Create(&role).Error
+		var te error
+		if te = response.CheckErr(txErr, "Add Create in tx err"); te != nil {
+			return te
+		}
+		te = r.permSrv.BatchSaveRoleMenusByMenuIds(role.ID, tx, addReq.MenuIds)
+		return te
+	})
+	e = response.CheckErr(err, "Add Transaction err")
+	return
+}
+
+func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error) {
+	sql := r.db.Model(&models.AuthRole{})
+	err := sql.Where("id = ?", editReq.ID).Limit(1).First(&models.AuthRole{}).Error
+	if e = response.CheckErr(err, "Edit First err"); e != nil {
+		return
+	}
+	var role models.AuthRole
+	if r := sql.Where("id != ? AND name = ?", editReq.ID, strings.Trim(editReq.Name, " ")).Limit(1).First(&role); r.RowsAffected > 0 {
+		return response.AssertArgumentError.Make("角色名称已存在!")
+	}
+	role.ID = editReq.ID
+	roleMap := structs.Map(editReq)
+	delete(roleMap, "ID")
+	delete(roleMap, "MenuIds")
+	roleMap["Name"] = strings.Trim(editReq.Name, " ")
+	if !auth.IsAdmin {
+		return response.AssertArgumentError.Make("你没有权限编辑此角色!")
+	}
+	// 事务
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		txErr := tx.Model(&role).Updates(roleMap).Error
+		var te error
+		if te = response.CheckErr(txErr, "Edit Updates in tx err"); te != nil {
+			return te
+		}
+		if te = r.permSrv.BatchDeleteRoleMenuByRoleId(editReq.ID, tx); te != nil {
+			return te
+		}
+		if te = r.permSrv.BatchSaveRoleMenusByMenuIds(editReq.ID, tx, editReq.MenuIds); te != nil {
+			return te
+		}
+		te = r.permSrv.CacheRoleMenusByRoleId(editReq.ID)
+		return te
+	})
+	e = response.CheckErr(err, "Edit Transaction err")
+	return
+}
+
+func (r roleService) Del(id uint, auth *req.AuthReq) (e error) {
+	sql := r.db.Model(&models.AuthRole{})
+	err := sql.Where("id = ?", id).Limit(1).First(&models.AuthRole{}).Error
+	if e = response.CheckErr(err, "Del First err"); e != nil {
+		return
+	}
+	if r := sql.Where("role_id = ?", id).Limit(1).Find(&models.User{}); r.RowsAffected > 0 {
+		return response.AssertArgumentError.Make("角色已被管理员使用,请先移除!")
+	}
+	if !auth.IsAdmin {
+		return response.AssertArgumentError.Make("你没有权限删除此角色!")
+	}
+	var role models.AuthRole
+	err = r.db.Where("id = ?", id).First(&role).Error
+	if e = response.CheckErr(err, "Del First err"); e != nil {
+		return
+	}
+	tenantID := role.TenantId
+	// 事务
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		txErr := tx.Delete(&models.AuthRole{}, "id = ?", id).Error
+		var te error
+		if te = response.CheckErr(txErr, "Del Delete in tx err"); te != nil {
+			return te
+		}
+		if te = r.permSrv.BatchDeleteRoleMenuByRoleId(id, tx); te != nil {
+			return te
+		}
+		cachekey := fmt.Sprintf("%d_%d", tenantID, id)
+		r.cache.HDel(types.Admin.BackstageRolesKey, cachekey)
+		return nil
+	})
+	e = response.CheckErr(err, "Del Transaction err")
+	return
+}
+
+func NewAuthRoleService(db *gorm.DB, rolePermSrv AuthPermService, cache *cache.Redis) AuthRoleService {
+	return &roleService{db: db, permSrv: rolePermSrv, cache: cache}
+}

@@ -16,20 +16,23 @@ type AuthTenant struct {
 
 type AuthMenu struct {
 	Model
-	Pid       uint   `gorm:"not null;default:0;comment:'上级菜单'"`
-	MenuType  string `gorm:"not null;default:'';comment:'权限类型: M=目录，C=菜单，A=按钮''"`
-	MenuName  string `gorm:"not null;default:'';comment:'菜单名称'"`
-	MenuIcon  string `gorm:"not null;default:'';comment:'菜单图标'"`
-	MenuSort  uint16 `gorm:"not null;default:0;comment:'菜单排序'"`
-	Perms     string `gorm:"not null;default:'';comment:'权限标识'"`
-	Paths     string `gorm:"not null;default:'';comment:'路由地址'"`
-	Component string `gorm:"not null;default:'';comment:'前端组件'"`
-	Selected  string `gorm:"not null;default:'';comment:'选中路径'"`
-	Params    string `gorm:"not null;default:'';comment:'路由参数'"`
-	IsCache   uint8  `gorm:"not null;default:0;comment:'是否缓存: 0=否, 1=是''"`
-	IsShow    uint8  `gorm:"not null;default:1;comment:'是否显示: 0=否, 1=是'"`
-	IsDisable uint8  `gorm:"not null;default:0;comment:'是否禁用: 0=否, 1=是'"`
-	SoftDelete
+	Pid           uint   `gorm:"column:pid"`
+	Name          string `gorm:"column:name"`
+	Path          string `gorm:"column:path"`
+	Redirect      string `gorm:"column:redirect"`
+	ComponentPath string `gorm:"column:componentPath"`
+	IsDisabled    bool   `gorm:"column:isDisabled;default:false"`
+	Icon          string `gorm:"column:icon"`
+	MenuType      string `json:"menuType" gorm:"column:menuType"`                       // dir or page
+	Title         string `json:"title" gorm:"column:title"`                             // 页面标题
+	RequiresAuth  bool   `json:"requiresAuth" gorm:"column:requiresAuth;default:false"` // 是否需要登录权限
+	KeepAlive     bool   `json:"keepAlive" gorm:"column:keepAlive;default:false"`       // 是否开启页面缓存
+	Hide          bool   `json:"hide" gorm:"column:hide;default:false"`                 // 不显示在菜单中
+	Sort          uint   `json:"sort" gorm:"column:sort;default:0"`                     // 排序
+	Href          string `json:"href" gorm:"column:href"`                               // 嵌套外链
+	ActiveMenu    string `json:"activeMenu" gorm:"column:activeMenu"`                   // 当前路由高亮菜单
+	WithoutTab    bool   `json:"withoutTab" gorm:"column:withoutTab;default:false"`     // 不添加到Tab
+	PinTab        bool   `json:"pinTab" gorm:"column:pinTab;default:false"`             // 固定Tab
 }
 
 type AuthRole struct {

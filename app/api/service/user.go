@@ -14,7 +14,7 @@ import (
 )
 
 type UserService interface {
-	FindByUsername(username string, tenantId string) (resp.UserResp, error)
+	FindByUsername(username string, tenantId uint) (*models.User, error)
 	List(page *req.PageReq, query *req.UserQueryReq, auth *req.AuthReq) (response.PageResp, error)
 	Detail(userId uint) (resp.UserResp, error)
 	Add(userReq *req.UserAddReq, auth *req.AuthReq) error
@@ -30,22 +30,20 @@ type userServiceImpl struct {
 	cache *cache.Redis
 }
 
-func (u userServiceImpl) FindByUsername(username string, tenantId string) (resp.UserResp, error) {
+func (u userServiceImpl) FindByUsername(username string, tenantId uint) (*models.User, error) {
 	var user models.User
-	if err := u.db.Where("username =? AND tenant_id =?", username, tenantId).First(&user).Error; err != nil {
+	if err := u.db.Where("username =? AND tenant_id =?", username, tenantId).Preload("Role").Preload("Tenant").First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return resp.UserResp{}, fmt.Errorf("用户不存在")
+			return nil, fmt.Errorf("用户不存在")
 		}
-		return resp.UserResp{}, fmt.Errorf("数据库查询错误: %v", err)
+		return nil, fmt.Errorf("数据库查询错误: %v", err)
 	}
-	var res resp.UserResp
-	response.Copy(&res, user)
-	return res, nil
+	return &user, nil
 }
 
 func (u userServiceImpl) Detail(userId uint) (resp.UserResp, error) {
 	var user models.User
-	if err := u.db.First(&user, userId).Error; err != nil {
+	if err := u.db.Preload("Role").Preload("Tenant").First(&user, userId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return resp.UserResp{}, fmt.Errorf("用户不存在")
 		}
@@ -57,8 +55,8 @@ func (u userServiceImpl) Detail(userId uint) (resp.UserResp, error) {
 }
 
 func (u userServiceImpl) List(page *req.PageReq, query *req.UserQueryReq, auth *req.AuthReq) (response.PageResp, error) {
-	limit := page.Limit
-	offset := page.Limit * (page.Page - 1)
+	limit := page.PageSize
+	offset := page.PageSize * (page.PageNo - 1)
 	sql := u.db.Model(&models.User{})
 	if !auth.IsSuperTenant {
 		sql = sql.Where("tenant_id = ?", auth.TenantId)
@@ -81,13 +79,15 @@ func (u userServiceImpl) List(page *req.PageReq, query *req.UserQueryReq, auth *
 	var users []models.User
 	var count int64
 	sql.Count(&count)
-	sql.Order("id desc").Limit(limit).Offset(offset).Preload("Role").Preload("Tenant").Find(&users)
+	if err := sql.Order("id desc").Limit(limit).Offset(offset).Preload("Role").Preload("Tenant").Find(&users).Error; err != nil {
+		return response.PageResp{}, fmt.Errorf("数据库查询错误: %v", err)
+	}
 	var res []resp.UserResp
 	response.Copy(&res, users)
 	return response.PageResp{
 		Count:    count,
-		PageNo:   page.Page,
-		PageSize: page.Limit,
+		PageNo:   page.PageNo,
+		PageSize: page.PageSize,
 		Lists:    res,
 	}, nil
 }
@@ -186,12 +186,9 @@ func (u userServiceImpl) Disable(userId uint, auth *req.AuthReq) error {
 }
 
 func (u userServiceImpl) CacheUserById(userId uint) error {
-	var user models.User
-	if err := u.db.First(&user, userId).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return fmt.Errorf("用户不存在")
-		}
-		return fmt.Errorf("数据库查询错误: %v", err)
+	user, err := u.Detail(userId)
+	if err != nil {
+		return fmt.Errorf("获取用户信息错误: %v", err)
 	}
 	str, err := util.ToolsUtil.ObjToJson(&user)
 	if err != nil {

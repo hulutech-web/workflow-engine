@@ -1,84 +1,108 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
+	"github.com/spf13/cast"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"runtime/debug"
+	"time"
 )
 
 type AccountService interface {
 	Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginResp, error)
-	Info(token string) (*resp.AccountLoginInfoResp, error)
 	Logout(token string) error
-	RefreshToken(token string) (string, error)
+	TenantList() ([]resp.SelectOption, error)
 }
 
 type authService struct {
-	db  *gorm.DB
-	cfg *config.Config
+	db      *gorm.DB
+	cfg     *config.Config
+	cache   *cache.Redis
+	userSrv UserService
 }
 
 func (a authService) Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginResp, error) {
-	var user models.User
-	if err := a.db.Where("username = ?", loginReq.Username).First(&user).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fmt.Errorf("用户名或密码错误")
-		}
+	user, err := a.userSrv.FindByUsername(loginReq.Username, loginReq.TenantId)
+	if err != nil {
+		return nil, err
 	}
-	pwd := util.ToolsUtil.MakeMd5(loginReq.Password)
-	if pwd != loginReq.Password {
+	md5Pwd := util.ToolsUtil.MakeMd5(loginReq.Password + user.Salt)
+	if md5Pwd != user.Password {
 		return nil, fmt.Errorf("用户名或密码错误")
 	}
-	token, err := util.JwtUtil.GenerateToken(user.ID)
-	if err != nil {
-		return nil, fmt.Errorf("生成token失败")
+	if user.IsDisable == 1 {
+		return nil, fmt.Errorf("用户已被禁用")
 	}
-	var res resp.AccountLoginResp
-	res.Token = token
-	var info resp.AccountLoginInfoResp
-	response.Copy(&info, user)
-	res.Info = info
-	return &res, nil
+	defer func() {
+		if r := recover(); r != nil {
+			switch r.(type) {
+			// 自定义类型
+			case response.RespType:
+				panic(r)
+			// 其他类型
+			default:
+				zap.S().Errorf("stacktrace from panic: %+v\n%s", r, string(debug.Stack()))
+				panic(response.Failed)
+			}
+		}
+	}()
+	token := util.ToolsUtil.MakeToken()
+	key := fmt.Sprintf("%d", user.ID)
+	// 不是多点登录
+	if user.IsMultipoint == 0 {
+		sysAdminSetKey := types.Admin.BackstageTokenSet + key
+		ts := a.cache.SGet(sysAdminSetKey)
+		if len(ts) > 0 {
+			var keys []string
+			for _, t := range ts {
+				keys = append(keys, t)
+			}
+			a.cache.Del(keys...)
+		}
+		a.cache.Del(sysAdminSetKey)
+		a.cache.SSet(sysAdminSetKey, token)
+	}
+	// 缓存用户信息
+	t, _ := time.ParseDuration(a.cfg.Jwt.AccessExpiry)
+	a.cache.Set(types.Admin.BackstageTokenKey+token, key, cast.ToInt(t.Seconds()))
+	_ = a.userSrv.CacheUserById(user.ID)
+	// 返回用户信息
+	var userResp resp.UserResp
+	response.Copy(&userResp, user)
+	return &resp.AccountLoginResp{
+		Token:    token,
+		UserInfo: userResp,
+	}, nil
 }
 
 func (a authService) Logout(token string) error {
+	a.cache.Del(types.Admin.BackstageTokenKey + token)
 	return nil
 }
 
-func (a authService) RefreshToken(token string) (string, error) {
-	claims, err := util.JwtUtil.ParseToken(token)
-	if err != nil {
-		return "", fmt.Errorf("token解析失败")
+func (a authService) TenantList() ([]resp.SelectOption, error) {
+	var list []models.AuthTenant
+	a.db.Order("id desc").Find(&list)
+	var res []resp.SelectOption
+	for _, v := range list {
+		res = append(res, resp.SelectOption{
+			Value:    v.ID,
+			Label:    v.Name,
+			Disabled: false,
+		})
 	}
-	userId := claims.ID
-	newToken, err := util.JwtUtil.GenerateToken(userId)
-	if err != nil {
-		return "", fmt.Errorf("生成token失败")
-	}
-	return newToken, nil
+	return res, nil
 }
 
-func (a authService) Info(token string) (*resp.AccountLoginInfoResp, error) {
-	claims, err := util.JwtUtil.ParseToken(token)
-	if err != nil {
-		return nil, fmt.Errorf("token解析失败")
-	}
-	userId := claims.ID
-	var user models.User
-	if err := a.db.First(&user, userId).Error; err != nil {
-		return nil, fmt.Errorf("用户不存在")
-	}
-	var res resp.AccountLoginInfoResp
-	response.Copy(&res, user)
-	return &res, nil
-}
-
-func NewAccountService(db *gorm.DB, cfg *config.Config) AccountService {
-	return &authService{db: db, cfg: cfg}
+func NewAccountService(db *gorm.DB, cfg *config.Config, cache *cache.Redis, userSrv UserService) AccountService {
+	return &authService{db: db, cfg: cfg, cache: cache, userSrv: userSrv}
 }

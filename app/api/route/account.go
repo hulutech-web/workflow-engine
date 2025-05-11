@@ -16,10 +16,10 @@ type account struct {
 }
 
 func accountRoutes(a account, r *types.ApiRouter) {
-	r.POST("/login", a.login)
-	r.GET("/refresh", a.refresh)
-	r.GET("/logout", a.logout)
-	r.GET("/info", a.info)
+	api := r.Group("/account")
+	api.POST("/login", a.login)
+	api.GET("/logout", a.logout)
+	api.GET("/tenant", a.tenant)
 }
 
 func (a account) login(c *gin.Context) {
@@ -28,15 +28,6 @@ func (a account) login(c *gin.Context) {
 		return
 	}
 	res, err := a.Srv.Login(&loginReq)
-	response.CheckAndRespWithData(c, res, err)
-}
-
-func (a account) refresh(c *gin.Context) {
-	var refreshReq req.AccountTokenReq
-	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &refreshReq)) {
-		return
-	}
-	res, err := a.Srv.RefreshToken(refreshReq.Token)
 	response.CheckAndRespWithData(c, res, err)
 }
 
@@ -49,11 +40,7 @@ func (a account) logout(c *gin.Context) {
 	response.CheckAndResp(c, err)
 }
 
-func (a account) info(c *gin.Context) {
-	var infoReq req.AccountTokenReq
-	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &infoReq)) {
-		return
-	}
-	res, err := a.Srv.Info(infoReq.Token)
+func (a account) tenant(c *gin.Context) {
+	res, err := a.Srv.TenantList()
 	response.CheckAndRespWithData(c, res, err)
 }
