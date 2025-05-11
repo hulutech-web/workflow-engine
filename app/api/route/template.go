@@ -23,6 +23,7 @@ func templateRoutes(a template, r *types.ApiRouter) {
 	r.DELETE("/template/:id", a.Destroy)
 	r.GET("/template/:id", a.Show)
 	r.GET("/template/list", a.List)
+	r.GET("/template/:id/templateform", a.TemplateForm)
 }
 
 func (r *template) Index(ctx *gin.Context) {
@@ -76,10 +77,22 @@ func (r *template) Update(ctx *gin.Context) {
 
 func (r *template) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
-	err := r.Srv.Destroy(ctx, cast.ToInt(id))
+	logrus.WithFields(logrus.Fields{
+		"id": id,
+	}).Info("id")
+	err := r.Srv.Destroy(ctx, cast.ToUint(id))
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
 	}
 	response.OkWithData(ctx, "操作成功")
+}
+func (r *template) TemplateForm(ctx *gin.Context) {
+	id := ctx.Param("id")
+	form, err := r.Srv.TemplateForm(ctx, cast.ToInt(id))
+	if err != nil {
+		response.Fail(ctx, response.Failed)
+		return
+	}
+	response.OkWithData(ctx, form)
 }
