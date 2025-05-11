@@ -18,6 +18,7 @@ type user struct {
 func userRoutes(t user, r *types.ApiRouter) {
 	api := r.Group("/user")
 
+	api.GET("/self", t.self)
 	api.GET("/list", t.list)
 	api.GET("/detail", t.detail)
 	api.POST("/add", t.add, r.Log("添加用户"))
@@ -25,6 +26,11 @@ func userRoutes(t user, r *types.ApiRouter) {
 	api.POST("/update", t.update, r.Log("更新用户"))
 	api.POST("/delete", t.delete, r.Log("删除用户"))
 	api.POST("/disable", t.disable, r.Log("禁用用户"))
+}
+
+func (t user) self(ctx *gin.Context) {
+	res, err := t.Srv.Self(req.GetAuth(ctx))
+	response.CheckAndRespWithData(ctx, res, err)
 }
 
 func (t user) list(ctx *gin.Context) {

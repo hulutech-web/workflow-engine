@@ -39,6 +39,11 @@ type UserResp struct {
 	UpdatedAt carbon.DateTime `json:"updated_at" structs:"updated_at"`
 }
 
+type UserSelfResp struct {
+	Permissions []string `json:"permissions" structs:"permissions"`
+	User        UserResp `json:"user" structs:"user"`
+}
+
 type MenuResp struct {
 	ID            uint            `json:"id" structs:"id"`
 	Pid           uint            `json:"pid" structs:"pid"`

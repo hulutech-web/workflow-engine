@@ -1,0 +1,1 @@
+INSERT INTO `auth_tenants` (`id`, `created_at`, `updated_at`, `name`, `address`, `phone`, `email`, `domain`, `logo`, `description`, `is_disable`, `expired_at`, `deleted_at`) VALUES (1, '2025-05-11 16:18:50.855', '2025-05-11 16:18:50.855', 'workflow', '', '', '', '', '', '', 0, 0, NULL);

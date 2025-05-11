@@ -17,8 +17,8 @@ import (
 )
 
 func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
-	userSrv := service.NewUserService(db, cr)
 	permSrv := service.NewAuthPermService(db, cr)
+	userSrv := service.NewUserService(db, cr, permSrv)
 	admin := types.Admin
 	return func(c *gin.Context) {
 		auths := strings.ReplaceAll(strings.Replace(c.Request.URL.Path, "/api/", "", 1), "/", "_")

@@ -20,6 +20,7 @@ func accountRoutes(a account, r *types.ApiRouter) {
 	api.POST("/login", a.login)
 	api.GET("/logout", a.logout)
 	api.GET("/tenant", a.tenant)
+	api.POST("/register", a.register)
 }
 
 func (a account) login(c *gin.Context) {
@@ -42,5 +43,14 @@ func (a account) logout(c *gin.Context) {
 
 func (a account) tenant(c *gin.Context) {
 	res, err := a.Srv.TenantList()
+	response.CheckAndRespWithData(c, res, err)
+}
+
+func (a account) register(c *gin.Context) {
+	var registerReq req.AccountRegisterReq
+	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &registerReq)) {
+		return
+	}
+	res, err := a.Srv.Register(&registerReq)
 	response.CheckAndRespWithData(c, res, err)
 }
