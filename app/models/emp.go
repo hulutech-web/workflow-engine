@@ -9,5 +9,5 @@ type Emp struct {
 	DeptID   int    `gorm:"column:dept_id;not null;default:0" json:"dept_id" form:"dept_id"`
 	Leave    int    `gorm:"column:leave;not null;default:0" json:"leave" form:"leave"`
 	UserID   uint   `gorm:"column:user_id;" json:"user_id" form:"user_id"`
-	Dept     Dept   `json:"Dept"`
+	Dept     *Dept  `json:"Dept"`
 }

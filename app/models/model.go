@@ -11,7 +11,7 @@ import (
 
 func init() {
 	// 设置默认时区为上海（中国标准时间）
-	carbon.SetTimezone(carbon.Shanghai) // PRC 代表中华人民共和国时区
+	carbon.SetTimezone(carbon.PRC) // PRC 代表中华人民共和国时区
 	carbon.SetLocale("zh-CN")
 }
 
