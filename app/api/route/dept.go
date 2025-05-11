@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type dept struct {
@@ -23,8 +24,9 @@ func deptRoutes(a dept, r *types.ApiRouter) {
 	r.DELETE("/dept/:id", a.Destroy)
 	r.GET("/dept/:id", a.Show)
 	r.GET("/dept/list", a.List)
-	r.POST("/bindmanager", a.BindManager)
-	r.POST("/binddirector", a.BindDirector)
+	r.POST("/dept/bind_manager", a.BindManager)
+	r.POST("/dept/bind_director", a.BindDirector)
+	r.GET("/dept/:id/tree", a.DisplayTree)
 }
 
 func (r *dept) Index(ctx *gin.Context) {
@@ -57,23 +59,23 @@ func (r *dept) Show(ctx *gin.Context) {
 func (r *dept) Store(ctx *gin.Context) {
 	var dpt models.Dept
 	ctx.Bind(&dpt)
-	store, err := r.Srv.Store(ctx, dpt)
+	err := r.Srv.Store(ctx, dpt)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, store)
+	response.OkWithData(ctx, "操作成功")
 }
 
 func (r *dept) Update(ctx *gin.Context) {
 	var dpt models.Dept
 	ctx.Bind(&dpt)
-	store, err := r.Srv.Update(ctx, dpt)
+	err := r.Srv.Update(ctx, dpt)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, store)
+	response.OkWithData(ctx, "操作成功")
 }
 
 func (r *dept) Destroy(ctx *gin.Context) {
@@ -91,8 +93,17 @@ func (r *dept) BindManager(ctx *gin.Context) {
 		DeptID    int `json:"dept_id" form:"dept_id"`
 	}
 	var bindManagerReq BindManagerReq
-	ctx.BindJSON(&bindManagerReq)
-	r.Srv.BindManager(ctx, bindManagerReq.ManagerID, bindManagerReq.DeptID)
+	if err2 := ctx.ShouldBindJSON(&bindManagerReq); err2 != nil {
+		response.FailWithMsg(ctx, response.Failed, err2.Error())
+		return
+	}
+
+	err := r.Srv.BindManager(ctx, bindManagerReq.ManagerID, bindManagerReq.DeptID)
+	if err != nil {
+		response.Fail(ctx, response.Failed)
+		return
+	}
+	response.OkWithData(ctx, "操作成功")
 }
 
 func (r *dept) BindDirector(ctx *gin.Context) {
@@ -101,11 +112,27 @@ func (r *dept) BindDirector(ctx *gin.Context) {
 		DeptID     int `json:"dept_id" form:"dept_id"`
 	}
 	var bindDirectorReq BindDirectorReq
-	ctx.BindJSON(&bindDirectorReq)
-	manager, err := r.Srv.BindManager(ctx, bindDirectorReq.DirectorID, bindDirectorReq.DeptID)
+	if err2 := ctx.ShouldBindJSON(&bindDirectorReq); err2 != nil {
+		response.FailWithMsg(ctx, response.Failed, err2.Error())
+		return
+	}
+
+	err := r.Srv.BindDirector(ctx, bindDirectorReq.DirectorID, bindDirectorReq.DeptID)
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	response.OkWithData(ctx, "操作成功")
+}
+
+func (r *dept) DisplayTree(ctx *gin.Context) {
+	id := ctx.Param("id")
+	res, err := r.Srv.DisplayTree(ctx, cast.ToInt(id))
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
 	}
-	response.OkWithData(ctx, manager)
+	response.OkWithData(ctx, res)
 }
