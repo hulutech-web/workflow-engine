@@ -14,4 +14,6 @@ var Module = fx.Module("service",
 	fx.Provide(NewUserService),
 	fx.Provide(NewTemplateFormService),
 	fx.Provide(NewEmpService),
+	fx.Provide(NewFlowService),
+	fx.Provide(NewProcessService),
 )

@@ -15,7 +15,7 @@ type TemplateService interface {
 	Store(ctx *gin.Context, part models.Template) error
 	Update(ctx *gin.Context, part models.Template) error
 	Show(ctx *gin.Context, id int) *models.Template
-	Destroy(ctx *gin.Context, id int) error
+	Destroy(ctx *gin.Context, id uint) error
 	TemplateForm(ctx *gin.Context, id int) ([]models.TemplateForm, error)
 }
 
@@ -37,6 +37,7 @@ func (d templateService) List(ctx *gin.Context) ([]models.Template, error) {
 }
 
 func (d templateService) Store(ctx *gin.Context, dept models.Template) error {
+
 	tx := d.db.Model(&models.Template{}).Create(&dept)
 	if tx.Error != nil {
 		return tx.Error
@@ -65,8 +66,12 @@ func (d templateService) Show(ctx *gin.Context, id int) *models.Template {
 
 }
 
-func (d templateService) Destroy(ctx *gin.Context, id int) error {
-	tx := d.db.Model(&models.Template{}).Where("id=?", id).Delete(&models.Template{})
+func (d templateService) Destroy(ctx *gin.Context, id uint) error {
+	tx := d.db.Model(&models.Template{}).Where("id=?", id).Delete(&models.Template{
+		Model: models.Model{
+			ID: id,
+		},
+	})
 	if tx.Error != nil {
 		return tx.Error
 	}
