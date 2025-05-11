@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/hulutech-web/workflow-engine/core/http/middleware"
+	"github.com/hulutech-web/workflow-engine/core/logging"
 	"go.uber.org/fx"
 	"net/http"
 	"time"
