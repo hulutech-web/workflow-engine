@@ -2,6 +2,7 @@ package orm
 
 import (
 	"fmt"
+	"github.com/dromara/carbon/v2"
 	"github.com/glebarez/sqlite"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"go.uber.org/fx"
@@ -34,7 +35,12 @@ func NewOrm(config *config.Config) (*gorm.DB, error) {
 			SingularTable: false,                       // 使用单一表名, eg. `User` => `user`
 		},
 		DisableForeignKeyConstraintWhenMigrating: true,
+		// 关键新增配置
+		NowFunc: func() time.Time {
+			return carbon.Now().StdTime() // 使用 Carbon 的当前时间
+		},
 	}
+
 	var db *gorm.DB
 	switch config.Database.Driver {
 	case "mysql":
