@@ -11,6 +11,9 @@ var Module = fx.Module("api.route",
 	fx.Invoke(deptRoutes),
 	fx.Invoke(accountRoutes),
 	fx.Invoke(userRoutes),
+	fx.Invoke(templateRoutes),
+	fx.Invoke(templateFormRoutes),
+	fx.Invoke(empRoutes),
 )
 
 type Routes struct {
