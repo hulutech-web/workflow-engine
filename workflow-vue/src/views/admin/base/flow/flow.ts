@@ -28,8 +28,13 @@ async function initFlowChart(initData, callback) {
     DragOptions: { cursor: "pointer", zIndex: 2000 },
     // 设置成折线
     Connector: [
-      "Flowchart",
-      { stub: [40, 60], gap: 10, cornerRadius: 5, alwaysRespectStubs: true },
+      "Bezier",
+      { 
+        curviness: 75,
+        gap: 12,
+        strokeWidth: 2.5,
+        stroke: "#6c5ce7"
+      }
     ],
     
     PaintStyle: { stroke: "#1d39c4", strokeWidth: 2 }, // 设置线条颜色和宽度
@@ -45,7 +50,6 @@ async function initFlowChart(initData, callback) {
     });
     async function canDelCbk(nodeId) {
       console.log(nodeId);
-
       let index = nodeList.findIndex((node) => `node-${node.id}` === nodeId);
       if (index != -1) {
         // 获取当前被删除的节点
@@ -159,16 +163,16 @@ async function initFlowChart(initData, callback) {
           jsPlumbInstance.connect({
             source: `node-${node.id}`,
             target: `node-${targetId}`,
-            paintStyle: { stroke: "#4169E1", strokeWidth: 3 }, // 线条样式
-            endpointStyle: { fill: "#4169E1", radius: 4 }, // 端点样式
+            paintStyle: { stroke: "#4169E1", strokeWidth:2 }, // 线条样式
+            endpointStyle: { fill: "#4169E1", radius: 3 }, // 端点样式
             connector: [
-              "Straight",
-              {
-                stub: [40, 60],
-                gap: 24,
-                cornerRadius: 24,
-                alwaysRespectStubs: true,
-              },
+              "Bezier", 
+              { 
+                curviness: 75,
+                gap: 12,
+                strokeWidth: 2.5,
+                stroke: "#6c5ce7"
+              }
             ],
             options: {
               stub: 25,

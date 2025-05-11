@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/service"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
@@ -25,6 +26,7 @@ func flowRoutes(a flow, r *types.ApiRouter) {
 	r.GET("/flow/:id", a.Show)
 	r.GET("/flow/list", a.List)
 	r.GET("/flow/flowchart/:id", a.FlowDesign)
+	r.POST("/flow/publish", a.Publish)
 }
 
 func (r *flow) Index(ctx *gin.Context) {
@@ -108,4 +110,15 @@ func (r *flow) FlowDesign(ctx *gin.Context) {
 		return
 	}
 	response.OkWithData(ctx, m)
+}
+func (r *flow) Publish(ctx *gin.Context) {
+
+	var req req.FlowReq
+	ctx.Bind(&req)
+	err := r.Srv.Publish(ctx, req.FlowID)
+	if err != nil {
+		response.FailWithMsg(ctx, response.Failed, err.Error())
+		return
+	}
+	response.OkWithData(ctx, "发布成功")
 }

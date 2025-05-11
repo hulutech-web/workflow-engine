@@ -19,10 +19,10 @@
                      <p class="text-lg text-white font-bold border-b-2 border-gray-900">部门管理</p>
                      <span class="text-gray-700">部门管理、部门经理、部门主管</span>
                   </div>
-                  <div @click="toFlow" class="mx-3 border border-gray-500 bg-red-400 p-4 w-64 h-32
-               rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">流程管理</p>
-                     <span class="text-gray-700">流程管理、低代码流程图</span>
+                  <div @click="toFlow" class="mx-3 card-box bg-blue-500 p-4 w-64 h-32 
+                  btn-hover cursor-pointer">
+                     <p class="text-lg text-white font-bold border-b border-white/20">流程管理</p>
+                     <span class="text-gray-100 opacity-90">流程管理、低代码流程图</span>
                   </div>
                   <div @click="toTemplate" class="mx-3 border border-gray-500 bg-purple-600 p-4 w-64 h-32
                rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">

@@ -1,5 +1,6 @@
 import plugin from '@/plugins'
 import '@/assets/global.scss'
+import '@/assets/styles/flow-node.scss';
 import { createApp } from 'vue'
 import App from './App.vue'
 
