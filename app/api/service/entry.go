@@ -1,13 +1,9 @@
 package service
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/models"
-	"github.com/spf13/cast"
 	"gorm.io/gorm"
-	"reflect"
-	"strings"
 )
 
 /*
@@ -34,7 +30,7 @@ func (d entryService) Create(ctx *gin.Context) (models.Flow, error) {
 }
 
 func (d entryService) Store(ctx *gin.Context) (*models.Entry, error) {
-	flow_id := ctx.Query("flow_id")
+	/*flow_id := ctx.Query("flow_id")
 	var user models.Emp
 	facades.Auth(ctx).User(&user)
 	query := d.db
@@ -117,7 +113,8 @@ func (d entryService) Store(ctx *gin.Context) (*models.Entry, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &entry, nil
+	return &entry, nil*/
+	return nil, nil
 }
 
 func (d entryService) Show(ctx *gin.Context, id int) *models.Entry {
