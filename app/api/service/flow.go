@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/spf13/cast"
 	"gorm.io/gorm"
 )
 
@@ -54,7 +55,9 @@ func (f *flowService) Update(ctx *gin.Context, part models.Flow) error {
 	return nil
 }
 func (f *flowService) Show(ctx *gin.Context, id int) *models.Flow {
-	return nil
+	flow := models.Flow{}
+	f.db.Model(&models.Flow{}).Where("id=?", id).Find(&flow)
+	return &flow
 }
 func (f *flowService) FlowDesign(ctx *gin.Context, id int) (error, models.Flow) {
 	flow := models.Flow{}
@@ -150,6 +153,12 @@ func (f *flowService) Publish(ctx *gin.Context, flow_id int) error {
 }
 
 func (f *flowService) Destroy(ctx *gin.Context, id int) error {
+
+	f.db.Model(&models.Flow{}).Where("id=?", id).Delete(id, models.Flow{
+		Model: models.Model{
+			ID: cast.ToUint(id),
+		},
+	})
 	return nil
 }
 

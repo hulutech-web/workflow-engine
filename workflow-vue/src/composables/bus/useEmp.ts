@@ -199,6 +199,7 @@ export default () => {
               }&${XEUtils.serialize(queryParams)}`,
               method: "GET",
             });
+            console.log(data);
             resolve(data);
           });
         },

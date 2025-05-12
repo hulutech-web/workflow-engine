@@ -26,7 +26,7 @@ type empService struct {
 func (d empService) Index(ctx *gin.Context) (*PageResult, error) {
 	var tmpls []models.Emp
 	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
-	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&tmpls)
+	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&tmpls, "Dept")
 	return result, err
 }
 

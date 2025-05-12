@@ -27,7 +27,7 @@
                 <p class="text-md">下一步骤</p>
                 <a-row>
                   <a-col :span="16" v-for="(p, index) in formState.next_process" :key="index">
-                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess.id != -1">
+                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess&&p.NextProcess.id != -1">
                       {{ p.NextProcess.process_name }}
                     </a-tag>
                   </a-col>
@@ -452,7 +452,7 @@ export default {
 
     watch(() => props.attrs, (newVal, oldVal) => {
       if (newVal.process != oldVal.process) {
-        console.log(newVal)
+        // console.log(newVal)
         formState.value = newVal
         fillSubmitState(newVal)
         initBase(newVal)
@@ -571,8 +571,10 @@ export default {
     const selDep = async () => {
       open.value = true
       selectedEmp.value = false
-      const { data } = await loadDepts()
-      depts.value = data
+
+     let data  = await loadDepts()
+     depts.value = data.data
+      console.log(depts.value)
     }
 
 

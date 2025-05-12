@@ -8,6 +8,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/workflow/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ type ProcessService interface {
 	Store(ctx *gin.Context, req req.ProReq) error
 	Update(ctx *gin.Context, id int, processRequest common.ProcessRequest) error
 	Show(ctx *gin.Context, id int) *models.Process
-	Destroy(ctx *gin.Context, id int) error
+	Destroy(ctx *gin.Context, id int, flow_id int) error
 	Attribute(ctx *gin.Context, id int) (error, map[string]any)
 	Condition(ctx *gin.Context) error
 }
@@ -350,7 +351,42 @@ func (f *processService) Show(ctx *gin.Context, id int) *models.Process {
 	return nil
 }
 
-func (f *processService) Destroy(ctx *gin.Context, id int) error {
+func (f *processService) Destroy(ctx *gin.Context, id int, flow_id int) error {
+	process := models.Process{}
+	var flow models.Flow
+	tx := f.db.Begin()
+	tx.Model(&flow).Where("id=?", flow_id).Find(&flow)
+	tx.Model(&models.Process{}).Where("id", id).Delete(&process)
+	tx.Model(&models.Flowlink{}).Where("flow_id=?", id).Where("next_process_id=?", id).Update("next_process_id", -1)
+	tx.Model(&models.Process{}).Where("id=?", id).Delete(&models.Process{})
+	jsMap := common.Plumb{}
+	//flow.Jsplum解析为jsMap
+	err := json.Unmarshal([]byte(flow.Jsplumb), &jsMap)
+	if err != nil {
+		tx.Rollback()
+		response.FailWithMsg(ctx, response.Failed, "解析数据错误")
+		return nil
+	}
+
+	//需要将jsMap读取出来，然后再写回去
+	for key, _ := range jsMap.List {
+		if key == cast.ToString(id) {
+			//	删除
+			delete(jsMap.List, key)
+		}
+	}
+
+	jsplumbByte, err := json.Marshal(jsMap)
+
+	if err != nil {
+		tx.Rollback()
+		response.FailWithMsg(ctx, response.Failed, "解析数据错误")
+	}
+	//更新流程图
+	flow.Jsplumb = string(jsplumbByte)
+	tx.Model(&models.Flow{}).Where("id=?", flow.ID).Save(&flow)
+	tx.Commit()
+	response.OkWithMsg(ctx, "删除成功")
 	return nil
 }
 func (f *processService) Attribute(ctx *gin.Context, id int) (error, map[string]interface{}) {
