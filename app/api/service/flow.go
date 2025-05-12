@@ -52,6 +52,7 @@ func (f *flowService) Create(ctx *gin.Context) (error, []models.Template, []mode
 	return nil, templates, flowtypes
 }
 func (f *flowService) Update(ctx *gin.Context, part models.Flow) error {
+	f.db.Model(&models.Flow{}).Where("id=?", part.ID).Save(&part)
 	return nil
 }
 func (f *flowService) Show(ctx *gin.Context, id int) *models.Flow {

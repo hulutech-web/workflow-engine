@@ -17,7 +17,7 @@
             </template>
             <template #design="{ row }">
                 <div>
-                    <a-button type="primary" @click="toDesign(row.id)">
+                    <a-button type="primary"  @click="toDesign(row.id)">
                         <PartitionOutlined />管理流程图
                     </a-button>
                 </div>

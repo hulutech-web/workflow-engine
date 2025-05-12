@@ -18,7 +18,7 @@ type template struct {
 
 func templateRoutes(a template, r *types.ApiRouter) {
 	r.POST("/template", a.Store)
-	r.PUT("/template", a.Update)
+	r.PUT("/template/:id", a.Update)
 	r.GET("/template", a.Index)
 	r.DELETE("/template/:id", a.Destroy)
 	r.GET("/template/:id", a.Show)
@@ -35,7 +35,7 @@ func (r *template) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkWithData(ctx, index)
+	response.OkOnlyData(ctx, index)
 }
 
 func (r *template) List(ctx *gin.Context) {
@@ -43,14 +43,14 @@ func (r *template) List(ctx *gin.Context) {
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 	}
-	response.OkWithData(ctx, list)
+	response.OkOnlyData(ctx, list)
 }
 
 func (r *template) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idInt := cast.ToInt(id)
 	show := r.Srv.Show(ctx, idInt)
-	response.OkWithData(ctx, show)
+	response.OkOnlyData(ctx, show)
 }
 
 func (r *template) Store(ctx *gin.Context) {
@@ -94,5 +94,5 @@ func (r *template) TemplateForm(ctx *gin.Context) {
 		response.Fail(ctx, response.Failed)
 		return
 	}
-	response.OkWithData(ctx, form)
+	response.OkOnlyData(ctx, form)
 }

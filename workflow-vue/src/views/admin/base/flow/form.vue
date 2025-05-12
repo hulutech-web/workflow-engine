@@ -55,8 +55,6 @@ const options = ref({
 })
 const init = async () => {
     const data = await createFlow();
-    console.log(data);
-
     options.value.templates = data.templates;
     options.value.flowtypes = data.flowtypes;
 }
@@ -64,9 +62,7 @@ const formRef = ref()
 onMounted(async () => {
     init();
     if (id.value != null) {
-        const  data  = await showFlow(id.value)
-        //将data变成响应式数据并赋值给employeeForm
-        flowState.value = data
+        flowState.value   = await showFlow(id.value)
     }
 })
 const onSubmit = async () => {

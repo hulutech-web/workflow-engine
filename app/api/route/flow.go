@@ -19,7 +19,7 @@ type flow struct {
 
 func flowRoutes(a flow, r *types.ApiRouter) {
 	r.POST("/flow", a.Store)
-	r.PUT("/flow", a.Update)
+	r.PUT("/flow/:id", a.Update)
 	r.GET("/flow/create", a.Create)
 	r.GET("/flow", a.Index)
 	r.DELETE("/flow/:id", a.Destroy)
@@ -38,7 +38,7 @@ func (r *flow) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkWithData(ctx, index)
+	response.OkOnlyData(ctx, index)
 }
 func (r *flow) Create(ctx *gin.Context) {
 	err, templates, flowtypes := r.Srv.Create(ctx)
@@ -49,8 +49,8 @@ func (r *flow) Create(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"templates": templates,
 		"flowtypes": flowtypes,
-	}).Info("返回成功")
-	response.OkWithData(ctx, map[string]interface{}{
+	}).Warn("返回成功")
+	response.OkOnlyData(ctx, map[string]interface{}{
 		"templates": templates,
 		"flowtypes": flowtypes,
 	})
@@ -68,7 +68,7 @@ func (r *flow) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idInt := cast.ToInt(id)
 	show := r.Srv.Show(ctx, idInt)
-	response.OkWithData(ctx, show)
+	response.OkOnlyData(ctx, show)
 }
 
 func (r *flow) Store(ctx *gin.Context) {
@@ -90,7 +90,7 @@ func (r *flow) Update(ctx *gin.Context) {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, "操作成功")
+	response.Ok(ctx)
 }
 
 func (r *flow) Destroy(ctx *gin.Context) {
@@ -109,7 +109,7 @@ func (r *flow) FlowDesign(ctx *gin.Context) {
 		response.Fail(ctx, response.Failed)
 		return
 	}
-	response.OkWithData(ctx, m)
+	response.OkOnlyData(ctx, m)
 }
 func (r *flow) Publish(ctx *gin.Context) {
 

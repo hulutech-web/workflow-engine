@@ -3,6 +3,7 @@ package orm
 import (
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
+	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"io/ioutil"
@@ -25,9 +26,24 @@ func autoMigrate(db *gorm.DB) error {
 	if err := modifyNecessaryColumns(db); err != nil {
 		return err
 	}
+	if err := modifyFieldType(db); err != nil {
+		return err
+	}
+	logrus.WithFields(logrus.Fields{
+		"modifyFieldType": "修改部分表字段格式",
+	}).Infof("修改表")
 	return nil
 }
 
+// 修改相关数据表字段类型
+func modifyFieldType(db *gorm.DB) error {
+	err := db.Exec("ALTER TABLE flowlinks MODIFY COLUMN next_process_id INT DEFAULT 2").Error
+	err = db.Exec("ALTER TABLE flowlinks MODIFY COLUMN process_id INT DEFAULT 2").Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func dst() []interface{} {
 	return []interface{}{
 		&models.User{},
@@ -47,6 +63,7 @@ func dst() []interface{} {
 		models.Process{},
 		models.ProcessVar{},
 		models.TemplateForm{},
+		models.Log{},
 	}
 }
 

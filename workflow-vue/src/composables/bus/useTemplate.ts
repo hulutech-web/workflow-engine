@@ -4,38 +4,38 @@ import XEUtils from "xe-utils";
 const storage = useStorage();
 
 export default () => {
-  // 方法
-  const loadTemplates = async (id) => {
-    return await http.request({
-      url: `template`,
-      method: "GET",
-    });
-  };
+    // 方法
+    const loadTemplates = async (id) => {
+        return await http.request({
+            url: `template`,
+            method: "GET",
+        });
+    };
 
-  const storeTemplate = async (data)=>{
-    return await http.request({
-        url:`template`,
-        method: "POST",
-        data:data
-    })
-  }
-  const updateTemplate = async (data)=>{
-    return await http.request({
-        url:`template/${data.id}`,
-        method: "PUT",
-        data:data
-    })
-  }
-  const deleteTemplate = async (data)=>{
-    return await http.request({
-        url:`template/${data.id}`,
-        method: "DELETE",
-    })
-  }
-  const serveApiUrl = import.meta.env.VITE_API_URL;
+    const storeTemplate = async (data) => {
+        return await http.request({
+            url: `template`,
+            method: "POST",
+            data: data
+        })
+    }
+    const updateTemplate = async (data) => {
+        return await http.request({
+            url: `template/${data.id}`,
+            method: "PUT",
+            data: data
+        })
+    }
+    const deleteTemplate = async (data) => {
+        return await http.request({
+            url: `template/${data.id}`,
+            method: "DELETE",
+        })
+    }
+    const serveApiUrl = import.meta.env.VITE_API_URL;
     const gridOptions = reactive<VxeGridProps<RowVO>>({
         border: "full",
-        // size: "small",
+        size: "small",
         showHeaderOverflow: true,
         showOverflow: true,
         keepSource: true,
@@ -114,10 +114,9 @@ export default () => {
         },
         pagerConfig: {
             enabled: true,
-            pageSize: 10,
+            pageSize: 5,
             pageSizes: [5, 10, 15, 20, 50, 100, 200, 500, 1000],
         },
-
         toolbarConfig: {
             buttons: [
                 // {code: "insert_actived", name: "快捷新增", status: "primary"},
@@ -190,11 +189,14 @@ export default () => {
             },
         },
         columns: [
-            { field: "id", title: "id",width:50 },
-            { field: "template_name", title: "名称"},
+            { field: "id", title: "id", width: 50 },
+            { field: "template_name", title: "名称" },
             {
                 field: "action",
                 title: "操作",
+                width: 200,
+                fixed: "right",
+                showOverflow: "tooltip",
                 slots: {
                     default: "action",
                 },
@@ -222,11 +224,11 @@ export default () => {
             autoClear: true,
         },
     });
-  return {
-    storeTemplate,
-    gridOptions,
-    loadTemplates,
-    updateTemplate,
-    deleteTemplate
-  };
+    return {
+        storeTemplate,
+        gridOptions,
+        loadTemplates,
+        updateTemplate,
+        deleteTemplate
+    };
 };

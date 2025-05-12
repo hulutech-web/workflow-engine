@@ -2,32 +2,32 @@
    <div>
       <a-row :gutter="[32, 8]">
          <a-col :span="12">
-            <a-card title="管理面板">
+            <a-card title="动态">
                <div class="flex">
-                  <div @click="toUser" class="mx-3 border border-gray-500 bg-teal-500 p-4 w-64 h-32
-               rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">用户管理</p>
-                     <span class="text-gray-700">用户信息，绑定员工</span>
+                  <div @click="toUser" class="mx-3 border border-gray-500 bg-teal-500 p-2 w-32 h-20
+               rounded-md btn-hover hover:scale-105 transition-all duration-300 cursor-pointer">
+                     <p class="text-md text-white font-bold border-b-2 border-gray-900">用户管理</p>
+                     <span class="text-gray-700 text-xs">用户信息，绑定员工</span>
                   </div>
-                  <div @click="toEmp" class="mx-3 border border-gray-500 bg-green-400 p-4 w-64 h-32
-               rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">员工管理</p>
-                     <span class="text-gray-700">员工信息，部门</span>
+                  <div @click="toEmp" class="mx-3 border border-gray-500 bg-green-400 p-2 w-32 h-20
+               rounded-md btn-hover hover:scale-105 transition-all duration-300 cursor-pointer">
+                     <p class="text-md text-white font-bold border-b-2 border-gray-900">员工管理</p>
+                     <span class="text-gray-700 text-xs">员工信息，部门</span>
                   </div>
-                  <div @click="toDept" class="mx-3 border border-gray-500 bg-orange-400 p-4 w-64 h-32
-               rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">部门管理</p>
-                     <span class="text-gray-700">部门管理、部门经理、部门主管</span>
+                  <div @click="toDept" class="mx-3 border border-gray-500 bg-orange-400 p-2 w-32 h-20
+               rounded-md btn-hover hover:scale-105 transition-all duration-300 cursor-pointer">
+                     <p class="text-md text-white font-bold border-b-2 border-gray-900">部门管理</p>
+                     <span class="text-gray-700 text-xs">管理、经理、主管</span>
                   </div>
-                  <div @click="toFlow" class="mx-3 card-box bg-blue-500 p-4 w-64 h-32 
+                  <div @click="toFlow" class="mx-3 card-box bg-blue-500 p-2 w-32 h-20 
                   btn-hover cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b border-white/20">流程管理</p>
-                     <span class="text-gray-100 opacity-90">流程管理、低代码流程图</span>
+                     <p class="text-md text-white font-bold border-b border-white/20">流程管理</p>
+                     <span class="text-gray-100 opacity-90 text-xs">流程管理、低代码</span>
                   </div>
-                  <div @click="toTemplate" class="mx-3 border border-gray-500 bg-purple-600 p-4 w-64 h-32
-               rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">模板管理</p>
-                     <span class="text-gray-700">模板管理、表单控件</span>
+                  <div @click="toTemplate" class="mx-3 border border-gray-500 bg-purple-300 p-2 w-32 h-20
+               rounded-md btn-hover hover:scale-105 transition-all duration-300 cursor-pointer">
+                     <p class="text-md text-white font-bold border-b-2 border-gray-900">模板管理</p>
+                     <span class="text-orange-700 text-xs">模板管理、表单控件</span>
                   </div>
                </div>
             </a-card>
@@ -36,9 +36,9 @@
             <a-card title="工作流">
                <div class="flex">
                   <div  v-for="(item, index) in state.flows" :key="index" @click="toWorkflow(item)">
-                  <div @click="" class="mx-3 border border-gray-500 bg-green-400 p-4 w-64 h-32
+                  <div @click="" class="mx-3 border border-gray-500 bg-green-400 p-2 w-32 h-20
                rounded-md hover:scale-105 transition-all duration-300 cursor-pointer">
-                     <p class="text-lg text-white font-bold border-b-2 border-gray-900">{{ item.flow_name }}</p>
+                     <p class="text-md text-white font-bold border-b-2 border-gray-900">{{ item.flow_name }}</p>
                      <span class="text-gray-700">编号：{{ item.flow_no }}</span>
                   </div>
                </div>
@@ -52,7 +52,6 @@
       <a-row class="mt-4" :gutter="[32, 8]">
 
          <a-col :span="12">
-            <p class="mx-3 text-lg">审批流程</p>
             <div class="px-3">
                <a-tabs v-model:activeKey="activeKey">
                   <a-tab-pane key="1" tab="我的申请" force-render>

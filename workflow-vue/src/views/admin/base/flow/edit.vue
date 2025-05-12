@@ -11,7 +11,6 @@
 <script setup lang='ts'>
 const route = useRoute()
 let id = route.params.id
-console.log(id)
 import Form from './form.vue'
 </script>
 

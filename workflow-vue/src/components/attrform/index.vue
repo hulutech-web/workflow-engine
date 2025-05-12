@@ -27,7 +27,7 @@
                 <p class="text-md">下一步骤</p>
                 <a-row>
                   <a-col :span="16" v-for="(p, index) in formState.next_process" :key="index">
-                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess&&p.NextProcess.id != -1">
+                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess && p.NextProcess.id != -1">
                       {{ p.NextProcess.process_name }}
                     </a-tag>
                   </a-col>
