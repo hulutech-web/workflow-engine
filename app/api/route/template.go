@@ -35,7 +35,8 @@ func (r *template) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkWithData(ctx, index)
+	response.OkOnlyData(ctx, index)
+	//ctx.JSON(http.StatusOK, index)
 }
 
 func (r *template) List(ctx *gin.Context) {
@@ -43,14 +44,14 @@ func (r *template) List(ctx *gin.Context) {
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 	}
-	response.OkWithData(ctx, list)
+	response.OkOnlyData(ctx, list)
 }
 
 func (r *template) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idInt := cast.ToInt(id)
 	show := r.Srv.Show(ctx, idInt)
-	response.OkWithData(ctx, show)
+	response.OkOnlyData(ctx, show)
 }
 
 func (r *template) Store(ctx *gin.Context) {
@@ -94,5 +95,5 @@ func (r *template) TemplateForm(ctx *gin.Context) {
 		response.Fail(ctx, response.Failed)
 		return
 	}
-	response.OkWithData(ctx, form)
+	response.OkOnlyData(ctx, form)
 }
