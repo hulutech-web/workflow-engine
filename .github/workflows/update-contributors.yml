@@ -22,6 +22,7 @@ jobs:
         run: |
           # 重建 README 头部
           cat << 'EOF' > README.md
+<<<<<<< HEAD
   <p align="center">
   <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
   </p>
@@ -38,6 +39,24 @@ jobs:
   <!-- 这里会被自动替换为贡献者列表 -->
   <!-- CONTRIBUTORS-LIST:END -->
   EOF
+=======
+          <p align="center">
+          <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
+          </p>
+          <h1 align="center">Workflow Engine</h1>
+
+        # Workflow Engine
+
+          [![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
+          [![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)
+          [![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)
+          
+          ## 🏆 贡献者
+          <!-- CONTRIBUTORS-LIST:START -->
+          <!-- 这里会被自动替换为贡献者列表 -->
+          <!-- CONTRIBUTORS-LIST:END -->
+          EOF
+>>>>>>> 4211e80b9ec05ba884db73cde28f6c94724a370f
 
           # 调用 GitHub API 获取贡献者
           curl -s "https://api.github.com/repos/hulutech-web/workflow-engine/contributors" | \
