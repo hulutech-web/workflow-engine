@@ -1,0 +1,99 @@
+{
+  "name": "nova-admin",
+  "type": "module",
+  "version": "0.9.10",
+  "private": true,
+  "description": "a clean and concise back-end management template based on Vue3, Vite5, Typescript, and Naive UI.",
+  "author": {
+    "name": "chansee97",
+    "email": "chen.dev@foxmail.com",
+    "url": "https://github.com/chansee97"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/chansee97/nova-admin",
+  "repository": {
+    "url": "https://github.com/chansee97/nova-admin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chansee97/nova-admin/issues"
+  },
+  "keywords": [
+    "Vue",
+    "Vue3",
+    "admin",
+    "admin-template",
+    "vue-admin",
+    "vue-admin-template",
+    "Vite5",
+    "Vite",
+    "vite-admin",
+    "TypeScript",
+    "TS",
+    "NaiveUI",
+    "naive-ui",
+    "naive-admin",
+    "NaiveUI-Admin",
+    "naive-ui-admin",
+    "UnoCSS"
+  ],
+  "scripts": {
+    "dev": "vite --mode dev --port 9980",
+    "dev:test": "vite --mode test",
+    "dev:prod": "vite --mode prod",
+    "build": "vite build --mode prod",
+    "build:dev": "vite build --mode dev",
+    "build:test": "vite build --mode test",
+    "preview": "vite preview --port 9981",
+    "lint": "eslint . && vue-tsc --noEmit",
+    "lint:fix": "eslint . --fix",
+    "lint:check": "npx @eslint/config-inspector",
+    "sizecheck": "npx vite-bundle-visualizer"
+  },
+  "dependencies": {
+    "@vueuse/core": "^12.8.2",
+    "alova": "^3.2.9",
+    "colord": "^2.9.3",
+    "echarts": "^5.6.0",
+    "md-editor-v3": "^5.3.2",
+    "pinia": "^3.0.1",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "quill": "^2.0.3",
+    "radash": "^12.1.0",
+    "vue": "^3.5.13",
+    "vue-draggable-plus": "^0.6.0",
+    "vue-i18n": "^11.1.1",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.5.1",
+    "@iconify-json/icon-park-outline": "^1.2.2",
+    "@iconify/vue": "^4.3.0",
+    "@types/node": "^22.13.9",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "eslint": "^9.21.0",
+    "lint-staged": "^15.4.3",
+    "naive-ui": "^2.41.0",
+    "sass": "^1.85.1",
+    "simple-git-hooks": "^2.11.1",
+    "typescript": "^5.8.2",
+    "unocss": "^0.65.4",
+    "unplugin-auto-import": "^19.1.1",
+    "unplugin-icons": "^22.1.0",
+    "unplugin-vue-components": "^28.4.1",
+    "vite": "^6.2.0",
+    "vite-bundle-visualizer": "^1.2.1",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-vue-devtools": "7.7.2",
+    "vue-tsc": "^2.2.8"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  },
+  "volta": {
+    "node": "20.12.2"
+  }
+}
