@@ -2,7 +2,7 @@
 import type { DataTableColumns } from 'naive-ui'
 import CopyText from '@/components/custom/CopyText.vue'
 import { useBoolean } from '@/hooks'
-import { fetchAllRoutes, deleteRoute } from '@/service'
+import { deleteRoute, fetchAllRoutes } from '@/service'
 import { arrayToTree, createIcon } from '@/utils'
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui'
 import TableModal from './components/TableModal.vue'
@@ -10,7 +10,7 @@ import TableModal from './components/TableModal.vue'
 const { bool: loading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false)
 
 function deleteData(id: number) {
-  deleteRoute({id:id}).then(() => {
+  deleteRoute({ id }).then(() => {
     getAllRoutes()
   })
 }
@@ -174,6 +174,6 @@ const checkedRowKeys = ref<number[]>([])
       size="small"
       :scroll-x="1200"
     />
-    <TableModal ref="tableModalRef" :all-routes="tableData" modal-name="菜单" />
+    <TableModal ref="tableModalRef" :all-routes="tableData" modal-name="菜单" @close="getAllRoutes" />
   </n-card>
 </template>

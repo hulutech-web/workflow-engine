@@ -68,6 +68,7 @@ type MenuResp struct {
 }
 
 type MenuButton struct {
+	ID    uint   `json:"id" structs:"id"`
 	Title string `json:"title" structs:"title"`
 	Name  string `json:"name" structs:"name"`
 	Sort  uint   `json:"sort" structs:"sort"`

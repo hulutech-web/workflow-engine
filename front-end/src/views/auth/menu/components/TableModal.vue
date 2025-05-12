@@ -5,7 +5,7 @@ import type {
 import HelpInfo from '@/components/common/HelpInfo.vue'
 import { Regex } from '@/constants'
 import { useBoolean } from '@/hooks'
-import { addRoute, updateRoute } from '@/service'
+import { addRoute, fetchRoute, updateRoute } from '@/service'
 
 interface Props {
   modalName?: string
@@ -38,6 +38,7 @@ const formDefault: AppRoute.RowRoute = {
   pinTab: false,
   menuType: 'page',
   sort: 0,
+  button: [],
 }
 const formModel = ref<AppRoute.RowRoute>({ ...formDefault })
 
@@ -68,7 +69,10 @@ async function openModal(type: ModalType = 'add', data: AppRoute.RowRoute) {
     async edit() {
       if (!data)
         return
-      formModel.value = { ...data }
+      const route = await fetchRoute({ id: data.id })
+      if (!route)
+        return
+      formModel.value = { ...route.data }
     },
   }
   await handlers[type]()
@@ -158,7 +162,7 @@ const rules = {
 
 // const options = ref()
 
-const componentOptions = ref([])
+const componentOptions = ref<{ label: string, value: string }[]>([])
 
 function getComponentOptions() {
   const modules = import.meta.glob('/src/views/**/*.vue')
@@ -168,10 +172,20 @@ function getComponentOptions() {
     if (path.includes('components'))
       continue
     const name = module.name.replace('/src/views', '')
+    // 修正类型错误，明确 componentOptions 的类型
+
     componentOptions.value.push({
       label: name,
       value: name,
     })
+  }
+}
+
+function addBtn() {
+  return {
+    title: formModel.value.title,
+    name: `${formModel.value.name}_`,
+    sort: 0,
   }
 }
 
@@ -287,6 +301,28 @@ onMounted(async () => {
             <HelpInfo message="当前路由不在左侧菜单显示，但需要高亮某个菜单" />
           </template>
           <n-input v-model:value="formModel.activeMenu" />
+        </n-form-item-grid-item>
+        <n-form-item-grid-item v-if="formModel.menuType === 'page'" :span="2" label="权限组" path="button">
+          <n-dynamic-input v-model:value="formModel.button" :on-create="addBtn" show-sort-button :disabled="!formModel.name || !formModel.title">
+            <template #create-button-default>
+              新增按钮
+            </template>
+            <template #default="{ index, value }">
+              <div style="display: flex; align-items: center; width: 100%">
+                <n-input
+                  v-model:value="value.title"
+                  placeholder="名称"
+                  style="width: 150px; margin-right: 10px"
+                />
+                <n-input
+                  v-model:value="value.name"
+                  placeholder="权限"
+                  style="width: 150px; margin-right: 10px"
+                />
+                <span style="display: none;width: 60px;">{{ value.sort = index }}</span>
+              </div>
+            </template>
+          </n-dynamic-input>
         </n-form-item-grid-item>
       </n-grid>
     </n-form>

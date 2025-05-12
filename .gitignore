@@ -1,2 +1,6 @@
 config.yaml
+/front-end/node_modules
+/front-end/.idea
+.idea
+.vscode
 node_modules
