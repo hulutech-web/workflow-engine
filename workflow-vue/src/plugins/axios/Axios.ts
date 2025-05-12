@@ -72,11 +72,16 @@ export default class Axios {
   private interceptorsResponse() {
     this.instance.interceptors.response.use(
       (response) => {
-        const message = response.data?.message ?? response.data?.message
-        if (message && this.options.message) {
-          Message.success(message ?? '成功')
+        const message = response.data.msg ?? response.data.msg
+        if (response.data.code==200) {
+          if (message) {
+            Message.success(message)
+          }
+        } else {
+          if (message) {
+            Message.error(message)
+          }
         }
-
         this.options = { message: true }
         return response.data
       },
@@ -105,13 +110,13 @@ export default class Axios {
             break
           case HttpCodeEnum.INTERNAL_SERVER_ERROR:
             console.log(error)
-            if(error.response.data.message){
+            if (error.response.data.message) {
               Message.error(error.response.data.message)
             }
-            if(error.response.data.error){
+            if (error.response.data.error) {
               Message.error(error.response.data.error)
             }
-            if(error.response.data.errors){
+            if (error.response.data.errors) {
               Message.error(error.response.data.errors)
             }
             break;

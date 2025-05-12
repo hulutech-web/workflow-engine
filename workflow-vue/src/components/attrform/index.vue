@@ -27,7 +27,7 @@
                 <p class="text-md">下一步骤</p>
                 <a-row>
                   <a-col :span="16" v-for="(p, index) in formState.next_process" :key="index">
-                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess.id != -1">
+                    <a-tag :bordered="false" color="geekblue" v-if="p.NextProcess && p.NextProcess.id != -1">
                       {{ p.NextProcess.process_name }}
                     </a-tag>
                   </a-col>
@@ -471,7 +471,7 @@ export default {
     const fillSubmitState = (attrs) => {
       submitState.value.process_name = attrs.process.process_name
       submitState.value.process_position = attrs.process.position
-      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess.id)
+      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess?item.NextProcess.id:-1)
     }
     const activeKey = ref('1');
 

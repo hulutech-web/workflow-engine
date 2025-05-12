@@ -2,7 +2,7 @@
   <div>
       <div class="h-8 text-right">
         <a-space>
-          <a-button type="primary" danger size="small" @click="initAll">刷新</a-button>
+          <a-button type="primary" danger size="small" @click="()=>initAll()">刷新</a-button>
           <a-button type="primary" size="small" @click="saveDesign">保存位置</a-button>
           <a-button type="primary" size="small" @click="publishDesign">发布流程</a-button>
         </a-space>
@@ -163,13 +163,13 @@ const publishDesign = async () => {
 .node-element {
   background-color: #1a1a1a; // 主背景色
   border: 2px solid #e9ecef;
-  border-radius: 8px;
+  border-radius: 4px;
   // 文字溢出隐藏，并使用省略号
   overflow: hidden;
   font-size: small;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 12px;
+  padding: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: grab;

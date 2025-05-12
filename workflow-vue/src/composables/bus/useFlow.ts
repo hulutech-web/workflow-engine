@@ -259,6 +259,7 @@ export default () => {
       {
         field: "design",
         title: "流程设计",
+        width: 300,
         slots: {
           default: "design",
         },

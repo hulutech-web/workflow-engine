@@ -12,7 +12,8 @@ export default defineConfig(({ command,mode }) => {
   console.log(isBuild?'打包':'开发')
   return {
     esbuild: {
-      drop: ['console', 'debugger'],
+      // 设置console时控制台将不输出任何内容
+      drop: ['debugger'],
     },
     plugins: [
       vue(),
