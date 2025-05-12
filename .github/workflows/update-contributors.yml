@@ -20,40 +20,40 @@ jobs:
       # Generate static contributors list
       - name: Generate Contributors
         run: |
-          # Rebuild README header with proper markdown formatting
+        # Rebuild README header with proper markdown formatting
           cat << 'EOF' > README.md
-  <p align="center">
-  <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
-  </p>
-  <h1 align="center">Workflow Engine</h1>
+          <p align="center">
+          <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
+          </p>
+          <h1 align="center">Workflow Engine</h1>
 
-# Workflow Engine
+        # Workflow Engine
 
-  [![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
-  [![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)
-  [![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)
+          [![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
+          [![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)
+          [![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)
+          
+          ## 🏆 贡献者
+          <!-- CONTRIBUTORS-LIST:START -->
+          <!-- 这里会被自动替换为贡献者列表 -->
+          <!-- CONTRIBUTORS-LIST:END -->
+          EOF
   
-  ## 🏆 贡献者
-  <!-- CONTRIBUTORS-LIST:START -->
-  <!-- 这里会被自动替换为贡献者列表 -->
-  <!-- CONTRIBUTORS-LIST:END -->
-  EOF
-  
-  # Get contributors from GitHub API
-  curl -s "https://api.github.com/repos/hulutech-web/workflow-engine/contributors" | \
-  jq -r '.[] | "<a href=\"\(.html_url)\"><img src=\"\(.avatar_url)\" width=\"80\" title=\"\(.login)\"/></a>"' > contributors.html
-  
-  # Insert into README
-  sed -i '/<!-- CONTRIBUTORS-LIST:START -->/,/<!-- CONTRIBUTORS-LIST:END -->/{
-  /<!--/!d
-  r contributors.html
-  }' README.md
+          # Get contributors from GitHub API
+          curl -s "https://api.github.com/repos/hulutech-web/workflow-engine/contributors" | \
+          jq -r '.[] | "<a href=\"\(.html_url)\"><img src=\"\(.avatar_url)\" width=\"80\" title=\"\(.login)\"/></a>"' > contributors.html
+          
+          # Insert into README
+          sed -i '/<!-- CONTRIBUTORS-LIST:START -->/,/<!-- CONTRIBUTORS-LIST:END -->/{
+          /<!--/!d
+          r contributors.html
+          }' README.md
 
-# Force update GitHub stats
-- name: Update GitHub Stats
-  run: |
-    git config --global user.name "GitHub Actions"
-    git config --global user.email "actions@github.com"
-    git add README.md
-    git commit --allow-empty -m "🔄 Update contributors and stats [skip ci]"
-    git push origin master
+        # Force update GitHub stats
+        - name: Update GitHub Stats
+          run: |
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "actions@github.com"
+            git add README.md
+            git commit --allow-empty -m "🔄 Update contributors and stats [skip ci]"
+            git push origin master
