@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  host: 0.0.0.0
+  mode: debug
+
+database:
+  driver: mysql
+  host: 127.0.0.1
+  port: 3306
+  username: workflow
+  password: 5MpFR8d6ZkJH5etF
+  database: workflow
+  auto_migrate: "true"
+  params: "charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: "redis_QCHytt"
+  db: 0
+
+jwt:
+  secret: "your-secret-key"
+  access_expiry: 1h
+  refresh_expiry: 168h # 7 days
+
+logging:
+  level: "debug"
+  file_path: "./logs/app.log"
