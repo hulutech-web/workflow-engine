@@ -1,38 +1,27 @@
 <template>
     <div>
         <a-row :gutter="[24, 1]">
-            <a-col :span="6">
+            <a-col :span="15">
                 <a-card class="mb-3">
-                    <p>模板</p>
-                </a-card>
-                <a-card class="mb-3">
-                    <p class="text-lg">
-                        添加模板
-                    </p>
-                    <a-form :model="templateState" ref="templateRef">
+                    <a-form :model="templateState" ref="templateRef" layout="inline">
                         <a-form-item label="模板名称" name="template_name"
                             :rules="[rulesStore.getRule('template_name') ? rulesStore.getRule('template_name') : { required: false }]">
                             <a-input v-model:value="templateState.template_name"></a-input>
                         </a-form-item>
                         <a-form-item>
-                            <a-button type="primary" @click="submitTemplate">提交</a-button>
+                            <a-button type="primary" @click="submitTemplate">添加</a-button>
                         </a-form-item>
                     </a-form>
-                </a-card>
-                <a-card>
-                    <p class="text-lg">
-                        模板列表
-                    </p>
                     <vxe-grid ref='xGrid' v-bind="gridOptions" v-on="gridEvent">
                         <template #action="{ row }">
                             <div>
                                 <a-button-group>
                                     <a-popconfirm title="将同步删除模板字段，确认删除吗？" ok-text="是" cancel-text="点错了"
                                         @confirm="deleteTemplate(row)">
-                                        <a-button type="primary">删除</a-button>
+                                        <a-button size="small" danger type="primary">删除</a-button>
                                     </a-popconfirm>
-                                    <a-button type="primary" @click="editTemplate(row)">编辑</a-button>
-                                    <a-button type="primary" @click="loadTmplForm(row)">表单控件</a-button>
+                                    <a-button type="primary" size="small" @click="editTemplate(row)">编辑</a-button>
+                                    <a-button type="primary" size="small" @click="loadTmplForm(row)">表单控件</a-button>
                                 </a-button-group>
                             </div>
                         </template>
@@ -43,8 +32,7 @@
                         </template>
                     </vxe-grid>
                 </a-card>
-                <a-modal :footer="false" v-model:open="editOpen" width="500px" title="修改模板" centered
-                    >
+                <a-modal :footer="false" v-model:open="editOpen" width="500px" title="修改模板" centered>
                     <a-form :model="templateUpdateState" ref="templateUptRef">
                         <a-form-item label="模板名称" name="template_name"
                             :rules="[rulesStore.getRule('template_name') ? rulesStore.getRule('template_name') : { required: false }]">
@@ -55,21 +43,15 @@
                         </a-form-item>
                     </a-form>
                 </a-modal>
-            </a-col>
-
-            <a-col :span="9">
-                <a-card class="mb-3">
-                    <p>字段预览</p>
-                </a-card>
                 <a-card>
                     <a-table bordered :columns="columns" :dataSource="fields">
                         <template #bodyCell="{ column, record }">
                             <template v-if="column.dataIndex === 'action'">
                                 <div>
                                     <a-button-group>
-                                        <a-button type="primary" @click="edit(record)">编辑</a-button>
+                                        <a-button size="small" type="primary" @click="edit(record)">编辑</a-button>
                                         <a-popconfirm title="Title" @confirm="delRecord(record)">
-                                            <a-button type="primary" danger>删除</a-button>
+                                            <a-button size="small" type="primary" danger>删除</a-button>
                                         </a-popconfirm>
                                     </a-button-group>
                                 </div>
@@ -79,10 +61,8 @@
                 </a-card>
             </a-col>
             <a-col :span="9">
-                <a-card class="mb-3">
-                    <p>设计字段</p>
-                </a-card>
                 <a-card>
+                    <p>设计字段</p>
                     <Formpart ref="formpartRef" />
                 </a-card>
             </a-col>
@@ -90,7 +70,7 @@
         </a-row>
 
         <a-modal v-model:open="open" title="控件配置" centered width="800px" :footer="false">
-            <Formpart :id="cid" ref="formpartRef"/>
+            <Formpart :id="cid" ref="formpartRef" />
         </a-modal>
     </div>
 </template>
@@ -128,23 +108,24 @@ const submitTemplate = async () => {
 }
 const editOpen = ref(false)
 const editTemplate = (row) => {
-    console.log(row)
+    // console.log(row)
     editOpen.value = true
     templateUpdateState.value = row
 }
 const templateUptRef = ref()
-const formpartRef=ref()
+const formpartRef = ref()
 const submitUpdateTemplate = async () => {
     try {
         //先清空一下验证
-        // templateUptRef.value.clearValidate()
+        templateUptRef.value.clearValidate()
         await updateTemplate(templateUpdateState.value)
-        // templateUptRef.value.resetFormField();
+        templateUptRef.value.resetFormField();
     } catch (error) {
-        // templateUptRef.value.validate()
+        templateUptRef.value.validate()
     }
     xGrid.value.commitProxy("query")
     formpartRef.value.loadTemplateOpts()
+    editOpen.value = false;
 }
 
 // 模板管理

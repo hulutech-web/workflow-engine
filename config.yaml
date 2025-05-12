@@ -7,7 +7,7 @@ database:
   driver: mysql
   host: 127.0.0.1
   port: 3306
-  username: root
+  username: workflow
   password: Dazhouquxian2012.
   database: workflow
   auto_migrate: "true"
@@ -16,7 +16,7 @@ database:
 redis:
   host: 127.0.0.1
   port: 6379
-  password: "redis_QCHytt"
+  password: ""
   db: 0
 
 jwt:

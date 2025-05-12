@@ -35,7 +35,7 @@ export default () => {
   const serveApiUrl = import.meta.env.VITE_API_URL;
     const gridOptions = reactive<VxeGridProps<RowVO>>({
         border: "full",
-        // size: "small",
+        size: "small",
         showHeaderOverflow: true,
         showOverflow: true,
         keepSource: true,
@@ -114,10 +114,9 @@ export default () => {
         },
         pagerConfig: {
             enabled: true,
-            pageSize: 10,
+            pageSize: 5,
             pageSizes: [5, 10, 15, 20, 50, 100, 200, 500, 1000],
         },
-
         toolbarConfig: {
             buttons: [
                 // {code: "insert_actived", name: "快捷新增", status: "primary"},
@@ -195,6 +194,9 @@ export default () => {
             {
                 field: "action",
                 title: "操作",
+                width: 200,
+                fixed: "right",
+                showOverflow: "tooltip",
                 slots: {
                     default: "action",
                 },

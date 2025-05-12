@@ -18,7 +18,7 @@ type template struct {
 
 func templateRoutes(a template, r *types.ApiRouter) {
 	r.POST("/template", a.Store)
-	r.PUT("/template", a.Update)
+	r.PUT("/template/:id", a.Update)
 	r.GET("/template", a.Index)
 	r.DELETE("/template/:id", a.Destroy)
 	r.GET("/template/:id", a.Show)

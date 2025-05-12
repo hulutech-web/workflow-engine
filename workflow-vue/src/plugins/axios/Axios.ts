@@ -30,7 +30,6 @@ export default class Axios {
   private options: IOptions = { message: true }
   private useLoading: null
   constructor(config: AxiosRequestConfig) {
-
     this.instance = axios.create(config)
     this.interceptors()
   }
@@ -38,7 +37,6 @@ export default class Axios {
   public async request<T>(config: AxiosRequestConfig, options?: IOptions) {
     this.options = Object.assign(this.options, options ?? {})
     this.useLoading = useLoadingStore()
-
     return new Promise(async (resolve, reject) => {
       try {
         this.useLoading.setLoading(true)
