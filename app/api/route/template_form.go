@@ -13,7 +13,7 @@ import (
 
 type templateForm struct {
 	fx.In
-	Srv service.TemplateService
+	Srv service.TemplateFormService
 }
 
 func templateFormRoutes(a templateForm, r *types.ApiRouter) {
@@ -53,8 +53,14 @@ func (r *templateForm) Show(ctx *gin.Context) {
 }
 
 func (r *templateForm) Store(ctx *gin.Context) {
-	var dpt models.Template
-	ctx.Bind(&dpt)
+	var dpt models.TemplateForm
+	if err2 := ctx.Bind(&dpt); err2 != nil {
+		response.FailWithMsg(ctx, response.Failed, err2.Error())
+		return
+	}
+	logrus.WithFields(logrus.Fields{
+		"model": dpt,
+	}).Info("返回@@成功")
 	err := r.Srv.Store(ctx, dpt)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
@@ -64,7 +70,7 @@ func (r *templateForm) Store(ctx *gin.Context) {
 }
 
 func (r *templateForm) Update(ctx *gin.Context) {
-	var dpt models.Template
+	var dpt models.TemplateForm
 	ctx.Bind(&dpt)
 	err := r.Srv.Update(ctx, dpt)
 	if err != nil {

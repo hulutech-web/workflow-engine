@@ -1,7 +1,6 @@
 package route
 
 import (
-	"github.com/hulutech-web/workflow-engine/app/api/middleware"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/core/http"
@@ -21,6 +20,9 @@ var Module = fx.Module("api.route",
 	fx.Invoke(tenantRoutes),
 	fx.Invoke(roleRoutes),
 	fx.Invoke(menuRoutes),
+	fx.Invoke(flowRoutes),
+	fx.Invoke(processRoutes),
+	fx.Invoke(flowlinkRoutes),
 )
 
 type Routes struct {
@@ -29,5 +31,8 @@ type Routes struct {
 }
 
 func NewRoutes(deps Routes, db *gorm.DB, cache *cache.Redis) *types.ApiRouter {
-	return &types.ApiRouter{RouterGroup: deps.Http.Gin.Group("/api", middleware.AuthCheck(db, cache)), LogCollector: log.NewLogCollector(db, 1024)}
+	//return &types.ApiRouter{RouterGroup: deps.Http.Gin.Group("/api", middleware.AuthCheck(db, cache)), LogCollector: log.NewLogCollector(db, 1024)}
+	return &types.ApiRouter{
+		RouterGroup:  deps.Http.Gin.Group("/api"),
+		LogCollector: log.NewLogCollector(db, 1024)}
 }

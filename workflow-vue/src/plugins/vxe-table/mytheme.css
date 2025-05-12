@@ -1,0 +1,15 @@
+html.my-theme {
+  --vxe-font-color: rgba(0, 0, 0, 0.88);
+  --vxe-primary-color:#1677ff !important;
+  --vxe-button-max-width:100px;
+  --vxe-primary-lighten-color:#3f87ec !important;
+  --vxe-button-dropdown-panel-background-color:#3f87ec !important;
+  --vxe-border-radius:6px;
+  /* 成功色 */
+  --vxe-success-color: #04B96B;
+  --vxe-success-lighten-color:#18ad6c;
+  }
+  
+  html.my-theme .vxe-button{
+    padding:4px 15px;
+  }

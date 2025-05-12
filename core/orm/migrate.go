@@ -15,7 +15,10 @@ func autoMigrate(db *gorm.DB) error {
 	if err != nil {
 		return err
 	}
-	return fillData(db, m)
+	if err := fillData(db, m); err != nil {
+		return err
+	}
+	return nil
 }
 
 func dst() []interface{} {

@@ -56,20 +56,20 @@ type ProcessCondition struct {
 }
 
 type ProcessRequest struct {
-	ProcessName      string             `json:"process_name"`
-	ProcessPosition  int                `json:"process_position"`
-	ChildFlowId      int                `json:"child_flow_id"`
-	ChildAfter       int                `json:"child_after"`
-	ChildBackProcess int                `json:"child_back_process"`
-	AutoPerson       string             `json:"auto_person"`
-	RangeEmpIds      []int              `json:"range_emp_ids"`
-	RangeEmpText     []string           `json:"range_emp_text"`
-	RangeDeptIds     []int              `json:"range_dept_ids"`
-	RangeDeptText    []string           `json:"range_dept_text"`
-	ProcessMode      string             `json:"process_mode"`
-	ProcessCondition []ProcessCondition `json:"process_condition"`
-	StyleWidth       int                `json:"style_width"`
-	StyleHeight      int                `json:"style_height"`
-	StyleColor       string             `json:"style_color"`
-	StyleIcon        string             `json:"style_icon"`
+	ProcessName      string             `json:"process_name" form:"process_name"`
+	ProcessPosition  int                `json:"process_position" form:"process_position"`
+	ChildFlowId      int                `json:"child_flow_id" form:"child_flow_id"`
+	ChildAfter       int                `json:"child_after" form:"child_after"`
+	ChildBackProcess int                `json:"child_back_process" form:"child_back_process"`
+	AutoPerson       string             `json:"auto_person" form:"auto_person"`
+	RangeEmpIds      []int              `json:"range_emp_ids" form:"range_emp_ids"`
+	RangeEmpText     []string           `json:"range_emp_text" form:"range_emp_text"`
+	RangeDeptIds     []int              `json:"range_dept_ids" form:"range_dept_ids"`
+	RangeDeptText    []string           `json:"range_dept_text" form:"range_dept_text"`
+	ProcessMode      string             `json:"process_mode" form:"process_mode"`
+	ProcessCondition []ProcessCondition `json:"process_condition" form:"process_condition"`
+	StyleWidth       int                `json:"style_width" form:"style_width"`
+	StyleHeight      int                `json:"style_height" form:"style_height"`
+	StyleColor       string             `json:"style_color" form:"style_color"`
+	StyleIcon        string             `json:"style_icon" form:"style_icon"`
 }
