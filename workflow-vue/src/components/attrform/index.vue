@@ -471,7 +471,7 @@ export default {
     const fillSubmitState = (attrs) => {
       submitState.value.process_name = attrs.process.process_name
       submitState.value.process_position = attrs.process.position
-      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess?item.NextProcess.id:-1)
+      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess.id)
     }
     const activeKey = ref('1');
 
