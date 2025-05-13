@@ -22,31 +22,36 @@ jobs:
         run: |
           # 重建 README 头部
           cat << 'EOF' > README.md
+          
           <p align="center">
-          <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
-          </p>
-          <h1 align="center">Workflow Engine</h1>
-
-        # Workflow Engine
-
+            <img src="https://github.com/hulutech-web/workflow-engine/blob/master/images/logo.png?raw=true" width="300"  />
+          </p>  
+          
+          <h1 align="center">Workflow Engine</h1>  
+          
+          # Workflow Engine  
           [![Contributors](https://img.shields.io/github/contributors/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/graphs/contributors)
           [![Last Commit](https://img.shields.io/github/last-commit/hulutech-web/workflow-engine?style=for-the-badge)](https://github.com/hulutech-web/workflow-engine/commits/master)
           [![License](https://img.shields.io/github/license/hulutech-web/workflow-engine?style=for-the-badge)](LICENSE)
-          
+
           ## 🏆 贡献者
           <!-- CONTRIBUTORS-LIST:START -->
           <!-- 这里会被自动替换为贡献者列表 -->
           <!-- CONTRIBUTORS-LIST:END -->
           EOF
 
-          # 调用 GitHub API 获取贡献者
+          # 获取贡献者数据
           curl -s "https://api.github.com/repos/hulutech-web/workflow-engine/contributors" | \
             jq -r '.[] | "<a href=\"\(.html_url)\"><img src=\"\(.avatar_url)\" width=\"80\" title=\"\(.login)\"/></a>"' > contributors.html
 
-          # 插入到 README
+          # 更精确的替换逻辑
           sed -i '/<!-- CONTRIBUTORS-LIST:START -->/,/<!-- CONTRIBUTORS-LIST:END -->/{
-            /<!--/!d
-            r contributors.html
+            /<!-- CONTRIBUTORS-LIST:START -->/!{
+              /<!-- CONTRIBUTORS-LIST:END -->/!d
+            }
+            /<!-- CONTRIBUTORS-LIST:END -->/{
+              r contributors.html
+            }
           }' README.md
 
       # 强制更新 GitHub 统计
