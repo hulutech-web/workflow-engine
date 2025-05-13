@@ -1,6 +1,7 @@
 import ContextMenu from "@imengyu/vue3-context-menu";
-import { Modal, message as Message } from "ant-design-vue";
-
+import { useModal, useMessage } from "naive-ui";
+const Message = useMessage();
+const Modal = useModal();
 const onContextMenu = (
   e: MouseEvent,
   callback: Function,

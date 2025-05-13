@@ -1,4 +1,5 @@
-import { http } from "@/plugins/axios";
+import { request } from '../http'
+
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -6,31 +7,17 @@ const storage = useStorage();
 export default () => {
   // 方法
   const loadDepts = async () => {
-    return await http.request({
-      url: `dept`,
-      method: "GET",
-    });
+    return await request.Get(`dept`);
   };
 
   const setManager = async (data) => {
-    return await http.request({
-      url: `dept/bindmanager`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`dept/bindmanager`,data);
   };
   const loadDeptList = async () => {
-    return await http.request({
-      url: `dept/list`,
-      method: "GET",
-    });
+    return await request.Get(`dept/list`);
   };
   const setDirector = async (data) => {
-    return await http.request({
-      url: `dept/binddirector`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`dept/binddirector`,data);
   };
   const serveApiUrl = import.meta.env.VITE_API_URL;
   const gridOptions = reactive<VxeGridProps<RowVO>>({
@@ -165,12 +152,9 @@ export default () => {
               queryParams[field] = values.join(",");
             });
 
-            const data = http.request({
-              url: `dept?pageSize=${page.pageSize}&currentPage=${
-                page.currentPage
-              }&${XEUtils.serialize(queryParams)}`,
-              method: "GET",
-            });
+            const data = request.Get(`dept?pageSize=${page.pageSize}&currentPage=${
+              page.currentPage
+            }&${XEUtils.serialize(queryParams)}`);
             resolve(data);
           });
         },

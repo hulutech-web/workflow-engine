@@ -1,7 +1,8 @@
 import jsPlumb from "jsplumb";
-import { Modal } from "ant-design-vue";
+import { useModal } from "naive-ui";
 import { onContextMenu } from "./tool";
 const { deleteProcess } = useProcess();
+const Modal = useModal();
 async function initFlowChart(initData, callback) {
   await nextTick(); // 确保DOM更新完成
   let data = toRaw(initData);
@@ -29,14 +30,14 @@ async function initFlowChart(initData, callback) {
     // 设置成折线
     Connector: [
       "Bezier",
-      { 
+      {
         curviness: 75,
         gap: 12,
         strokeWidth: 2.5,
         stroke: "#6c5ce7"
       }
     ],
-    
+
     PaintStyle: { stroke: "#1d39c4", strokeWidth: 2 }, // 设置线条颜色和宽度
     EndpointStyle: { radius: 5, fill: "#1d39c4" }, // 设置端点样式
     HoverPaintStyle: { stroke: "#c92a2a", strokeWidth: 3 }, // 鼠标悬停时的线条样式
@@ -166,8 +167,8 @@ async function initFlowChart(initData, callback) {
             paintStyle: { stroke: "#4169E1", strokeWidth:2 }, // 线条样式
             endpointStyle: { fill: "#4169E1", radius: 3 }, // 端点样式
             connector: [
-              "Bezier", 
-              { 
+              "Bezier",
+              {
                 curviness: 75,
                 gap: 12,
                 strokeWidth: 2.5,
