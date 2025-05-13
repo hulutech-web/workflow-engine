@@ -22,6 +22,7 @@ async function setupApp() {
   // 注册一些插件
   await setupPlugin(app)
   /* 注册模块 指令/静态资源 */
+
   Object.values(
     import.meta.glob<{ install: (app: App) => void }>('./modules/*.ts', {
       eager: true,

@@ -1,4 +1,4 @@
-import { http } from "@/plugins/axios";
+import { request } from '../http'
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -6,64 +6,33 @@ const storage = useStorage();
 export default () => {
   // 方法
   const loadFlows = async () => {
-    return await http.request({
-      url: `flow`,
-      method: "GET",
-    });
+    return await request.Get(`flow`);
   };
   const loadFlowList = async () => {
-    return await http.request({
-      url: `flow/list`,
-      method: "GET",
-    });
+    return await request.Get(`flow/list`);
   };
   const loadFlowDesign = async (id) => {
-    return await http.request({
-      url: `flow/flowchart/${id}`,
-      method: "GET",
-    });
+    return await request.Get(`flow/flowchart/${id}`);
   };
   const storeFlow = async (data) => {
-    return await http.request({
-      url: `flow`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`flow`,data);
   };
 
   const showFlow = async (id) => {
-    return await http.request({
-      url: `flow/${id}`,
-      method: "GET",
-    });
+    return await request.Get(`flow/${id}`);
   };
   const updateFlow = async (data) => {
-    return await http.request({
-      url: `flow/${data.id}`,
-      method: "PUT",
-      data: data,
-    });
+    return await request.Put(`flow/${data.id}`,data);
   };
   const createFlow = async () => {
-    return await http.request({
-      url: `flow/create`,
-      method: "GET",
-    });
+    return await request.Get(`flow/create`);
   };
 
   const loadFlowTemplateform = async (flow_id) => {
-    return await http.request({
-      url: `flow/templateform`,
-      method: "POST",
-      data: {flow_id:flow_id},
-    });
+    return await request.Post(`flow/templateform`,{flow_id:flow_id});
   };
   const publishFlow = async (data) => {
-    return await http.request({
-      url: `flow/publish`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`flow/publish`,data);
   };
 
   const serveApiUrl = import.meta.env.VITE_API_URL;
@@ -199,12 +168,9 @@ export default () => {
               queryParams[field] = values.join(",");
             });
 
-            const data = http.request({
-              url: `flow?pageSize=${page.pageSize}&currentPage=${
-                page.currentPage
-              }&${XEUtils.serialize(queryParams)}`,
-              method: "GET",
-            });
+            const data = request.Get(`flow?pageSize=${page.pageSize}&currentPage=${
+              page.currentPage
+            }&${XEUtils.serialize(queryParams)}`);
             resolve(data);
           });
         },

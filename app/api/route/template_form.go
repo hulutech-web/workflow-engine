@@ -54,7 +54,7 @@ func (r *templateForm) Show(ctx *gin.Context) {
 
 func (r *templateForm) Store(ctx *gin.Context) {
 	var dpt models.TemplateForm
-	if err2 := ctx.Bind(&dpt); err2 != nil {
+	if err2 := ctx.ShouldBind(&dpt); err2 != nil {
 		response.FailWithMsg(ctx, response.Failed, err2.Error())
 		return
 	}

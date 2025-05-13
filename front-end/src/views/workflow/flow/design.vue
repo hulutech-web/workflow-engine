@@ -1,14 +1,14 @@
 <template>
   <div>
       <div class="h-8 text-right">
-        <a-space>
-          <a-button type="primary" danger size="small" @click="()=>initAll()">刷新</a-button>
-          <a-button type="primary" size="small" @click="saveDesign">保存位置</a-button>
-          <a-button type="primary" size="small" @click="publishDesign">发布流程</a-button>
-        </a-space>
+        <n-space>
+          <n-button type="primary" danger size="small" @click="()=>initAll()">刷新</n-button>
+          <n-button type="primary" size="small" @click="saveDesign">保存位置</n-button>
+          <n-button type="primary" size="small" @click="publishDesign">发布流程</n-button>
+        </n-space>
       </div>
     <div id="flow-chart-container">
-      <hulu-menu :flow_id="+id" :init="initAll" ref="menuRef" />
+      <HuluMenu :flow_id="+id" :init="initAll" ref="menuRef" />
       <!-- 动态生成节点 -->
 
       <div
@@ -29,34 +29,34 @@
             color="#66CDAA"
           />
           <span class="font-bold text-md">{{ node.process_name }}</span>
-          <a-button
+          <n-button
             type="primary"
             style="color: #ffffff; z-index: 20; background-color: #ffa500"
             @click="setProcess(node)"
             shape="circle"
           >
-            <FormOutlined class="node-setting" />
+<!--            <FormOutlined class="node-setting" />-->
             <!-- <SettingOutlined  /> -->
-          </a-button>
+          </n-button>
         </div>
       </div>
     </div>
 
-    <a-modal
+    <n-modal
       v-model:open="open"
       style="position: relative"
       width="1200px"
-      :footer="false"
       title="节点设计"
       centered
       :bodyStyle="{ height: '700px' }"
     >
-      <attrform :attrs="attrs" @updProcess="updProcess" />
-    </a-modal>
+      <Attrform :attrs="attrs" @updProcess="updProcess" />
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
+import Attrform from "./component/attrform/index.vue";
 import initFlowChart from "./flow";
 const route = useRoute();
 const router = useRouter();
@@ -147,7 +147,7 @@ const publishDesign = async () => {
   border: 1px solid rgba(255, 255, 255, 0.1); // 调整边框透明度
   position: relative;
   background-color: #1a1a1a; // 主背景色
-  background-image: 
+  background-image:
     linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); // 网格线调整为白色透明度
   background-size: 20px 20px;
@@ -184,7 +184,7 @@ const publishDesign = async () => {
     background: linear-gradient(45deg, #4a8cff, #2d5aa3); // 按钮渐变调整
     border: none;
     transition: transform 0.2s ease;
-    
+
     &:hover {
       transform: scale(1.05);
       box-shadow: 0 2px 8px rgba(74, 140, 255, 0.3);

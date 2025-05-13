@@ -78,8 +78,6 @@ const columns = [
         dataIndex: 'action',
         key: 'action',
     },
-
-
 ]
 const init = async () => {
     let d_Data = await loadDepts()

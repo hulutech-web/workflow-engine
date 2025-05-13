@@ -1,4 +1,4 @@
-import { http } from "@/plugins/axios";
+import { request } from '../http'
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -6,64 +6,36 @@ const storage = useStorage();
 export default () => {
   // 方法
   const loadEmps = async (id) => {
-    return await http.request({
-      url: `emp`,
-      method: "GET",
-    });
+    return await request.Get(`emp`);
   };
 
   const storeEmp = async (data) => {
-    return await http.request({
-      url: `emp`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`emp`,data);
   };
 
   const showEmp = async (id) => {
-    return await http.request({
-      url: `emp/${id}`,
-      method: "GET",
-    });
+    return await request.Get( `emp/${id}`);
   };
 
   const updateEmp = async (data) => {
-    return await http.request({
-      url: `emp/${data.ID}`,
-      method: "PUT",
-      data: data,
-    });
+    return await request.Put(`emp/${data.ID}`,data);
   };
 
   const deleteEmp = async (id) => {
-    return await http.request({
-      url: `emp/${id}`,
-      method: "DELETE",
-    });
+    return await request.Delete(`emp/${id}`);
   };
 
   const searchEmp = async (name) => {
-    return await http.request({
-      url: `emp/search`,
-      method: "POST",
-      data: { name: name },
-    });
+    return await request.Post(`emp/search`,{ name: name });
   };
 
   const getEmpOpt = async () => {
-    return await http.request({
-      url: `emp/options`,
-      method: "GET",
-    });
+    return await request.Get(`emp/options`);
   };
 
 //   员工绑定用户
   const bindUser = async (data) => {
-    return await http.request({
-      url: `emp/bind`,
-      method: "POST",
-      data: data,
-    });
+    return await request.Post(`emp/bind`,data);
   };
 
   const serveApiUrl = import.meta.env.VITE_API_URL;
@@ -193,12 +165,9 @@ export default () => {
               queryParams[field] = values.join(",");
             });
 
-            const data = http.request({
-              url: `emp?pageSize=${page.pageSize}&currentPage=${
+            const data = request.Get(`emp?pageSize=${page.pageSize}&currentPage=${
                 page.currentPage
-              }&${XEUtils.serialize(queryParams)}`,
-              method: "GET",
-            });
+              }&${XEUtils.serialize(queryParams)}`);
             console.log(data);
             resolve(data);
           });

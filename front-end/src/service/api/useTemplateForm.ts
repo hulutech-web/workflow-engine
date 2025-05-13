@@ -6,38 +6,21 @@ const storage = useStorage();
 export default () => {
   // 方法
   const loadTemplateForm = async (template_id: number) => {
-    return await request({
-      url: `template/${template_id}/templateform`,
-      method: "GET",
-    });
+    return await request.Get(`template/${template_id}/templateform`);
   };
   const storeTemplateForm = async (data) => {
-    return await request({
-      url: `templateform`,
-    method: "POST",
-      data: data,
-    });
+    return await request.Post(`templateform`,  data);
   };
 
   const updateTemplateForm = async (data) => {
-    return await request({
-      url: `templateform/${data.id}`,
-      method: "PUT",
-      data: data,
-    });
+    return await request.Put(`templateform/${data.id}`,data);
   };
 
   const deleteTemplateForm = async (id) => {
-    return await request({
-      url: `templateform/${id}`,
-      method: "DELETE",
-    });
+    return await request.Delete(`templateform/${id}`);
   };
   const showTemplateForm = async (id) => {
-    return await request({
-      url: `templateform/${id}`,
-      method: "GET",
-    });
+    return await request.Get(`templateform/${id}`);
   };
   const serveApiUrl = import.meta.env.VITE_API_URL;
   const gridOptions = reactive<VxeGridProps<RowVO>>({
@@ -172,13 +155,10 @@ export default () => {
               queryParams[field] = values.join(",");
             });
 
-            const data = request({
-              url: `template?pageSize=${page.pageSize}&currentPage=${
-                page.currentPage
-              }&${XEUtils.serialize(queryParams)}`,
-              method: "GET",
-            });
-            resolve(data);
+            const data = request.Get(`template?pageSize=${page.pageSize}&currentPage=${
+              page.currentPage
+            }&${XEUtils.serialize(queryParams)}`);
+            resolve(data.data);
           });
         },
         save: ({ body }) => {

@@ -1,4 +1,5 @@
-import { http } from "@/plugins/axios";
+import { request } from '../http'
+
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -6,43 +7,24 @@ const storage = useStorage();
 export default () => {
     // 方法
     const loadAttributes = async (id) => {
-        return await http.request({
-            url: `process/attribute?id=${id}`,
-            method: "GET",
-        });
+        return await request.Get(`process/attribute?id=${id}`,);
     };
 
     //获取当前条件
     const getCurrCond=async(params)=>{
-        return await http.request({
-            url:`process/con`,
-            method:"POST",
-            data:params
-        })
+        return await request.Post(`process/con`,params)
     }
-    
+
     const updateProcess=async(id,data)=>{
-        return await http.request({
-            url:`process/${id}`,
-            method:"PUT",
-            data:data
-        })
+        return await request.Put(`process/${id}`,data)
     }
 
     const deleteProcess=async(data)=>{
-        return await http.request({
-            url:`process/${data.id}`,
-            method:"DELETE",
-            data:{flow_id:data.flow_id}
-        })
+        return await request.Delete(`process/${data.id}`,{flow_id:data.flow_id})
     }
 
     const getFlowProcesses=async(flow_id)=>{
-        return await http.request({
-            url:`process/list`,
-            method:"POST",
-            data:{flow_id:flow_id}
-        })
+        return await request.Post(`process/list`,{flow_id:flow_id})
     }
     const serveApiUrl = import.meta.env.VITE_API_URL;
     const gridOptions = reactive<VxeGridProps<RowVO>>({
@@ -177,11 +159,8 @@ export default () => {
                             queryParams[field] = values.join(",");
                         });
 
-                        const data = http.request({
-                            url: `flow?pageSize=${page.pageSize}&currentPage=${page.currentPage
-                                }&${XEUtils.serialize(queryParams)}`,
-                            method: "GET",
-                        });
+                        const data = request.Get(`flow?pageSize=${page.pageSize}&currentPage=${page.currentPage
+                        }&${XEUtils.serialize(queryParams)}`);
                         resolve(data);
                     });
                 },

@@ -1,7 +1,8 @@
-import VXETable from 'vxe-table'
+import VxeUITable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 import './mytheme.css'
-
+import VxeUIAll from 'vxe-pc-ui'
+import 'vxe-pc-ui/lib/style.css'
 import XEUtils from 'xe-utils'
 import zhCN from 'vxe-table/es/locale/lang/zh-CN'
 import 'vxe-table/styles/cssvar.scss'
@@ -11,12 +12,13 @@ const Message = useMessage()
 // VXETable.config({
 //     theme: 'dark'
 // })
-VXETable.formats.add('formatNumber', {
+
+VxeUITable.formats.add('formatNumber', {
     cellFormatMethod({ cellValue }, digits = 5) {
         return XEUtils.commafy(Number(cellValue), { digits: 5 })
     }
 })
-VXETable.setup({
+VxeUITable.setup({
     i18n: (key, args) => XEUtils.toFormatString(XEUtils.get(zhCN, key), args)
 })
 
@@ -29,7 +31,7 @@ const indicator = h(CopyText, {
 
 
 // 创建自定义的单元格渲染器
-VXETable.renderer.add("myClipboard", {
+VxeUITable.renderer.add("myClipboard", {
     // 默认显示模板
     renderDefault: function (renderOpts: any, params: any) {
         let { row, column } = params
@@ -70,6 +72,7 @@ VXETable.renderer.add("myClipboard", {
 
 })
 const setup = (app: App) => {
-    app.use(VXETable)
+    app.use(VxeUITable)
+  app.use(VxeUIAll)
 }
 export { setup }
