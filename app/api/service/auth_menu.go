@@ -161,38 +161,41 @@ func (a authMenuServiceImpl) Edit(editReq *req.MenuEditReq, auth *req.AuthReq) (
 			return err
 		}
 		if menu.MenuType == "page" {
-			var buttons []models.AuthMenu
-			tx.Model(&models.AuthMenu{}).Where("pid = ? and menuType = ?", menu.ID, "action").Find(&buttons)
-			for _, button := range editReq.Button {
-				var b models.AuthMenu
-				if err := tx.Where("pid = ? and menuType = ? and name = ?", menu.ID, "action", button.Name).First(&b).Error; err == nil {
-					response.Copy(&b, button)
+			if len(editReq.Button) > 0 {
+				var btnIds []uint
+				tx.Model(&models.AuthMenu{}).Where("pid = ? and menuType = ?", menu.ID, "action").Pluck("id", &btnIds)
+				var nowBtnIds []uint
+				for _, button := range editReq.Button {
+					var b models.AuthMenu
+					if button.ID > 0 {
+						if err := tx.Where("id = ?", button.ID).First(&b).Error; err != nil {
+							return err
+						}
+						response.Copy(&b, button)
+					} else {
+						b = models.AuthMenu{
+							Pid:      menu.ID,
+							Title:    button.Title,
+							MenuType: "action",
+							Name:     button.Name,
+							Hide:     true,
+						}
+					}
 					if err := tx.Save(&b).Error; err != nil {
 						return err
 					}
-				} else {
-					b := models.AuthMenu{
-						Pid:      menu.ID,
-						Hide:     true,
-						Title:    button.Title,
-						MenuType: "action",
-						Name:     button.Name,
+					nowBtnIds = append(nowBtnIds, b.ID)
+				}
+				if len(nowBtnIds) > 0 {
+					var delBtnIds []uint
+					for _, btnId := range btnIds {
+						if !util.ToolsUtil.Contains(nowBtnIds, btnId) {
+							delBtnIds = append(delBtnIds, btnId)
+						}
 					}
-					if err := tx.Create(&b).Error; err != nil {
-						return err
+					if len(delBtnIds) > 0 {
+						tx.Where("id in (?)", delBtnIds).Delete(&models.AuthMenu{})
 					}
-				}
-			}
-			for _, button := range buttons {
-				if button.ID == 0 {
-					continue
-				}
-				var b models.AuthMenu
-				if err := tx.Where("id = ?", button.ID).First(&b).Error; err != nil {
-					return err
-				}
-				if err := tx.Delete(&b).Error; err != nil {
-					return err
 				}
 			}
 		}

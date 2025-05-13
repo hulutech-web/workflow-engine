@@ -36,6 +36,7 @@ func (r *template) Index(ctx *gin.Context) {
 		"index": index,
 	}).Info("返回成功")
 	response.OkOnlyData(ctx, index)
+	//ctx.JSON(http.StatusOK, index)
 }
 
 func (r *template) List(ctx *gin.Context) {

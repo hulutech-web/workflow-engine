@@ -4,4 +4,4 @@ export * from './api/system'
 export * from './api/test'
 
 // system
-export * from './api/system/menu'
+export * from './api/auth/menu'

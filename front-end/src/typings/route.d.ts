@@ -27,6 +27,8 @@ declare namespace AppRoute {
     pinTab?: boolean
     /** 当前路由在左侧菜单是目录还是页面,不设置默认为page */
     menuType?: MenuType
+    /* 按钮组 */
+    button: Button[]
   }
 
   type MetaKeys = keyof RouteMeta
@@ -44,6 +46,7 @@ declare namespace AppRoute {
     id: number
     /* 父级路由id，顶级页面为null */
     pid: number | null
+
   }
 
   /** 单个路由的类型结构(动态路由模式：后端返回此类型结构的路由) */
@@ -61,4 +64,10 @@ declare namespace AppRoute {
     meta: RouteMeta
   }
 
+  interface Button {
+    id: number
+    tittle: string
+    name: string
+    sort: number
+  }
 }
