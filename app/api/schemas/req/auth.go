@@ -92,7 +92,7 @@ type MenuAddReq struct {
 	Button        []MenuButton `json:"button" form:"button" label:"按钮"`
 }
 type MenuEditReq struct {
-	ID            uint         `json:"id" form:"id"`
+	ID            uint         `json:"id" validate:"required,gt=0" form:"id"`
 	Pid           uint         `json:"pid" form:"pid" validate:"gte=0" label:"父菜单ID"`
 	Name          string       `json:"name" form:"name" validate:"required,max=125" label:"菜单名称"`
 	Path          string       `json:"path" form:"path" validate:"required,max=255" label:"菜单路径"`

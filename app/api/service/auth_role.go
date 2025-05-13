@@ -22,6 +22,7 @@ type AuthRoleService interface {
 	Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error)
 	Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 	Del(id uint, auth *req.AuthReq) (e error)
+	Change(id uint, auth *req.AuthReq) error
 }
 
 type roleService struct {
@@ -174,6 +175,26 @@ func (r roleService) Del(id uint, auth *req.AuthReq) (e error) {
 	})
 	e = response.CheckErr(err, "Del Transaction err")
 	return
+}
+
+func (r roleService) Change(id uint, auth *req.AuthReq) error {
+	var role models.AuthRole
+	err := r.db.Where("id = ?", id).First(&role).Error
+	if err != nil {
+		return fmt.Errorf("角色不存在!")
+	}
+	if !auth.IsAdmin {
+		return fmt.Errorf("你没有权限修改此角色!")
+	}
+	if auth.RoleId == id {
+		return fmt.Errorf("当前角色不能修改!")
+	}
+	role.IsDisable = 1 - role.IsDisable
+	err = r.db.Save(&role).Error
+	if err != nil {
+		return fmt.Errorf("修改失败!")
+	}
+	return nil
 }
 
 func NewAuthRoleService(db *gorm.DB, rolePermSrv AuthPermService, cache *cache.Redis) AuthRoleService {

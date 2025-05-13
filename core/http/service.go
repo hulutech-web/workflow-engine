@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/hulutech-web/workflow-engine/core/http/middleware"
-	"github.com/hulutech-web/workflow-engine/core/logging"
 	"go.uber.org/fx"
 	"net/http"
 	"time"
@@ -20,7 +19,7 @@ func NewService(c *config.Config) *Service {
 	gin.SetMode(c.Server.Mode)
 	eng := gin.New()
 	eng.Use(middleware.Cors())
-	eng.Use(logging.GinLogging(), logging.GinRecovery(true))
+	//eng.Use(logging.GinLogging(), logging.GinRecovery(true))
 	// 设置静态资源
 	eng.StaticFS("/static", http.Dir("./public/webroot/static"))
 	//engine.StaticFS("/resource", http.Dir("./webroot/resource"))
