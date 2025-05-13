@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import {h} from "vue";
+import {NButton,NButtonGroup} from  "naive-ui";
 import Formpart from './formpart.vue'
 import useRulesStore from '@/store/useRulesStore.ts'
-
 const { loadTemplates, gridOptions, storeTemplate, deleteTemplate, updateTemplate } = useTemplate()
 const { loadTemplateForm, deleteTemplateForm } = useTemplateForm()
 const router = useRouter()
@@ -102,30 +103,15 @@ const columns = [
   },
   {
     title: '操作',
+    dataIndex: 'action',
     key: 'action',
-    customRender: ({ record }) => h('div', [
-      h(ElButton, {
-        size: 'small',
-        onClick: () => edit(record),
-      }, '编辑'),
-      h(ElPopconfirm, {
-        title: '确认删除？',
-        onConfirm: () => delRecord(record),
-      }, {
-        default: () => h(ElButton, {
-          size: 'small',
-          type: 'danger',
-          style: 'margin-left: 10px',
-        }, '删除'),
-      }),
-    ]),
   },
 ]
 const fields = ref([])
 
 async function loadTmplForm(row) {
   const data = await loadTemplateForm(row.id)
-  fields.value = data
+  fields.value = data.data
 }
 
 const open = ref(false)
@@ -165,16 +151,10 @@ async function delRecord(row) {
           </n-form>
           <vxe-grid ref="xGrid" v-bind="gridOptions" v-on="gridEvent">
             <template #action="{ row }">
-              <div>
                 <n-button-group>
-                  <n-popconfirm
-                    title="将同步删除模板字段，确认删除吗？" ok-text="是" cancel-text="点错了"
-                    @confirm="deleteTemplate(row)"
-                  >
-                    <n-button size="small" danger type="primary">
-                      删除
-                    </n-button>
-                  </n-popconfirm>
+                  <n-button size="small" danger type="primary" @click="deleteTemplate(row)">
+                    删除
+                  </n-button>
                   <n-button type="primary" size="small" @click="editTemplate(row)">
                     编辑
                   </n-button>
@@ -182,12 +162,6 @@ async function delRecord(row) {
                     表单控件
                   </n-button>
                 </n-button-group>
-              </div>
-            </template>
-            <template #dept="{ row }">
-              <div>
-                {{ row.Dept.id == 0 ? "未分配" : row.Dept.dept_name }}
-              </div>
             </template>
           </vxe-grid>
         </n-card>
@@ -208,7 +182,49 @@ async function delRecord(row) {
         </n-modal>
 
         <n-card>
-          <n-data-table bordered :columns="columns" :data-source="fields">
+          <n-data-table bordered :columns="columns" :data="fields" :render-cell="(value: any, rowData: object, column)=>{
+            if (column.dataIndex === 'action') {
+            return h('div', null, [
+              h(
+                NButtonGroup,
+                null,
+                {
+                  default: () => [
+                    h(
+                      NButton,
+                      {
+                        size: 'small',
+                        type: 'primary',
+                        onClick: () => {
+                          edit(rowData)
+                        },
+                      },
+                      {
+                        default: () => '编辑',
+                      },
+                    ),
+                    h(
+                      NButton,
+                      {
+                        size: 'small',
+                        danger: true,
+                        onClick: () => {
+                          delRecord(rowData)
+                        },
+                      },
+                      {
+                        default: () => '删除',
+                      },
+                    )
+                  ]
+                }
+              )
+            ])
+            }else{
+              return h('div', null, value)
+            }
+          }">
+            <!--
             <template #bodyCell="{ column, record }">
               <template v-if="column.dataIndex === 'action'">
                 <div>
@@ -225,6 +241,7 @@ async function delRecord(row) {
                 </div>
               </template>
             </template>
+            -->
           </n-data-table>
         </n-card>
       </n-gi>

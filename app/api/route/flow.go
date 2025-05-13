@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type flow struct {
@@ -38,7 +39,8 @@ func (r *flow) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkOnlyData(ctx, index)
+	//response.OkOnlyData(ctx, index)
+	ctx.JSON(http.StatusOK, index)
 }
 func (r *flow) Create(ctx *gin.Context) {
 	err, templates, flowtypes := r.Srv.Create(ctx)

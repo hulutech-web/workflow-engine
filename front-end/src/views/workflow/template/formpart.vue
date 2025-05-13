@@ -13,7 +13,7 @@
     </n-form-item>
     <n-form-item label="控件类型" name="field_type"
                  :rules="[rulesStore.getRule('field_type') ? rulesStore.getRule('field_type') : { required: false }]">
-      <n-select v-model:value="formField.field_type" :options="options.t_option">
+      <n-select v-model:value="formField.field_type" :options="options.f_option">
 
       </n-select>
     </n-form-item>
@@ -115,8 +115,8 @@ const loadTemp = async () => {
 }
 const loadTemplateOpts = async () => {
   const { data } = await loadTemplates()
-  templateOpts.value = data.data
-  options.value.t_option = data.data.map(item => {
+  templateOpts.value = data
+  options.value.t_option = data.map(item => {
     return {
       label: item.template_name,
       value: item.id
@@ -180,23 +180,22 @@ const handleClose = (removedTag: string) => {
 
 
 // 控件
-const saveField = async () => {
+const saveField =  (e) => {
   console.log(formField.value)
-  try {
-    //先清空一下验证
-    formEditRef.value.clearValidate()
-
-    if (tid.value) {
-      await updateTemplateForm(formField.value)
-      formEditRef.value.resetFields();
-    } else {
-      await storeTemplateForm(formField.value)
-      formEditRef.value.resetFields();
+  e.preventDefault()
+  formEditRef.value?.validate(async(errors) => {
+    if (!errors) {
+      if(formField.value.id){
+        await updateTemplateForm(formField.value)
+      }
+      await  storeTemplateForm(formField.value)
+      formEditRef.value?.restoreValidation()
+      formEditRef.value?.resetFormField()
     }
-
-  } catch (error) {
-    formEditRef.value.validate()
-  }
+    else {
+      console.log('errors', errors)
+    }
+  })
 }
 defineExpose({
   loadTemplateOpts

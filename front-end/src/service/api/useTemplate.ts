@@ -11,9 +11,7 @@ export default () => {
   }
 
   const storeTemplate = async (data) => {
-    return await request.Post(`template`, {
-      data,
-    })
+    return await request.Post(`template`, data)
   }
   const updateTemplate = async (data) => {
     return await request.PUT(`template/${data.id}`, {
@@ -184,7 +182,6 @@ export default () => {
         title: '操作',
         width: 200,
         fixed: 'right',
-        showOverflow: 'tooltip',
         slots: {
           default: 'action',
         },
