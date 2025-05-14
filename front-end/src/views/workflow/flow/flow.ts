@@ -1,8 +1,8 @@
 import jsPlumb from "jsplumb";
-import { useModal } from "naive-ui";
+import { useDialog } from 'naive-ui'
 import { onContextMenu } from "./tool";
 const { deleteProcess } = useProcess();
-const Modal = useModal();
+
 async function initFlowChart(initData, callback) {
   await nextTick(); // 确保DOM更新完成
   let data = toRaw(initData);
@@ -141,20 +141,26 @@ async function initFlowChart(initData, callback) {
       return true;
     });
     jsPlumbInstance.bind("click", (conn, originalEvent) => {
-      Modal.confirm({
-        //居中
-        centered: true,
-        title: "提示",
-        content: "确定删除所点击的链接吗？",
-        okText: "确定",
-        cancelText: "取消",
-        onOk: () => {
-          jsPlumbInstance.deleteConnection(conn);
-        },
-        onCancel() {
-          console.log("Cancel");
-        },
-      });
+
+      let is_confirm = window.confirm("确定删除该连线吗？")
+      if(is_confirm){
+        jsPlumbInstance.deleteConnection(conn);
+      }else{
+
+      }
+      // const dialog = useDialog()
+      // dialog.success({
+      //   //居中
+      //   title: "提示",
+      //   content: "确定删除所点击的链接吗？",
+      //   draggable: true,
+      //   onMaskClick: () => {
+      //
+      //   },
+      //   onEsc() {
+      //     console.log("Cancel");
+      //   },
+      // });
     });
 
     // 根据process_to字段创建连接线

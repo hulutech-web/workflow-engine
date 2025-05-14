@@ -17,8 +17,11 @@ const naiveLocale = computed(() => {
     :locale="naiveLocale.locale" :date-locale="naiveLocale.dateLocale" :theme-overrides="appStore.theme"
   >
     <naive-provider>
+      <n-modal-provider>
+
       <router-view />
       <Watermark :show-watermark="appStore.showWatermark" />
+      </n-modal-provider>
     </naive-provider>
   </n-config-provider>
 </template>

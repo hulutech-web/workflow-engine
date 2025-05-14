@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type process struct {
@@ -64,12 +65,12 @@ func (r *process) Store(ctx *gin.Context) {
 		return
 	}
 
-	err := r.Srv.Store(ctx, prc)
+	err, store := r.Srv.Store(ctx, prc)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, "操作成功")
+	ctx.JSON(http.StatusOK, store)
 }
 
 func (r *process) Update(ctx *gin.Context) {

@@ -18,7 +18,7 @@ import (
 type ProcessService interface {
 	Index(ctx *gin.Context) (*PageResult, error)
 	List(ctx *gin.Context, req req.ProcessReq) ([]models.Process, error)
-	Store(ctx *gin.Context, req req.ProReq) error
+	Store(ctx *gin.Context, req req.ProReq) (error, *models.Process)
 	Update(ctx *gin.Context, id int, processRequest common.ProcessRequest) error
 	Show(ctx *gin.Context, id int) *models.Process
 	Destroy(ctx *gin.Context, id int, flow_id int) error
@@ -45,7 +45,7 @@ func (f *processService) List(ctx *gin.Context, req req.ProcessReq) ([]models.Pr
 	return processes, nil
 }
 
-func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
+func (f *processService) Store(ctx *gin.Context, req req.ProReq) (error, *models.Process) {
 
 	flow_id := req.FlowID
 	left := req.Left
@@ -66,7 +66,7 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 	create := tx.Model(&models.Process{}).Create(&process)
 	if create.Error != nil {
 		tx.Rollback()
-		return create.Error
+		return create.Error, nil
 	}
 	//步骤二
 	jsMap := common.Plumb{}
@@ -93,15 +93,8 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 		flow.Jsplumb = string(strByte)
 		tx.Model(&models.Flow{}).Where("id=?", flow_id).Save(&flow)
 		tx.Commit()
-		ctx.JSON(200, gin.H{
-			"id":           process.ID,
-			"flow_id":      process.FlowID,
-			"process_name": process.ProcessName,
-			"process_to":   "",
-			"icon":         "",
-			"style":        process.Style,
-		})
-		return nil
+
+		return nil, &process
 
 	} else {
 		//jsMap的list属性为二维数组
@@ -127,15 +120,7 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 		flow.IsPublish = false
 		tx.Model(&models.Flow{}).Where("id=?", flow_id).Save(&flow)
 		tx.Commit()
-		ctx.JSON(200, gin.H{
-			"id":           process.ID,
-			"flow_id":      process.FlowID,
-			"process_name": process.ProcessName,
-			"process_to":   "",
-			"icon":         "",
-			"style":        process.Style,
-		})
-		return nil
+		return nil, &process
 	}
 }
 
