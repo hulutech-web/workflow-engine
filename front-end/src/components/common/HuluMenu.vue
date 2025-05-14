@@ -79,7 +79,9 @@ export default defineComponent({
       });
 
       if (this.init) {
-        await this.init();
+        //刷新当前页面
+        window.location.reload();
+        // await this.init();
       }
     },
     listenRightClick() {
