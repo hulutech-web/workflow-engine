@@ -107,7 +107,6 @@
 
         <n-tab-pane name="3" tab="权限" style="height: 240px">
           <div>
-            <p>
             <div>
               <n-form-item label="自动选人">
                 <n-select v-model:value="submitState.auto_person" @change="changeAuto">
@@ -123,7 +122,6 @@
                 </n-select>
               </n-form-item>
             </div>
-            </p>
             <n-divider>
               授权范围（适用于：当需要手动选人时，则授权范围生效）
             </n-divider>
@@ -375,7 +373,6 @@
 
       <div class="absolute bottom-0 left-0 ml-5 mb-5">
         <n-button type="primary" @click="onSubmit">
-          <SendOutlined />
           提交
         </n-button>
       </div>

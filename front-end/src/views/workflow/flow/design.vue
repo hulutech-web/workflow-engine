@@ -1,16 +1,37 @@
 <template>
   <div>
-      <div class="h-8 text-right">
-        <n-space>
-          <n-button type="primary" danger size="small" @click="()=>initAll()">刷新</n-button>
-          <n-button type="primary" size="small" @click="saveDesign">保存位置</n-button>
-          <n-button type="primary" size="small" @click="publishDesign">发布流程</n-button>
-        </n-space>
-      </div>
+    <div class="h-8 text-right">
+      <n-space>
+        <n-button type="primary" danger size="small" @click="()=>initAll()">刷新</n-button>
+        <n-button type="primary" size="small" @click="saveDesign">保存</n-button>
+        <n-button type="primary" size="small" @click="publishDesign">发布流程</n-button>
+        <div>
+          <n-gradient-text type="error">
+            ·空白右键【新建节点】
+          </n-gradient-text>
+          <n-gradient-text type="error">
+            ·节点右键【删除节点】
+          </n-gradient-text>
+          <n-gradient-text type="error">
+            ·保存【位置与连线】
+          </n-gradient-text>
+          <n-gradient-text type="error">
+            ·连线【点击节点从圆点拖拽到另一节点圆点】
+          </n-gradient-text>
+          <n-gradient-text type="error">
+            ·断线【点击连线删除】
+          </n-gradient-text>
+          <n-gradient-text type="error">
+            ·配置【点击🔧进入】
+          </n-gradient-text>
+        </div>
+      </n-space>
+    </div>
     <div id="flow-chart-container">
-      <HuluMenu :flow_id="+id" :init="initAll" ref="menuRef" />
+      <div>
+        <HuluMenu :flow_id="+id" :init="initAll" ref="menuRef"/>
+      </div>
       <!-- 动态生成节点 -->
-
       <div
         v-for="(node, nodeId) in nodeList"
         :key="node.id"
@@ -19,24 +40,26 @@
         :style="node.style"
       >
         <div
-          class="flex justify-center align-items-center node-element"
+          class="flex  justify-around items-center  node-element"
           :id="`menu-${node.id}`"
         >
-          <HuluIcon
-            :id="`node-line-${node.id}-pointer`"
-            fontSize="28px"
-            :name="node.icon"
-            color="#66CDAA"
-          />
-          <span class="font-bold text-md">{{ node.process_name }}</span>
-          <n-button
-            type="primary"
-            style="color: #ffffff; z-index: 20; background-color: #ffa500"
-            @click="setProcess(node)"
-            shape="circle"
-          >
-<!--            <FormOutlined class="node-setting" />-->
-            <!-- <SettingOutlined  /> -->
+          <div class="flex  justify-between items-center">
+
+            <NovaIcon
+              :id="`node-line-${node.id}-pointer`"
+              fontSize="28px"
+              :icon="node.icon"
+              color="#66CDAA"
+            />
+            <span class="font-bold text-md">{{ node.process_name }}</span>
+          </div>
+          <n-button quaternary  @click="setProcess(node)" class="setting-btn">
+            <template #icon>
+              <NovaIcon
+                :icon="'tdesign:tools-circle-filled'"
+                color="#66CDAA"
+              />
+            </template>
           </n-button>
         </div>
       </div>
@@ -50,7 +73,7 @@
       centered
       :bodyStyle="{ height: '700px' }"
     >
-      <Attrform :attrs="attrs" @updProcess="updProcess" />
+      <Attrform :attrs="attrs" @updProcess="updProcess"/>
     </n-modal>
   </div>
 </template>
@@ -60,9 +83,9 @@ import Attrform from "./component/attrform/index.vue";
 import initFlowChart from "./flow";
 const route = useRoute();
 const router = useRouter();
-const { loadFlowDesign, publishFlow } = useFlow();
-const { updateFlowlink } = useFlowlink();
-const { loadAttributes, updateProcess } = useProcess();
+const {loadFlowDesign, publishFlow} = useFlow();
+const {updateFlowlink} = useFlowlink();
+const {loadAttributes, updateProcess} = useProcess();
 const id = route.params.id;
 const jsplumbJSON = ref({});
 const nodeList = ref([]);
@@ -73,10 +96,10 @@ const open = ref(false);
 const init = async () => {
   const data = await loadFlowDesign(+id);
 
-  flow.value = data;
+  flow.value = data.data;
   // console.log(flow.value)
-  if (data.jsplumb) {
-    jsplumbJSON.value = JSON.parse(data.jsplumb);
+  if (flow.value.jsplumb) {
+    jsplumbJSON.value = JSON.parse(flow.value.jsplumb);
     nodeList.value = jsplumbJSON.value.list;
     Object.entries(nodeList.value).map(([key, value]) => {
       value.flow_id = +id;
@@ -116,9 +139,9 @@ const setProcess = async (node) => {
 };
 const getNewestNodes = async (nodes) => {
   //获取最新的节点信息
-  console.log("getNewestNodes", nodes);
+
   if (jsplumbJSON.value.total == 0) {
-    await storeFlow(+id,nodes)
+    await storeFlow(+id, nodes)
   } else {
     let newJsplumb = {
       total: nodes.length,
@@ -136,7 +159,7 @@ const getNewestNodes = async (nodes) => {
 
 const publishDesign = async () => {
   // 发布设计逻辑
-  await publishFlow({ flow_id: flow.value.id });
+  await publishFlow({flow_id: flow.value.id});
 };
 </script>
 
@@ -147,9 +170,8 @@ const publishDesign = async () => {
   border: 1px solid rgba(255, 255, 255, 0.1); // 调整边框透明度
   position: relative;
   background-color: #1a1a1a; // 主背景色
-  background-image:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); // 网格线调整为白色透明度
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+  linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px); // 网格线调整为白色透明度
   background-size: 20px 20px;
 }
 
@@ -191,7 +213,27 @@ const publishDesign = async () => {
     }
   }
 }
+
 .node-setting {
   cursor: pointer;
 }
+
+.setting-btn{
+//悬浮时旋转270度，在1s钟内完成，平滑，同时高光显示
+  transition: transform 1s ease-in-out;
+  i{
+    border-radius: 50%;
+  }
+  &:hover{
+    //父组件下的i标签高亮,柔光包围效果
+    i{
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      transition: all 0.5s ease-in-out;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    transform: rotate(720deg);
+  }
+}
+
 </style>
