@@ -6,13 +6,14 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 /*
 用来操作数据库查表
 */
 type DeptService interface {
-	Index(ctx *gin.Context) (*PageResult, error)
+	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
 	List(ctx *gin.Context) ([]models.Dept, error)
 	Store(ctx *gin.Context, part models.Dept) error
 	Update(ctx *gin.Context, part models.Dept) error
@@ -27,13 +28,13 @@ type deptService struct {
 	db *gorm.DB
 }
 
-func (d deptService) Index(ctx *gin.Context) (*PageResult, error) {
-	var depts []models.Dept
+func (d deptService) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
+	var tmpls []models.Dept
 	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
-	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&depts)
+
+	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls, "Manager", "Director")
 	return result, err
 }
-
 func (d deptService) List(ctx *gin.Context) ([]models.Dept, error) {
 	depts := []models.Dept{}
 	d.db.Model(&models.Dept{}).Find(&depts)

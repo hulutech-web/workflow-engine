@@ -4,13 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 /*
 用来操作数据库查表
 */
 type EmpService interface {
-	Index(ctx *gin.Context) (*PageResult, error)
+	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
 	List(ctx *gin.Context) ([]models.Emp, error)
 	Store(ctx *gin.Context, part models.Emp) error
 	Update(ctx *gin.Context, part models.Emp) error
@@ -23,10 +24,11 @@ type empService struct {
 	db *gorm.DB
 }
 
-func (d empService) Index(ctx *gin.Context) (*PageResult, error) {
+func (d empService) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
 	var tmpls []models.Emp
 	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
-	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&tmpls, "Dept")
+
+	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls, "Dept")
 	return result, err
 }
 

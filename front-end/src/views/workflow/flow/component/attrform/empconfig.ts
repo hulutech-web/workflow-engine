@@ -56,7 +56,7 @@ export default () => {
                 {
                     field: "name",
                     title: "名称",
-                    span: 6,
+                    span: 24,
                     titlePrefix: {
                         useHTML: true,
                         message: "模糊查询",
