@@ -11,18 +11,18 @@ export const fetchRoleDetail = (params?: any) => {
 }
 
 // role add
-export const addRole = (data: Auth.Role) => {
+export const addRole = (data: Auth.RoleReq) => {
   return request.Post<Service.ResponseResult<any>>('/auth/role/add', data)
 }
 
 // role edit
-export const editRole = (data: Auth.Role) => {
+export const editRole = (data: Auth.RoleReq) => {
   return request.Post<Service.ResponseResult<any>>('/auth/role/edit', data)
 }
 
 // role delete
 export const deleteRole = (data?: any) => {
-  return request.Delete<Service.ResponseResult<any>>('/auth/role/delete', data )
+  return request.Post<Service.ResponseResult<any>>('/auth/role/delete', data )
 }
 
 // role all

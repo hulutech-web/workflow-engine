@@ -22,5 +22,6 @@ declare namespace Auth {
         remark: string;
         sort: number;
         is_disable: number;
+        menu_ids: string
     }
 }

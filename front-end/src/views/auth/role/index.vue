@@ -154,7 +154,7 @@ async function handleUpdateDisabled(id: number){
           <n-data-table :columns="columns" :data="listData" :loading="loading" />
           <Pagination :count="count" @change="changePage" />
         </NSpace>
-
+        <PermModal ref="permRef" modal-name="权限" />
         <TableModal ref="modalRef" modal-name="角色" />
       </n-card>
     </NSpace>
