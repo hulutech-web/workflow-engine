@@ -11,8 +11,8 @@ export default () => {
     };
 
     //获取当前条件
-    const getCurrCond=async(params)=>{
-        return await request.Post(`process/con`,params)
+    const getCurrCond=async(data)=>{
+        return await request.Post(`process/con`,data)
     }
 
     const updateProcess=async(id,data)=>{

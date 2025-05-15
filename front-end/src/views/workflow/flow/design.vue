@@ -66,14 +66,20 @@
     </div>
 
     <n-modal
-      v-model:open="open"
+      v-model:show="open"
       style="position: relative"
-      width="1200px"
-      title="节点设计"
-      centered
-      :bodyStyle="{ height: '700px' }"
+      transform-origin="center"
     >
+      <n-card
+        style="width: 1000px;height:800px;"
+        title="节点属性"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+      >
       <Attrform :attrs="attrs" @updProcess="updProcess"/>
+      </n-card>
     </n-modal>
   </div>
 </template>
@@ -134,8 +140,9 @@ const setProcess = async (node) => {
   //阻止点击事件向下穿透
   open.value = true;
   const data = await loadAttributes(node.id);
+  console.log(data.data);
   process_id.value = node.id;
-  attrs.value = data;
+  attrs.value = data.data;
 };
 const getNewestNodes = async (nodes) => {
   //获取最新的节点信息
