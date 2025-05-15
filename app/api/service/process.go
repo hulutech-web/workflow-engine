@@ -23,7 +23,7 @@ type ProcessService interface {
 	Show(ctx *gin.Context, id int) *models.Process
 	Destroy(ctx *gin.Context, id int, flow_id int) error
 	Attribute(ctx *gin.Context, id int) (error, map[string]any)
-	Condition(ctx *gin.Context) error
+	Condition(ctx *gin.Context, req req.CondiReq) (map[int]interface{}, error)
 }
 
 type processService struct {
@@ -461,8 +461,41 @@ func (f *processService) Attribute(ctx *gin.Context, id int) (error, map[string]
 		"can_child":       can_child,
 	}
 }
-func (f *processService) Condition(ctx *gin.Context) error {
-	return nil
+func (f *processService) Condition(ctx *gin.Context, req req.CondiReq) (map[int]interface{}, error) {
+	//当前流程
+	flowlink := models.Flowlink{}
+	tx := f.db.Begin()
+	tx.Model(&models.Flowlink{}).Where("process_id=?", req.ProcessID).
+		Where("next_process_id=?", req.NextProcessID).
+		Where("flow_id=?", req.FlowID).Where("type=?", "Condition").Find(&flowlink)
+	flow := models.Flow{}
+	tx.Model(&models.Flow{}).Preload("Template.TemplateForms").Where("id=?", req.FlowID).Find(&flow)
+	//$day > 3  AND
+	// $sex == 女
+	fieldsArr := []string{}
+	for _, form := range flow.Template.TemplateForms {
+		//form.field form.field_name
+		cleanedExpression := strings.Replace(flowlink.Expression, "$", "", -1)
+
+		if strings.Contains(cleanedExpression, form.Field) {
+			// 新建一个replaceStr
+			replaceStr := strings.Replace(cleanedExpression, form.Field, form.FieldName, -1)
+			fieldsArr = append(fieldsArr, replaceStr)
+		}
+	}
+	res := make(map[int]interface{})
+	if len(fieldsArr) > 0 {
+		res[flowlink.NextProcessID] = map[string]interface{}{
+			"desc":   fieldsArr[0],
+			"option": "",
+		}
+	} else {
+		res[flowlink.NextProcessID] = map[string]interface{}{
+			"desc":   []string{},
+			"option": "",
+		}
+	}
+	return res, nil
 }
 
 func groupConditionsById(conditions []common.ProcessCondition) map[int][]common.ProcessCondition {

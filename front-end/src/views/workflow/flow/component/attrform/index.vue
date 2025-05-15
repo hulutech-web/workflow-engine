@@ -27,7 +27,7 @@
                 <p class="text-md">下一步骤</p>
                 <n-row>
                   <n-col :span="16" v-for="(p, index) in formState.next_process" :key="index">
-                    <n-tag :bordered="false" color="geekblue" v-if="p.NextProcess.id != -1">
+                    <n-tag :bordered="false" color="geekblue" v-if="p.NextProcess&&p.NextProcess.id != -1">
                       {{ p.NextProcess.process_name }}
                     </n-tag>
                   </n-col>
@@ -101,7 +101,7 @@
 
 
         <n-tab-pane name="2" tab="表单" style="height: 240px">
-          <n-table bordered :columns="columns" :dataSource="dataSource"></n-table>
+          <n-data-table bordered :columns="columns" :data="dataSource"></n-data-table>
         </n-tab-pane>
 
 
@@ -147,7 +147,7 @@
               <n-button :disabled="disableAuto" type="primary" @click="selDep">选择</n-button>
             </div>
 
-            <n-modal :footer="false" v-model:open="open" width="1000px" title="人员&部门选择" centered
+            <n-modal  v-model:show="open" width="1000px" title="人员&部门选择" centered
               :bodyStyle="{ height: '590px' }">
               <n-table :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }" rowKey="id"
                 bordered :columns="tabcolumns" :dataSource="depts" :pagination="false" v-if="selectedEmp == false">
@@ -467,7 +467,7 @@ export default {
     const fillSubmitState = (attrs) => {
       submitState.value.process_name = attrs.process.process_name
       submitState.value.process_position = attrs.process.position
-      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess.id)
+      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess?item.NextProcess.id:-1)
     }
     const activeKey = ref('1');
 
@@ -677,9 +677,9 @@ export default {
 
     const getCurrentCond = async (process) => {
       let param = {
-        flow_id: process.FlowID,
-        process_id: process.ProcessID,
-        next_process_id: process.NextProcessID
+        flow_id: process.flow_id,
+        process_id: process.process_id,
+        next_process_id: process.next_process_id
       }
       await getCurrCond(param)
     }

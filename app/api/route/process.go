@@ -111,5 +111,15 @@ func (r *process) Attribute(ctx *gin.Context) {
 }
 
 func (r *process) Condition(ctx *gin.Context) {
-	response.OkWithData(ctx, "操作成功")
+	var req req.CondiReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		response.FailWithMsg(ctx, response.Failed, err.Error())
+		return
+	}
+	condi, err1 := r.Srv.Condition(ctx, req)
+	if err1 != nil {
+		response.FailWithMsg(ctx, response.Failed, err1.Error())
+		return
+	}
+	response.OkWithData(ctx, condi)
 }
