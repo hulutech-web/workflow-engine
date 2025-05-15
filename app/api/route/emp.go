@@ -28,7 +28,8 @@ func empRoutes(a emp, r *types.ApiRouter) {
 }
 
 func (r *emp) Index(ctx *gin.Context) {
-	index, err := r.Srv.Index(ctx)
+	query := ctx.Request.URL.Query()
+	index, err := r.Srv.Index(ctx, query)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
@@ -36,7 +37,7 @@ func (r *emp) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkWithData(ctx, index)
+	ctx.JSON(http.StatusOK, index)
 }
 
 func (r *emp) List(ctx *gin.Context) {

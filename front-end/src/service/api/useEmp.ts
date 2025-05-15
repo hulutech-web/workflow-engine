@@ -60,14 +60,9 @@ export default () => {
       items: [
         {
           field: "name",
-          title: "名称",
-          span: 6,
-          titlePrefix: {
-            useHTML: true,
-            message: "模糊查询",
-            icon: "vxe-icon-question-circle-fill",
-          },
-          itemRender: { name: "$input", props: { placeholder: "请输入名称" } },
+          title: "姓名",
+          span: 24,
+          itemRender: { name: "$input", props: { placeholder: "请输入员工姓名" } },
         },
         {
           span: 24,

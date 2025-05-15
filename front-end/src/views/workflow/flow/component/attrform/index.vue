@@ -55,12 +55,12 @@
               <div class="control-group">
                 <n-form-item label="子流程">
                   <n-select v-model:value="submitState.child_flow_id" :value="formState.process.child_flow_id">
-<!--                    <n-select-option value="0">请选择</n-select-option>-->
+                    <!--                    <n-select-option value="0">请选择</n-select-option>-->
 
-<!--                    <n-select-option v-for="(flow, ind) in formState.flows" :key="ind" :value="flow.id"-->
-<!--                      :selected="formState.process.child_flow_id == flow.id">-->
-<!--                      {{ flow.flow_name }}-->
-<!--                    </n-select-option>-->
+                    <!--                    <n-select-option v-for="(flow, ind) in formState.flows" :key="ind" :value="flow.id"-->
+                    <!--                      :selected="formState.process.child_flow_id == flow.id">-->
+                    <!--                      {{ flow.flow_name }}-->
+                    <!--                    </n-select-option>-->
                   </n-select>
                 </n-form-item>
 
@@ -83,14 +83,14 @@
               <div v-if="submitState.child_after == 2">
                 <n-form-item label="返回步骤">
                   <n-select name="child_back_process" v-model:value="submitState.child_back_process"
-                    :value="formState.child_back_process">
-<!--                    <n-select-option value="0">-->
-<!--                      无-->
-<!--                    </n-select-option>-->
-<!--                    <n-select-option v-for="(p, index) in formState.processes" :key="index" :value="p.id"-->
-<!--                      :selected="p.child_back_process == p.id">-->
-<!--                      {{ p.process_name }}-->
-<!--                    </n-select-option>-->
+                            :value="formState.child_back_process">
+                    <!--                    <n-select-option value="0">-->
+                    <!--                      无-->
+                    <!--                    </n-select-option>-->
+                    <!--                    <n-select-option v-for="(p, index) in formState.processes" :key="index" :value="p.id"-->
+                    <!--                      :selected="p.child_back_process == p.id">-->
+                    <!--                      {{ p.process_name }}-->
+                    <!--                    </n-select-option>-->
                   </n-select>
                 </n-form-item>
                 <span class="help-inline">默认为当前步骤下一步</span>
@@ -109,16 +109,8 @@
           <div>
             <div>
               <n-form-item label="自动选人">
-                <n-select v-model:value="submitState.auto_person" @change="changeAuto">
-<!--                  <n-select-option value="0">-->
-<!--                    不自动选人-->
-<!--                  </n-select-option>-->
-<!--                  <n-select-option value="-1001">-->
-<!--                    发起人部门主管-->
-<!--                  </n-select-option>-->
-<!--                  <n-select-option value="-1002">-->
-<!--                    发起人部门经理-->
-<!--                  </n-select-option>-->
+                <n-select v-model:value="submitState.auto_person" @update:value="changeAuto"
+                          :options="options.auto_person">
                 </n-select>
               </n-form-item>
             </div>
@@ -128,62 +120,59 @@
 
             <div>
               <span>授权人员：</span>
-              <n-select v-model:value="submitState.range_emp_ids" mode="tags" placeholder="选择人员" style="width:400px;">
-<!--                <n-select-option v-for="(i,ind) in submitState.range_emp_ids" :key="ind" :value="i">-->
-<!--                  {{ submitState.range_emp_text[ind] }}-->
-<!--                </n-select-option>-->
-              </n-select>
-              <n-button type="primary" @click="selPer" :disabled="disableAuto">选择</n-button>
+              <div class="flex">
+                <n-select v-model:value="submitState.range_emp_ids" :disabled="disableAuto" multiple
+                          placeholder="选择人员" style="width:400px;">
+                </n-select>
+                <n-button class="ml-3" type="primary" @click="selPer" :disabled="disableAuto">选择</n-button>
+              </div>
             </div>
 
             <div class="mt-3">
               <span>授权部门：</span>
+              <div class="flex">
 
-              <n-select v-model:value="submitState.range_dept_ids" mode="tags" placeholder="选择部门" style="width:400px;">
-<!--                <n-select-option v-for="(i,ind) in submitState.range_dept_ids" :key="ind" :value="i">-->
-<!--                  {{ submitState.range_dept_text[ind] }}-->
-<!--                </n-select-option>-->
-              </n-select>
-              <n-button :disabled="disableAuto" type="primary" @click="selDep">选择</n-button>
+                <n-select v-model:value="submitState.range_dept_ids" :disabled="disableAuto" multiple
+                          placeholder="选择部门" style="width:400px;">
+                  <!--                <n-select-option v-for="(i,ind) in submitState.range_dept_ids" :key="ind" :value="i">-->
+                  <!--                  {{ submitState.range_dept_text[ind] }}-->
+                  <!--                </n-select-option>-->
+                </n-select>
+                <n-button class="ml-3" :disabled="disableAuto" type="primary" @click="selDep">选择</n-button>
+              </div>
+
             </div>
 
-            <n-modal  v-model:show="open" width="1000px" title="人员&部门选择" centered
-              :bodyStyle="{ height: '590px' }">
-              <n-table :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }" rowKey="id"
-                bordered :columns="tabcolumns" :dataSource="depts" :pagination="false" v-if="selectedEmp == false">
-                <template #bodyCell="{ column, text, record }">
-                  <template v-if="column.dataIndex === 'html'">
-                    <span class="text-blue-500 text-xl mr-3">
-                      {{ record.html }}
-                    </span>
-                    {{ record.dept_name }}
+            <n-modal v-model:show="open">
+              <n-card title="人员&部门选择" style="width: 700px" size="small">
+                <span v-if="selectedEmp == false" class="text-sm text-orange-500">部门管理员为审批人</span>
+                <vxe-grid ref='xDeptGrid' v-bind="gridDeptOptions" v-on="gridDeptEvent" v-if="selectedEmp == false">
+                  <template #action="{ row }">
+                    <div>
+                     选择
+                    </div>
                   </template>
-                  <template v-if="column.dataIndex === 'Manager'">
-                    {{ record.Manager ? record.Manager.name : '' }}
-                  </template>
-                  <template v-if="column.dataIndex === 'Director'">
-                    {{ record.Director ? record.Director.name : '' }}
-                  </template>
-                </template>
-              </n-table>
+                </vxe-grid>
 
-              <vxe-grid ref='xGrid' v-bind="gridOptions" v-on="gridEvent" v-if="selectedEmp == true">
-                <template #checkbox_header="{ checked, indeterminate }">
-                  <div>选择</div>
-                </template>
-                <template #checkbox_cell="{ row, checked, indeterminate }">
+                <vxe-grid ref='xGrid' v-bind="gridOptions" v-on="gridEvent" v-if="selectedEmp == true">
+                  <template #checkbox_header="{ checked, indeterminate }">
+                    <div>选择</div>
+                  </template>
+                  <template #checkbox_cell="{ row, checked, indeterminate }">
                   <span class="custom-checkbox" @click.stop="toggleCheckboxEvent(row)">
                     <n-checkbox v-if="indeterminate" :checked="checked"></n-checkbox>
                     <n-checkbox v-else-if="checked" :checked="checked"></n-checkbox>
                     <n-checkbox v-else></n-checkbox>
                   </span>
-                </template>
-                <template #dept="{ row }">
-                  <div>
-                    {{ row.Dept.id == 0 ? "未分配" : row.Dept.dept_name }}
-                  </div>
-                </template>
-              </vxe-grid>
+                  </template>
+                  <template #dept="{ row }">
+                    <div>
+                      {{ row.Dept.id == 0 ? "未分配" : row.Dept.dept_name }}
+                    </div>
+                  </template>
+                </vxe-grid>
+
+              </n-card>
             </n-modal>
 
 
@@ -207,13 +196,13 @@
               <n-col :span="14">
                 <div class="text-md font-bold">
                   更改规则
-                  <n-alert message="注意：填写完规则后请完成校验！！！" type="info" />
+                  <n-alert message="注意：填写完规则后请完成校验！！！" type="info"/>
                 </div>
               </n-col>
             </n-row>
             <div style="height:10px;"></div>
             <n-row v-for="(item, index) in formState.next_process" :key="index"
-              v-if="formState.next_process.length > 1">
+                   v-if="formState.next_process.length > 1">
               <n-col :span="4">
                 <div class="show-item">
                   {{ item.NextProcess.process_name }}
@@ -236,29 +225,29 @@
                   <n-col :span="4">
                     <div class="text-center">字段</div>
                     <n-select style="width: 100%;" v-model:value="bindExprs[index]['field']">
-<!--                      <n-select-option :value="f.field" v-for="(f, index) in fields" :key="index">-->
-<!--                        {{ f.field_name }}-->
-<!--                      </n-select-option>-->
+                      <!--                      <n-select-option :value="f.field" v-for="(f, index) in fields" :key="index">-->
+                      <!--                        {{ f.field_name }}-->
+                      <!--                      </n-select-option>-->
                     </n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">条件</div>
                     <n-select style="width: 100%;" v-model:value="bindExprs[index]['operator']">
-<!--                      <n-select-option value=">">-->
-<!--                        大于-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value="<">-->
-<!--                        小于-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value="=">-->
-<!--                        等于-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value="<=">-->
-<!--                        小于等于-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value=">=">-->
-<!--                        大于等于-->
-<!--                      </n-select-option>-->
+                      <!--                      <n-select-option value=">">-->
+                      <!--                        大于-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="<">-->
+                      <!--                        小于-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="=">-->
+                      <!--                        等于-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="<=">-->
+                      <!--                        小于等于-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value=">=">-->
+                      <!--                        大于等于-->
+                      <!--                      </n-select-option>-->
                     </n-select>
                   </n-col>
                   <n-col :span="4">
@@ -268,15 +257,15 @@
                   <n-col :span="4">
                     <div class="text-center">其他条件</div>
                     <n-select style="width: 100%;" v-model:value="bindExprs[index]['extra']">
-<!--                      <n-select-option value="" default>-->
-<!--                        无-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value="AND">-->
-<!--                        并且-->
-<!--                      </n-select-option>-->
-<!--                      <n-select-option value="OR">-->
-<!--                        或者-->
-<!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="" default>-->
+                      <!--                        无-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="AND">-->
+                      <!--                        并且-->
+                      <!--                      </n-select-option>-->
+                      <!--                      <n-select-option value="OR">-->
+                      <!--                        或者-->
+                      <!--                      </n-select-option>-->
                     </n-select>
                   </n-col>
 
@@ -347,23 +336,23 @@
             <div class="flex mt-3 items-center">
               <div class="flex-4" style="width:80px;">字体颜色</div>
               <input type="text" v-model="submitState.style_color"
-                class="w-24 h-8 border-none outline-none bg-gray-100 rounded-sm px-3 mx-3">
+                     class="w-24 h-8 border-none outline-none bg-gray-100 rounded-sm px-3 mx-3">
               <div v-for="(c, ind) in colors" :key="ind" :style="{ background: `${c}` }"
-                class="h-8 w-8 cursor-pointer hover:scale-105" @click="setColor(c)"></div>
+                   class="h-8 w-8 cursor-pointer hover:scale-105" @click="setColor(c)"></div>
 
             </div>
             <div class="flex mt-3 items-center">
               <div style="width:80px;">图标</div>
               <div>
                 <HuluIcon :name="submitState.style_icon" :fontSize="'24px'" style="line-height:24px"
-                  class="cursor-pointer bg-black text-white  rounded w-6" />
+                          class="cursor-pointer bg-black text-white  rounded w-6"/>
               </div>
               <input type="text" class="h-8 border-none outline-none bg-gray-100 rounded-sm px-3 flex-2"
-                v-model="submitState.style_icon">
+                     v-model="submitState.style_icon">
 
               <div style="width:600px;background-color: black;line-height:24px;" class="ml-4 flex flex-wrap ">
                 <HuluIcon @click="onMyIcon(ic)" fontSize="24px" :name="ic" v-for="(ic, index) in MyIcons" :key="index"
-                  class="m-3 cursor-pointer hover:scale-125" />
+                          class="m-3 cursor-pointer hover:scale-125"/>
               </div>
             </div>
           </div>
@@ -384,13 +373,15 @@
 
 <script lang='ts'>
 
-import { icons } from './icon'
+import {icons} from './icon'
 import useEmpconfig from './empconfig'
-import { useMessage } from "naive-ui";
-import { ExplainConditionSql } from "./sql/explain";
-const { getCurrCond } = useProcess()
-const { gridOptions } = useEmpconfig()
-const { loadDepts } = useDept()
+import {useMessage} from "naive-ui";
+import {ExplainConditionSql} from "./sql/explain";
+import useDeptConfig from "./deptconfig"
+const {getCurrCond} = useProcess()
+const {gridOptions} = useEmpconfig()
+const {gridDeptOptions} =useDeptConfig();
+const {loadDepts} = useDept()
 const message = useMessage();
 
 export default {
@@ -446,7 +437,6 @@ export default {
     const formState = ref(props.attrs)
 
 
-
     watch(() => props.attrs, (newVal, oldVal) => {
       if (newVal.process != oldVal.process) {
         formState.value = newVal
@@ -467,7 +457,7 @@ export default {
     const fillSubmitState = (attrs) => {
       submitState.value.process_name = attrs.process.process_name
       submitState.value.process_position = attrs.process.position
-      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess?item.NextProcess.id:-1)
+      submitState.value.process_to = attrs.next_process.map(item => item.NextProcess ? item.NextProcess.id : -1)
     }
     const activeKey = ref('1');
 
@@ -508,6 +498,7 @@ export default {
       submitState.value.range_emp_text = attrs.select_emps.map(item => item.name)
       submitState.value.range_dept_ids = attrs.select_depts.map(item => item.id)
       submitState.value.range_dept_text = attrs.select_depts.map(item => item.dept_name)
+      // console.log(submitState.value)
     }
 
     const open = ref(false)
@@ -521,17 +512,18 @@ export default {
     }
 
     const disableAuto = ref(props.attrs.sys == '0')
-    const changeAuto = (val) => {
-      if (val == '-1001') {
+    const changeAuto = (value: string, option: SelectOption) => {
+      if (value == '-1001') {
         disableAuto.value = true
       }
-      if (val == '-1002') {
+      if (value == '-1002') {
         disableAuto.value = true
       }
-      if (val == "0") {
+      if (value == "0") {
         disableAuto.value = false
       }
     }
+
     const selectRecords = ref([])
     const toggleCheckboxEvent = (row) => {
       const $grid = xGrid.value
@@ -559,6 +551,21 @@ export default {
       }
     }
 
+
+    const gridDeptEvent: VxeGridListeners<RowVO> = {
+      proxyQuery() {
+        console.log('数据代理查询事件')
+        const grid = xDeptGrid.value
+        // 获取表格中的数据
+        const data = grid.getTableData().fullData
+      },
+      proxyDelete() {
+        console.log('数据代理删除事件')
+      },
+      proxySave() {
+        console.log('数据代理保存事件')
+      }
+    }
     const selectedEmp = ref(false)
     const selPer = () => {
       selectedEmp.value = true
@@ -567,28 +574,26 @@ export default {
     const selDep = async () => {
       open.value = true
       selectedEmp.value = false
-      const { data } = await loadDepts()
-      depts.value = data
     }
 
+    const options = ref({
+      auto_person: [
+        {
+          label: '发起人部门经理',
+          value: '-1001'
+        },
+        {
+          label: '发起人部门主管',
+          value: '-1002'
+        },
+        {
+          label: '手动选择',
+          value: '0'
+        }
 
-    const tabcolumns = [
-      {
-        title: '层级',
-        dataIndex: 'html',
-        key: 'html',
-      },
-      {
-        title: '经理',
-        dataIndex: 'Manager',
-        key: 'Manager',
-      },
-      {
-        title: '负责人',
-        dataIndex: 'Director',
-        key: 'Director',
-      },
-    ]
+
+      ]
+    })
 
 
     const state = reactive({
@@ -602,13 +607,14 @@ export default {
       submitState.value.range_dept_ids = selectedRowKeys
       // 获取被选择的选项数据
       console.log(selectedRows)
-      submitState.value.range_dept_text = selectedRows.map(item=>item.dept_name)
+      submitState.value.range_dept_text = selectedRows.map(item => item.dept_name)
     };
     // #endregion 权限
 
     //  #region 转出条件
     const fields = ref([])
     const nextProcesses = ref([])
+
     //Expression类型的二维数组
     interface Expression {
       id: number,
@@ -659,7 +665,6 @@ export default {
     }
 
 
-
     const validateExpr = (index) => {
       let targetArr = stateExprs.value[0].filter(item => item.index == index)
       const {
@@ -673,7 +678,7 @@ export default {
         submitState.value.process_condition = stateExprs.value[0]
       }
     }
-
+const xDeptGrid=ref()
 
     const getCurrentCond = async (process) => {
       let param = {
@@ -740,6 +745,7 @@ export default {
       formState,
       onSubmit,
       tmpNextProcess,
+      gridDeptOptions,
       gridOptions,
       tmpBeixuanProcess,
       removePrs,
@@ -747,14 +753,15 @@ export default {
       open,
       depts,
       xGrid,
+      xDeptGrid,
       toggleAllCheckboxEvent,
       selectRecords,
       toggleCheckboxEvent,
       gridEvent,
+      gridDeptEvent,
       selectedEmp,
       selPer,
       selDep,
-      tabcolumns,
       state,
       onSelectChange,
 
@@ -776,9 +783,9 @@ export default {
 
 
       disableAuto,
-      changeAuto
+      changeAuto,
 
-
+      options,
     };
   }
 };
