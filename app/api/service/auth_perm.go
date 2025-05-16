@@ -8,20 +8,19 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"gorm.io/gorm"
-	"strconv"
 	"strings"
 )
 
 type AuthPermService interface {
 	SelectMenuIdsByRoleId(roleId uint) (menuIds []uint, e error)
 	CacheRoleMenusByRoleId(roleId uint) (e error)
-	BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menuIds string) (e error)
+	BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menuIds []uint) (e error)
 	BatchDeleteRoleMenuByRoleId(roleId uint, db *gorm.DB) (e error)
 	BatchDeleteRoleMenuByMenuId(menuId uint, db *gorm.DB) (e error)
 
 	SelectMenuIdsByTenantId(tenantId uint) (menuIds []uint, e error)
 	CacheTenantMenusByTenantId(tenantId uint) (e error)
-	BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, menuIds string) (e error)
+	BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, menuIds []uint) (e error)
 	BatchDeleteByTenantId(tenantId uint, db *gorm.DB) (e error)
 	BatchDeleteTenantMenuByMenuId(menuId uint, db *gorm.DB) (e error)
 }
@@ -73,11 +72,11 @@ func (a authPermImpl) CacheRoleMenusByRoleId(roleId uint) (e error) {
 	return nil
 }
 
-func (a authPermImpl) BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menuIds string) (e error) {
+func (a authPermImpl) BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menuIds []uint) (e error) {
 	if roleId == 0 {
 		return fmt.Errorf("角色ID不能为空")
 	}
-	if menuIds == "" {
+	if len(menuIds) == 0 {
 		return fmt.Errorf("角色权限不能为空")
 	}
 	if db == nil {
@@ -85,9 +84,10 @@ func (a authPermImpl) BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menu
 	}
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var perms []models.AuthPerm
-		for _, menuIdStr := range strings.Split(menuIds, ",") {
-			menuId, _ := strconv.ParseUint(menuIdStr, 10, 32)
-			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "role", TypeId: roleId, MenuId: uint(menuId)})
+		var menuIdsArr []uint
+		tx.Model(&models.AuthMenu{}).Where("id in (?) and menuType in (?)", menuIds, "action").Pluck("id", &menuIdsArr)
+		for _, menuId := range menuIdsArr {
+			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "role", TypeId: roleId, MenuId: menuId})
 		}
 		if err := tx.Create(&perms).Error; err != nil {
 			return tx.Rollback().Error
@@ -156,11 +156,11 @@ func (a authPermImpl) CacheTenantMenusByTenantId(tenantId uint) (e error) {
 	return nil
 }
 
-func (a authPermImpl) BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, menuIds string) (e error) {
+func (a authPermImpl) BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, menuIds []uint) (e error) {
 	if tenantId == 0 {
 		return fmt.Errorf("租户ID不能为空")
 	}
-	if menuIds == "" {
+	if len(menuIds) == 0 {
 		return fmt.Errorf("租户权限不能为空")
 	}
 	if db == nil {
@@ -168,9 +168,10 @@ func (a authPermImpl) BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, 
 	}
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var perms []models.AuthPerm
-		for _, menuIdStr := range strings.Split(menuIds, ",") {
-			menuId, _ := strconv.ParseUint(menuIdStr, 10, 32)
-			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "tenant", TypeId: tenantId, MenuId: uint(menuId)})
+		var menuIdsArr []uint
+		tx.Model(&models.AuthMenu{}).Where("id in (?) and menuType in (?)", menuIds, "action").Pluck("id", &menuIdsArr)
+		for _, menuId := range menuIdsArr {
+			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "tenant", TypeId: tenantId, MenuId: menuId})
 		}
 		if err := tx.Create(&perms).Error; err != nil {
 			return tx.Rollback().Error

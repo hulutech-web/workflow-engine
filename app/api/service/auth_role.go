@@ -97,8 +97,8 @@ func (r roleService) Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error) {
 		if err != nil {
 			return err
 		}
-		if addReq.MenuIds != "" {
-			te := r.permSrv.BatchSaveRoleMenusByMenuIds(role.ID, tx, addReq.MenuIds)
+		if len(addReq.Menus) > 0 {
+			te := r.permSrv.BatchSaveRoleMenusByMenuIds(role.ID, tx, addReq.Menus)
 			if te != nil {
 				return te
 			}
@@ -128,7 +128,7 @@ func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 	role.ID = editReq.ID
 	roleMap := structs.Map(editReq)
 	delete(roleMap, "ID")
-	delete(roleMap, "MenuIds")
+	delete(roleMap, "Menus")
 	roleMap["Name"] = strings.Trim(editReq.Name, " ")
 	if !auth.IsAdmin {
 		return response.AssertArgumentError.Make("你没有权限编辑此角色!")
@@ -139,7 +139,7 @@ func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 			return fmt.Errorf("修改失败! %s", err.Error())
 		}
 		r.permSrv.BatchDeleteRoleMenuByRoleId(editReq.ID, tx)
-		r.permSrv.BatchSaveRoleMenusByMenuIds(editReq.ID, tx, editReq.MenuIds)
+		r.permSrv.BatchSaveRoleMenusByMenuIds(editReq.ID, tx, editReq.Menus)
 		r.permSrv.CacheRoleMenusByRoleId(editReq.ID)
 		return nil
 	})
