@@ -21,8 +21,7 @@ async function initFlowChart(initData, callback) {
     const node = data.list[key];
     nodeList.push(node);
   });
-  // console.log("nodeList", nodeList);
-  // 初始化节点
+
   // 初始化jsPlumb实例
   jsPlumbInstance = jsPlumb.jsPlumb.getInstance({
     container: document.getElementById("flow-chart-container"),
@@ -167,6 +166,8 @@ async function initFlowChart(initData, callback) {
     nodeList.forEach((node) => {
       if (node.process_to) {
         node.process_to.split(",").forEach((targetId) => {
+          //检查当前node与targetId是否已经连线，删除连线
+          if (!jsPlumbInstance.select({source: `node-${node.id}`, target:`node-${targetId}`}).length) {
           jsPlumbInstance.connect({
             source: `node-${node.id}`,
             target: `node-${targetId}`,
@@ -198,6 +199,7 @@ async function initFlowChart(initData, callback) {
               ],
             ],
           });
+          }
         });
       }
       // 设置节点作为连接节点
