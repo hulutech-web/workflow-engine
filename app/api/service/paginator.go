@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"math"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -33,7 +34,7 @@ type PageResult struct {
 }
 
 type paginateServiceImpl interface {
-	SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl
+	SearchByParams(params url.Values, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl
 	ResultPagination(dest any, withes ...string) (error, *PageResult)
 }
 
@@ -49,9 +50,16 @@ func NewPaginatorServiceImpl(db *gorm.DB, ctx *gin.Context) paginateServiceImpl 
 // SearchByParams
 // example SearchByParams(map[string]{}{"name":"user"}, map[string]interface{}{"state",1}, []string{"age"}...)
 // ?name=xxx&pageSize=1&currentPage=1&sort=xxx&order=xxx
-func (h *PaginateService) SearchByParams(params map[string]string, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl {
+func (h *PaginateService) SearchByParams(params url.Values, conditionMap map[string]interface{}, excepts ...string) paginateServiceImpl {
+	queryParams := params
+	p := make(map[string]string)
+	for key, values := range queryParams {
+		// 只取第一个值（如果同一个 key 有多个值）
+		p[key] = values[0]
+	}
+
 	for _, except := range excepts {
-		delete(params, except)
+		delete(p, except)
 	}
 
 	if h.Query == nil {
@@ -66,7 +74,7 @@ func (h *PaginateService) SearchByParams(params map[string]string, conditionMap 
 	}
 
 	// 处理URL查询参数
-	for key, value := range params {
+	for key, value := range p {
 		if strings.Contains(key, "[]") || value == "" ||
 			key == "pageSize" || key == "total" ||
 			key == "currentPage" || key == "sort" || key == "order" {

@@ -22,7 +22,7 @@ func NewOrm(config *config.Config) (*gorm.DB, error) {
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
 			SlowThreshold:             200 * time.Millisecond,
-			LogLevel:                  logger.Warn,
+			LogLevel:                  logger.Info,
 			Colorful:                  true,
 			IgnoreRecordNotFoundError: false,
 		})
@@ -34,6 +34,7 @@ func NewOrm(config *config.Config) (*gorm.DB, error) {
 			TablePrefix:   config.Database.TablePrefix, // 表名前缀
 			SingularTable: false,                       // 使用单一表名, eg. `User` => `user`
 		},
+		
 		DisableForeignKeyConstraintWhenMigrating: true,
 		// 关键新增配置
 		NowFunc: func() time.Time {

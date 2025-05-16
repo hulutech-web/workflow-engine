@@ -50,10 +50,13 @@
     "sizecheck": "npx vite-bundle-visualizer"
   },
   "dependencies": {
+    "@imengyu/vue3-context-menu": "^1.4.8",
+    "@vicons/ionicons5": "^0.13.0",
     "@vueuse/core": "^12.8.2",
     "alova": "^3.2.9",
     "colord": "^2.9.3",
     "echarts": "^5.6.0",
+    "jsplumb": "^2.15.6",
     "md-editor-v3": "^5.3.2",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
@@ -62,7 +65,9 @@
     "vue": "^3.5.13",
     "vue-draggable-plus": "^0.6.0",
     "vue-i18n": "^11.1.1",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "vxe-table": "^4.13.26",
+    "xe-utils": "^3.5.18"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.5.1",

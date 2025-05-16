@@ -134,46 +134,48 @@ const checkedRowKeys = ref<number[]>([])
 </script>
 
 <template>
-  <n-card>
-    <template #header>
-      <NButton type="primary" @click="tableModalRef.openModal('add')">
-        <template #icon>
-          <icon-park-outline-add-one />
-        </template>
-        新建
-      </NButton>
-    </template>
-
-    <template #header-extra>
-      <n-flex>
-        <NButton type="primary" secondary @click="getAllRoutes">
+  <div>
+    <n-card>
+      <template #header>
+        <NButton type="primary" @click="tableModalRef.openModal('add')">
           <template #icon>
-            <icon-park-outline-refresh />
+            <icon-park-outline-add-one />
           </template>
-          刷新
+          新建
         </NButton>
-        <!--        <NPopconfirm -->
-        <!--          @positive-click="handlePositiveClick" -->
-        <!--        > -->
-        <!--          <template #trigger> -->
-        <!--            <NButton type="error" secondary> -->
-        <!--              <template #icon> -->
-        <!--                <icon-park-outline-delete-five /> -->
-        <!--              </template> -->
-        <!--              批量删除 -->
-        <!--            </NButton> -->
-        <!--          </template> -->
-        <!--          确认删除所有选中菜单？ -->
-        <!--        </NPopconfirm> -->
-      </n-flex>
-    </template>
-    <n-data-table
-      v-model:checked-row-keys="checkedRowKeys"
-      :row-key="(row:AppRoute.RowRoute) => row.id" :columns="columns" :data="tableData"
-      :loading="loading"
-      size="small"
-      :scroll-x="1200"
-    />
-    <TableModal ref="tableModalRef" :all-routes="tableData" modal-name="菜单" @close="getAllRoutes" />
-  </n-card>
+      </template>
+
+      <template #header-extra>
+        <n-flex>
+          <NButton type="primary" secondary @click="getAllRoutes">
+            <template #icon>
+              <icon-park-outline-refresh />
+            </template>
+            刷新
+          </NButton>
+          <!--        <NPopconfirm -->
+          <!--          @positive-click="handlePositiveClick" -->
+          <!--        > -->
+          <!--          <template #trigger> -->
+          <!--            <NButton type="error" secondary> -->
+          <!--              <template #icon> -->
+          <!--                <icon-park-outline-delete-five /> -->
+          <!--              </template> -->
+          <!--              批量删除 -->
+          <!--            </NButton> -->
+          <!--          </template> -->
+          <!--          确认删除所有选中菜单？ -->
+          <!--        </NPopconfirm> -->
+        </n-flex>
+      </template>
+      <n-data-table
+        v-model:checked-row-keys="checkedRowKeys"
+        :row-key="(row:AppRoute.RowRoute) => row.id" :columns="columns" :data="tableData"
+        :loading="loading"
+        size="small"
+        :scroll-x="1200"
+      />
+      <TableModal ref="tableModalRef" :all-routes="tableData" modal-name="菜单" @close="getAllRoutes" />
+    </n-card>
+  </div>
 </template>
