@@ -45,6 +45,7 @@ export function createVitePlugins(env: ImportMetaEnv) {
           ],
         },
       ],
+      dirs: ['src/service/api/**/*'],
       include: [
         /\.[tj]sx?$/,
         /\.vue$/,

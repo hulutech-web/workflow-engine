@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"go.uber.org/fx"
+	"net/http"
 )
 
 type process struct {
@@ -64,12 +65,12 @@ func (r *process) Store(ctx *gin.Context) {
 		return
 	}
 
-	err := r.Srv.Store(ctx, prc)
+	err, store := r.Srv.Store(ctx, prc)
 	if err != nil {
 		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, "操作成功")
+	ctx.JSON(http.StatusOK, store)
 }
 
 func (r *process) Update(ctx *gin.Context) {
@@ -90,7 +91,9 @@ func (r *process) Update(ctx *gin.Context) {
 
 func (r *process) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
-	err := r.Srv.Destroy(ctx, cast.ToInt(id))
+	req := req.ProcessReq{}
+	ctx.ShouldBind(&req)
+	err := r.Srv.Destroy(ctx, cast.ToInt(id), req.FlowID)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
@@ -108,11 +111,15 @@ func (r *process) Attribute(ctx *gin.Context) {
 }
 
 func (r *process) Condition(ctx *gin.Context) {
-	id := ctx.Param("id")
-	err := r.Srv.Destroy(ctx, cast.ToInt(id))
-	if err != nil {
-		response.Fail(ctx, response.Failed)
+	var req req.CondiReq
+	if err := ctx.ShouldBind(&req); err != nil {
+		response.FailWithMsg(ctx, response.Failed, err.Error())
 		return
 	}
-	response.OkWithData(ctx, "操作成功")
+	condi, err1 := r.Srv.Condition(ctx, req)
+	if err1 != nil {
+		response.FailWithMsg(ctx, response.Failed, err1.Error())
+		return
+	}
+	response.OkWithData(ctx, condi)
 }

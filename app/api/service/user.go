@@ -207,6 +207,7 @@ func (u userServiceImpl) CacheUserById(userId uint) error {
 func (u userServiceImpl) Self(auth *req.AuthReq) (*resp.UserSelfResp, error) {
 	var user models.User
 	var e error
+
 	if err := u.db.Preload("Role").Preload("Tenant").First(&user, auth.UserId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, fmt.Errorf("用户不存在")

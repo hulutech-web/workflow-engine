@@ -1,0 +1,11 @@
+INSERT INTO `processes` (`created_at`, `updated_at`, `flow_id`, `process_name`, `limit_time`, `type`, `icon`, `process_to`, `style`, `style_color`, `style_height`, `style_width`, `position_left`, `position_top`, `position`, `child_flow_id`, `child_after`, `child_back_process`, `description`)
+VALUES
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:253px;top:166px;', '#66CDAA', 48, 200, '253px', '166px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:723px;top:211px;', '#66CDAA', 48, 200, '723px', '211px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:995px;top:485px;', '#66CDAA', 48, 200, '995px', '485px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:1192px;top:214px;', '#66CDAA', 48, 200, '1192px', '214px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:1452px;top:205px;', '#66CDAA', 48, 200, '1452px', '205px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:613px;top:314px;', '#66CDAA', 48, 200, '613px', '314px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:607px;top:489px;', '#66CDAA', 48, 200, '607px', '489px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:286px;top:591px;', '#66CDAA', 48, 200, '286px', '591px', 1, 0, 2, 0, ''),
+    ('2025-05-15 00:57:24.803', '2025-05-15 00:57:27.163', 1, '新建流程', 0, 'operation', '', '', 'width:200px;height:48px;line-height:30px;color:#66CDAA;left:506px;top:646px;', '#66CDAA', 48, 200, '506px', '646px', 1, 0, 2, 0, '');

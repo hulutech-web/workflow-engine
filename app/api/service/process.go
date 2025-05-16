@@ -8,6 +8,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/workflow/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
+	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
@@ -17,12 +18,12 @@ import (
 type ProcessService interface {
 	Index(ctx *gin.Context) (*PageResult, error)
 	List(ctx *gin.Context, req req.ProcessReq) ([]models.Process, error)
-	Store(ctx *gin.Context, req req.ProReq) error
+	Store(ctx *gin.Context, req req.ProReq) (error, *models.Process)
 	Update(ctx *gin.Context, id int, processRequest common.ProcessRequest) error
 	Show(ctx *gin.Context, id int) *models.Process
-	Destroy(ctx *gin.Context, id int) error
+	Destroy(ctx *gin.Context, id int, flow_id int) error
 	Attribute(ctx *gin.Context, id int) (error, map[string]any)
-	Condition(ctx *gin.Context) error
+	Condition(ctx *gin.Context, req req.CondiReq) (map[int]interface{}, error)
 }
 
 type processService struct {
@@ -44,7 +45,7 @@ func (f *processService) List(ctx *gin.Context, req req.ProcessReq) ([]models.Pr
 	return processes, nil
 }
 
-func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
+func (f *processService) Store(ctx *gin.Context, req req.ProReq) (error, *models.Process) {
 
 	flow_id := req.FlowID
 	left := req.Left
@@ -65,7 +66,7 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 	create := tx.Model(&models.Process{}).Create(&process)
 	if create.Error != nil {
 		tx.Rollback()
-		return create.Error
+		return create.Error, nil
 	}
 	//步骤二
 	jsMap := common.Plumb{}
@@ -92,15 +93,8 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 		flow.Jsplumb = string(strByte)
 		tx.Model(&models.Flow{}).Where("id=?", flow_id).Save(&flow)
 		tx.Commit()
-		ctx.JSON(200, gin.H{
-			"id":           process.ID,
-			"flow_id":      process.FlowID,
-			"process_name": process.ProcessName,
-			"process_to":   "",
-			"icon":         "",
-			"style":        process.Style,
-		})
-		return nil
+
+		return nil, &process
 
 	} else {
 		//jsMap的list属性为二维数组
@@ -126,15 +120,7 @@ func (f *processService) Store(ctx *gin.Context, req req.ProReq) error {
 		flow.IsPublish = false
 		tx.Model(&models.Flow{}).Where("id=?", flow_id).Save(&flow)
 		tx.Commit()
-		ctx.JSON(200, gin.H{
-			"id":           process.ID,
-			"flow_id":      process.FlowID,
-			"process_name": process.ProcessName,
-			"process_to":   "",
-			"icon":         "",
-			"style":        process.Style,
-		})
-		return nil
+		return nil, &process
 	}
 }
 
@@ -350,7 +336,42 @@ func (f *processService) Show(ctx *gin.Context, id int) *models.Process {
 	return nil
 }
 
-func (f *processService) Destroy(ctx *gin.Context, id int) error {
+func (f *processService) Destroy(ctx *gin.Context, id int, flow_id int) error {
+	process := models.Process{}
+	var flow models.Flow
+	tx := f.db.Begin()
+	tx.Model(&flow).Where("id=?", flow_id).Find(&flow)
+	tx.Model(&models.Process{}).Where("id", id).Delete(&process)
+	tx.Model(&models.Flowlink{}).Where("flow_id=?", id).Where("next_process_id=?", id).Update("next_process_id", -1)
+	tx.Model(&models.Process{}).Where("id=?", id).Delete(&models.Process{})
+	jsMap := common.Plumb{}
+	//flow.Jsplum解析为jsMap
+	err := json.Unmarshal([]byte(flow.Jsplumb), &jsMap)
+	if err != nil {
+		tx.Rollback()
+		response.FailWithMsg(ctx, response.Failed, "解析数据错误")
+		return nil
+	}
+
+	//需要将jsMap读取出来，然后再写回去
+	for key, _ := range jsMap.List {
+		if key == cast.ToString(id) {
+			//	删除
+			delete(jsMap.List, key)
+		}
+	}
+
+	jsplumbByte, err := json.Marshal(jsMap)
+
+	if err != nil {
+		tx.Rollback()
+		response.FailWithMsg(ctx, response.Failed, "解析数据错误")
+	}
+	//更新流程图
+	flow.Jsplumb = string(jsplumbByte)
+	tx.Model(&models.Flow{}).Where("id=?", flow.ID).Save(&flow)
+	tx.Commit()
+	response.OkWithMsg(ctx, "删除成功")
 	return nil
 }
 func (f *processService) Attribute(ctx *gin.Context, id int) (error, map[string]interface{}) {
@@ -440,8 +461,41 @@ func (f *processService) Attribute(ctx *gin.Context, id int) (error, map[string]
 		"can_child":       can_child,
 	}
 }
-func (f *processService) Condition(ctx *gin.Context) error {
-	return nil
+func (f *processService) Condition(ctx *gin.Context, req req.CondiReq) (map[int]interface{}, error) {
+	//当前流程
+	flowlink := models.Flowlink{}
+	tx := f.db.Begin()
+	tx.Model(&models.Flowlink{}).Where("process_id=?", req.ProcessID).
+		Where("next_process_id=?", req.NextProcessID).
+		Where("flow_id=?", req.FlowID).Where("type=?", "Condition").Find(&flowlink)
+	flow := models.Flow{}
+	tx.Model(&models.Flow{}).Preload("Template.TemplateForms").Where("id=?", req.FlowID).Find(&flow)
+	//$day > 3  AND
+	// $sex == 女
+	fieldsArr := []string{}
+	for _, form := range flow.Template.TemplateForms {
+		//form.field form.field_name
+		cleanedExpression := strings.Replace(flowlink.Expression, "$", "", -1)
+
+		if strings.Contains(cleanedExpression, form.Field) {
+			// 新建一个replaceStr
+			replaceStr := strings.Replace(cleanedExpression, form.Field, form.FieldName, -1)
+			fieldsArr = append(fieldsArr, replaceStr)
+		}
+	}
+	res := make(map[int]interface{})
+	if len(fieldsArr) > 0 {
+		res[flowlink.NextProcessID] = map[string]interface{}{
+			"desc":   fieldsArr[0],
+			"option": "",
+		}
+	} else {
+		res[flowlink.NextProcessID] = map[string]interface{}{
+			"desc":   []string{},
+			"option": "",
+		}
+	}
+	return res, nil
 }
 
 func groupConditionsById(conditions []common.ProcessCondition) map[int][]common.ProcessCondition {

@@ -36,6 +36,7 @@ func (d templateFormService) List(ctx *gin.Context) ([]models.TemplateForm, erro
 }
 
 func (d templateFormService) Store(ctx *gin.Context, dept models.TemplateForm) error {
+
 	tx := d.db.Model(&models.TemplateForm{}).Create(&dept)
 	if tx.Error != nil {
 		return tx.Error
@@ -70,7 +71,6 @@ func (d templateFormService) Destroy(ctx *gin.Context, id int) error {
 		return tx.Error
 	}
 	return nil
-
 }
 func NewTemplateFormService(db *gorm.DB) TemplateFormService {
 	return &templateFormService{db: db}

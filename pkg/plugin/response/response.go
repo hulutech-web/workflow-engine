@@ -22,8 +22,9 @@ type Response struct {
 }
 
 var (
-	Success = RespType{code: 200, msg: "成功"}
-	Failed  = RespType{code: 300, msg: "失败"}
+	Success      = RespType{code: 200, msg: "成功"}
+	Failed       = RespType{code: 300, msg: "失败"}
+	SuccessNoMsg = RespType{code: 200, msg: ""}
 
 	ParamsValidError    = RespType{code: 310, msg: "参数校验错误"}
 	ParamsTypeError     = RespType{code: 311, msg: "参数类型错误"}
@@ -116,6 +117,11 @@ func OkWithMsg(c *gin.Context, msg string) {
 // OkWithData 正常响应附带data
 func OkWithData(c *gin.Context, data interface{}) {
 	Result(c, Success, data)
+}
+
+// OkOnlyData 正常响应仅附带data
+func OkOnlyData(c *gin.Context, data interface{}) {
+	Result(c, SuccessNoMsg, data)
 }
 
 // Fail 错误响应
