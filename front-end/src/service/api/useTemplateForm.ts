@@ -142,24 +142,23 @@ export default () => {
       ajax: {
         // 当点击工具栏查询按钮或者手动提交指令 query或reload 时会被触发
         query: ({ page, sorts, filters, form }) => {
-          return new Promise((resolve, reject) => {
-            const queryParams: any = Object.assign({}, form);
+          return new Promise(async (resolve, reject) => {
+            const queryParams: any = Object.assign({}, form)
             // 处理排序条件
-            const firstSort = sorts[0];
+            const firstSort = sorts[0]
             if (firstSort) {
-              queryParams.sort = firstSort.field;
-              queryParams.order = firstSort.order;
+              queryParams.sort = firstSort.field
+              queryParams.order = firstSort.order
             }
             // 处理筛选条件
             filters.forEach(({ field, values }) => {
-              queryParams[field] = values.join(",");
-            });
+              queryParams[field] = values.join(',')
+            })
 
-            const data = request.Get(`template?pageSize=${page.pageSize}&currentPage=${
-              page.currentPage
-            }&${XEUtils.serialize(queryParams)}`);
-            resolve(data.data);
-          });
+            const {data} = await request.Get(`template_form?pageSize=${page.pageSize}&currentPage=${page.currentPage
+            }&${XEUtils.serialize(queryParams)}`)
+            resolve(data);
+          })
         },
         save: ({ body }) => {
           return new Promise((resolve, reject) => {

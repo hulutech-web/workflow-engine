@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {h} from "vue";
-import {NButton,NButtonGroup} from  "naive-ui";
+import {NButton, NButtonGroup} from "naive-ui";
 import Formpart from './formpart.vue'
 import useRulesStore from '@/store/useRulesStore.ts'
-const { loadTemplates, gridOptions, storeTemplate, deleteTemplate, updateTemplate } = useTemplate()
-const { loadTemplateForm, deleteTemplateForm } = useTemplateForm()
+
+const {loadTemplates, gridOptions, storeTemplate, deleteTemplate, updateTemplate} = useTemplate()
+const {loadTemplateForm, deleteTemplateForm} = useTemplateForm()
 const router = useRouter()
 const xGrid = ref()
 const rulesStore = useRulesStore()
@@ -18,34 +19,37 @@ const templateUpdateState = ref({
   template_name: '',
 })
 const cid = ref()
+
 async function submitTemplate() {
   try {
     // 先清空一下验证
     // templateRef.value.clearValidate()
     await storeTemplate(templateState.value)
     // templateRef.value.resetFormField();
-  }
-  catch (error) {
+  } catch (error) {
     templateRef.value.validate()
   }
   // xGrid.value.commitProxy("query")
 }
+
 const editOpen = ref(false)
+
 function editTemplate(row) {
   // console.log(row)
   editOpen.value = true
   templateUpdateState.value = row
 }
+
 const templateUptRef = ref()
 const formpartRef = ref()
+
 async function submitUpdateTemplate() {
   try {
     // 先清空一下验证
     templateUptRef.value.clearValidate()
     await updateTemplate(templateUpdateState.value)
     templateUptRef.value.resetFormField()
-  }
-  catch (error) {
+  } catch (error) {
     templateUptRef.value.validate()
   }
   xGrid.value.commitProxy('query')
@@ -61,7 +65,7 @@ const gridEvent: VxeGridListeners<RowVO> = {
     const grid = xGrid.value
     // 获取表格中的数据
     const data = grid.getTableData().fullData
-    console.log(data)
+    // console.log(data)
   },
   proxyDelete() {
     console.log('数据代理删除事件')
@@ -115,15 +119,17 @@ async function loadTmplForm(row) {
 }
 
 const open = ref(false)
+
 function edit(record) {
   cid.value = record.id
   open.value = true
 }
 
 const templateOpts = ref([])
+
 async function loadTemplateOpts() {
-  const { data } = await loadTemplates()
-  templateOpts.value = data
+  // const { data } = await loadTemplates()
+  // templateOpts.value = data
 }
 
 async function delRecord(row) {
@@ -141,7 +147,7 @@ async function delRecord(row) {
               label="模板名称" name="template_name"
               :rules="[rulesStore.getRule('template_name') ? rulesStore.getRule('template_name') : { required: false }]"
             >
-              <n-input v-model:value="templateState.template_name" />
+              <n-input v-model:value="templateState.template_name"/>
             </n-form-item>
             <n-form-item>
               <n-button type="primary" @click="submitTemplate">
@@ -151,34 +157,38 @@ async function delRecord(row) {
           </n-form>
           <vxe-grid ref="xGrid" v-bind="gridOptions" v-on="gridEvent">
             <template #action="{ row }">
-                <n-button-group>
-                  <n-button size="small" danger type="primary" @click="deleteTemplate(row)">
-                    删除
-                  </n-button>
-                  <n-button type="primary" size="small" @click="editTemplate(row)">
-                    编辑
-                  </n-button>
-                  <n-button type="primary" size="small" @click="loadTmplForm(row)">
-                    表单控件
-                  </n-button>
-                </n-button-group>
+              <n-button-group>
+                <n-button size="small" danger type="primary" @click="deleteTemplate(row)">
+                  删除
+                </n-button>
+                <n-button type="primary" size="small" @click="editTemplate(row)">
+                  编辑
+                </n-button>
+                <n-button type="primary" size="small" @click="loadTmplForm(row)">
+                  表单控件
+                </n-button>
+              </n-button-group>
             </template>
           </vxe-grid>
         </n-card>
-        <n-modal v-model:show="editOpen" width="500px" title="修改模板" centered>
-          <n-form ref="templateUptRef" :model="templateUpdateState">
-            <n-form-item
-              label="模板名称" name="template_name"
-              :rules="[rulesStore.getRule('template_name') ? rulesStore.getRule('template_name') : { required: false }]"
-            >
-              <n-input v-model:value="templateUpdateState.template_name" />
-            </n-form-item>
-            <n-form-item>
-              <n-button type="primary" @click="submitUpdateTemplate">
-                保存
-              </n-button>
-            </n-form-item>
-          </n-form>
+        <n-modal v-model:show="editOpen" title="修改模板" centered>
+          <n-card style="width:300px;" size="small">
+
+            <n-form ref="templateUptRef" :model="templateUpdateState">
+              <n-form-item
+                label="模板名称" name="template_name"
+                :rules="[rulesStore.getRule('template_name') ? rulesStore.getRule('template_name') : { required: false }]"
+              >
+                <n-input v-model:value="templateUpdateState.template_name"/>
+              </n-form-item>
+              <n-form-item>
+                <n-button type="primary" @click="submitUpdateTemplate">
+                  保存
+                </n-button>
+              </n-form-item>
+            </n-form>
+          </n-card>
+
         </n-modal>
 
         <n-card>
@@ -249,13 +259,15 @@ async function delRecord(row) {
       <n-gi :span="9">
         <n-card>
           <p>字段设计</p>
-          <Formpart ref="formpartRef" />
+          <Formpart ref="formpartRef"/>
         </n-card>
       </n-gi>
     </n-grid>
 
-    <n-modal v-model:show="open" title="控件配置" centered width="800px">
-      <Formpart :id="cid" ref="formpartRef" />
+    <n-modal v-model:show="open" title="控件配置">
+      <n-card style="width:600px">
+        <Formpart :id="cid" ref="formpartRef"/>
+      </n-card>
     </n-modal>
   </div>
 </template>

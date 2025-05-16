@@ -100,6 +100,8 @@ const menuRef = ref({});
 const open = ref(false);
 
 const init = async () => {
+
+  nodeList.value=[];
   const data = await loadFlowDesign(+id);
 
   flow.value = data.data;
@@ -128,9 +130,10 @@ const initAll = async () => {
   await init();
   await initFlowChart(jsplumbJSON.value, getNewestNodes);
 };
+
 const saveDesign = async () => {
   // 保存设计逻辑
-  console.log(JSON.parse(flow.value.jsplumb));
+  // console.log(JSON.parse(flow.value.jsplumb));
   await updateFlowlink(flow.value);
 };
 
@@ -140,13 +143,11 @@ const setProcess = async (node) => {
   //阻止点击事件向下穿透
   open.value = true;
   const data = await loadAttributes(node.id);
-  console.log(data.data);
   process_id.value = node.id;
   attrs.value = data.data;
 };
 const getNewestNodes = async (nodes) => {
   //获取最新的节点信息
-
   if (jsplumbJSON.value.total == 0) {
     await storeFlow(+id, nodes)
   } else {
