@@ -190,7 +190,7 @@ const saveField =  (e) => {
       }
       await  storeTemplateForm(formField.value)
       formEditRef.value?.restoreValidation()
-      formEditRef.value?.resetFormField()
+      // formEditRef.value?.resetFormField()
     }
     else {
       console.log('errors', errors)

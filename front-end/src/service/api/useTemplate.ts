@@ -7,7 +7,7 @@ const storage = useStorage()
 export default () => {
   // 方法
   const loadTemplates = async () => {
-    return await request.Get(`template`, {})
+    return await request.Get(`template/list`, {})
   }
 
   const storeTemplate = async (data) => {
@@ -141,7 +141,7 @@ export default () => {
       ajax: {
         // 当点击工具栏查询按钮或者手动提交指令 query或reload 时会被触发
         query: ({ page, sorts, filters, form }) => {
-          return new Promise((resolve, reject) => {
+          return new Promise(async (resolve, reject) => {
             const queryParams: any = Object.assign({}, form)
             // 处理排序条件
             const firstSort = sorts[0]
@@ -154,9 +154,9 @@ export default () => {
               queryParams[field] = values.join(',')
             })
 
-            const data = request.Get(`template?pageSize=${page.pageSize}&currentPage=${page.currentPage
+            const {data} = await request.Get(`template?pageSize=${page.pageSize}&currentPage=${page.currentPage
             }&${XEUtils.serialize(queryParams)}`)
-            resolve(data)
+            resolve(data);
           })
         },
         save: ({ body }) => {
