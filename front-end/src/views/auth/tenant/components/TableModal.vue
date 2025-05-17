@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBoolean } from '@/hooks'
-import { addRole, editRole, fetchAllRoutes, fetchRoleDetail } from '@/service'
+import {addTenant, editTenant, fetchAllRoutes} from '@/service'
 
 interface Props {
   modalName?: string
@@ -9,7 +9,7 @@ interface Props {
 interface Option {
   label: string
   key: number
-  menuType: string
+  menuType: string | number
   children?: Option[]
 }
 
@@ -26,15 +26,21 @@ const { bool: modalVisible, setTrue: showModal, setFalse: hiddenModal } = useBoo
 
 const { bool: submitLoading, setTrue: startLoading, setFalse: endLoading } = useBoolean(false)
 const menuOptions = shallowRef<Option[]>([])
-const formDefault: Auth.RoleReq = {
+
+const formDefault: Auth.TenantReq = {
   id: 0,
   name: '',
-  remark: '',
-  sort: 0,
+  address: '',
+  phone: '',
+  email: '',
+  domain: '',
+  logo: '',
+  description: '',
   is_disable: 0,
+  expired_at: 0,
   menus: [],
 }
-const formModel = ref<Auth.RoleReq>({ ...formDefault })
+const formModel = ref<Auth.TenantReq>({ ...formDefault })
 
 type ModalType = 'add' | 'view' | 'edit'
 const modalType = shallowRef<ModalType>('add')
@@ -51,7 +57,7 @@ async function openModal(type: ModalType = 'add', data: any) {
   emit('open')
   modalType.value = type
   showModal()
-  formRef.value?.refresh()
+  formRef.value?.resetFields()
   const handlers = {
     async add() {
       formModel.value = { ...formDefault }
@@ -65,7 +71,6 @@ async function openModal(type: ModalType = 'add', data: any) {
       if (!data)
         return
       await getMenuOptions()
-      data = await getRole(data.id)
       formModel.value = { ...data }
     },
   }
@@ -87,9 +92,9 @@ async function submitModal() {
   const handlers = {
     async add() {
       return new Promise(async (resolve) => {
-        const res = await addRole(formModel.value)
+        const res = await addTenant(formModel.value)
         if (res.code === 200) {
-          window.$message.success('角色添加成功')
+          window.$message.success('租户添加成功')
           resolve(true)
         } else {
           resolve(true)
@@ -98,9 +103,9 @@ async function submitModal() {
     },
     async edit() {
       return new Promise(async (resolve) => {
-        const res = await editRole(formModel.value)
+        const res = await editTenant(formModel.value)
         if (res.code === 200) {
-          window.$message.success('角色编辑成功')
+          window.$message.success('租户编辑成功')
           resolve(true)
         } else {
           resolve(true)
@@ -124,12 +129,13 @@ const rules = {
   },
 }
 
+
 async function getMenuOptions() {
   menuOptions.value = []
   const { data } = await fetchAllRoutes()
   const options: Option[] = []
 
-  // 递归查找子节点函数
+// 递归查找子节点函数
   const findChildren = (parentId: number): Option[] => {
     return data
       .filter(item => item.pid === parentId) // 匹配父节点ID
@@ -137,18 +143,18 @@ async function getMenuOptions() {
         label: child.title,
         key: child.id,
         menuType: child.menuType,
-        children: findChildren(child.id), // 递归查找嵌套子节点
+        children: findChildren(child.id) // 递归查找嵌套子节点
       }))
   }
 
-  // 只处理顶级菜单 (pid=0)
+// 只处理顶级菜单 (pid=0)
   data.forEach((item) => {
     if (item.pid === 0) {
       const option: Option = {
         label: item.title,
         key: item.id,
         menuType: item.menuType,
-        children: findChildren(item.id), // 初始化递归查找
+        children: findChildren(item.id) // 初始化递归查找
       }
       options.push(option)
     }
@@ -156,9 +162,10 @@ async function getMenuOptions() {
   menuOptions.value = options
 }
 
-async function getRole(id: number) {
-  const { data } = await fetchRoleDetail({ id })
-  return data
+const selected = ref<number[]>([])
+
+function handleMenuChange(value: number[]) {
+  formModel.value.menus = value
 }
 </script>
 
@@ -176,15 +183,53 @@ async function getRole(id: number) {
   >
     <n-form ref="formRef" :rules="rules" label-placement="left" :model="formModel" :label-width="100" :disabled="modalType === 'view'">
       <n-grid :cols="2" :x-gap="18">
-        <n-form-item-grid-item :span="1" label="角色名称" path="name">
-          <n-input v-model:value="formModel.name" placeholder="请输入角色名称" />
+       <n-form-item-grid-item :span="1" label="租户名称" path="name">
+          <n-input v-model:value="formModel.name" placeholder="请输入租户名称" />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="1" label="角色描述" path="remark">
-          <n-input v-model:value="formModel.remark" placeholder="请输入角色描述" />
+        <n-form-item-grid-item :span="1" label="租户地址" path="address">
+          <n-input v-model:value="formModel.address" placeholder="请输入租户地址" />
+          </n-form-item-grid-item>
+        <n-form-item-grid-item :span="1" label="联系电话" path="phone">
+          <n-input v-model:value="formModel.phone" placeholder="请输入联系电话" />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="1" label="排序" path="sort">
-          <n-input-number v-model:value="formModel.sort" placeholder="请输入排序" />
+        <n-form-item-grid-item :span="1" label="邮箱" path="email">
+          <n-input v-model:value="formModel.email" placeholder="请输入邮箱" />
         </n-form-item-grid-item>
+        <n-form-item-grid-item :span="1" label="域名" path="domain">
+          <n-input v-model:value="formModel.domain" placeholder="请输入域名" />
+        </n-form-item-grid-item>
+        <n-form-item-grid-item :span="1" label="描述" path="description">
+          <n-input v-model:value="formModel.description" placeholder="请输入描述" />
+        </n-form-item-grid-item>
+        <n-form-item-grid-item :span="1" label="到期时间" path="expired_at">
+          <n-date-picker
+            v-model:value="formModel.expired_at"
+            type="datetime"
+            placeholder="请选择到期时间"
+          />
+        </n-form-item-grid-item>
+<!--        <n-form-item-grid-item :span="1" label="Logo" path="logo">-->
+<!--          <n-upload-->
+<!--            v-model:value="formModel.logo"-->
+<!--            :default-file-list="[formModel.logo]"-->
+<!--            :before-upload="beforeUpload"-->
+<!--            :max-size="10 * 1024"-->
+<!--            :multiple="false"-->
+<!--            :show-file-list="false"-->
+<!--            :action="''"-->
+<!--            :disabled="modalType === 'view'"-->
+<!--          >-->
+<!--            <template #default="{ file, onRemove }">-->
+<!--              <div class="upload-btn">-->
+<!--                <n-icon :size="24" :type="file ? 'file-done' : 'upload-cloud'"></n-icon>-->
+<!--                <div class="upload-text">-->
+<!--                  <span v-if="!file">上传Logo</span>-->
+<!--                  <span v-else>{{ file.name }}</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </template>-->
+<!--          </n-upload>-->
+<!--        </n-form-item-grid-item>  -->
         <n-form-item-grid-item :span="1" label="是否启用" path="is_disable">
           <n-switch
             v-model:value="formModel.is_disable"
@@ -200,13 +245,14 @@ async function getRole(id: number) {
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="2" label="菜单权限" path="menus">
           <n-tree-select
-            v-model:value="formModel.menus"
             multiple
             checkable
             filterable
             cascade
             :clear-filter-after-select="false"
             :options="menuOptions"
+            v-model:value="selected"
+            @update-value="handleMenuChange"
             clearable
           />
         </n-form-item-grid-item>

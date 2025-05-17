@@ -93,6 +93,9 @@ export function showError(error: Service.RequestError) {
   const code = Number(error.code)
   if (ERROR_NO_TIP_STATUS.includes(code))
     return
-
-  window.$message.error(error.message)
+  let message = error.message
+  if (code === 310) {
+    message += ": " + error.data
+  }
+  window.$message.error(message)
 }
