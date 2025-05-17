@@ -57,7 +57,7 @@ async function openModal(type: ModalType = 'add', data: any) {
   emit('open')
   modalType.value = type
   showModal()
-
+  formRef.value?.resetFields()
   const handlers = {
     async add() {
       formModel.value = { ...formDefault }
@@ -97,8 +97,7 @@ async function submitModal() {
           window.$message.success('租户添加成功')
           resolve(true)
         } else {
-          window.$message.error(res.message)
-          resolve(false)
+          resolve(true)
         }
       })
     },
@@ -109,8 +108,7 @@ async function submitModal() {
           window.$message.success('租户编辑成功')
           resolve(true)
         } else {
-          window.$message.error(res.message)
-          resolve(false)
+          resolve(true)
         }
       })
     },

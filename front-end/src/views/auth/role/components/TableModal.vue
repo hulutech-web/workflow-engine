@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBoolean } from '@/hooks'
-import {addRole, editRole, fetchAllRoutes, fetchRoleDetail} from '@/service'
+import { addRole, editRole, fetchAllRoutes, fetchRoleDetail } from '@/service'
 
 interface Props {
   modalName?: string
@@ -8,7 +8,7 @@ interface Props {
 
 interface Option {
   label: string
-  key: string
+  key: number
   menuType: string
   children?: Option[]
 }
@@ -51,7 +51,7 @@ async function openModal(type: ModalType = 'add', data: any) {
   emit('open')
   modalType.value = type
   showModal()
-
+  formRef.value?.refresh()
   const handlers = {
     async add() {
       formModel.value = { ...formDefault }
@@ -92,8 +92,7 @@ async function submitModal() {
           window.$message.success('角色添加成功')
           resolve(true)
         } else {
-          window.$message.error(res.message)
-          resolve(false)
+          resolve(true)
         }
       })
     },
@@ -104,8 +103,7 @@ async function submitModal() {
           window.$message.success('角色编辑成功')
           resolve(true)
         } else {
-          window.$message.error(res.message)
-          resolve(false)
+          resolve(true)
         }
       })
     },
@@ -126,32 +124,31 @@ const rules = {
   },
 }
 
-
 async function getMenuOptions() {
   menuOptions.value = []
   const { data } = await fetchAllRoutes()
   const options: Option[] = []
 
-// 递归查找子节点函数
+  // 递归查找子节点函数
   const findChildren = (parentId: number): Option[] => {
     return data
       .filter(item => item.pid === parentId) // 匹配父节点ID
       .map(child => ({
         label: child.title,
-        key: child.id.toString(),
+        key: child.id,
         menuType: child.menuType,
-        children: findChildren(child.id) // 递归查找嵌套子节点
+        children: findChildren(child.id), // 递归查找嵌套子节点
       }))
   }
 
-// 只处理顶级菜单 (pid=0)
+  // 只处理顶级菜单 (pid=0)
   data.forEach((item) => {
     if (item.pid === 0) {
       const option: Option = {
         label: item.title,
-        key: item.id.toString(),
+        key: item.id,
         menuType: item.menuType,
-        children: findChildren(item.id) // 初始化递归查找
+        children: findChildren(item.id), // 初始化递归查找
       }
       options.push(option)
     }
@@ -159,14 +156,8 @@ async function getMenuOptions() {
   menuOptions.value = options
 }
 
-const selected = ref<string[]>([])
-
-function handleMenuChange(value: string[]) {
-  formModel.value.menus = value
-}
-
-async function getRole(id: number){
-  const { data } = await fetchRoleDetail({id: id})
+async function getRole(id: number) {
+  const { data } = await fetchRoleDetail({ id })
   return data
 }
 </script>
@@ -185,7 +176,7 @@ async function getRole(id: number){
   >
     <n-form ref="formRef" :rules="rules" label-placement="left" :model="formModel" :label-width="100" :disabled="modalType === 'view'">
       <n-grid :cols="2" :x-gap="18">
-       <n-form-item-grid-item :span="1" label="角色名称" path="name">
+        <n-form-item-grid-item :span="1" label="角色名称" path="name">
           <n-input v-model:value="formModel.name" placeholder="请输入角色名称" />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="1" label="角色描述" path="remark">
@@ -209,14 +200,13 @@ async function getRole(id: number){
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="2" label="菜单权限" path="menus">
           <n-tree-select
+            v-model:value="formModel.menus"
             multiple
             checkable
             filterable
             cascade
             :clear-filter-after-select="false"
             :options="menuOptions"
-            v-model:value="selected"
-            @update-value="handleMenuChange"
             clearable
           />
         </n-form-item-grid-item>

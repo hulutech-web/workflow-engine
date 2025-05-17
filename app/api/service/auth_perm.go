@@ -7,6 +7,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"strings"
 )
@@ -84,9 +85,11 @@ func (a authPermImpl) BatchSaveRoleMenusByMenuIds(roleId uint, db *gorm.DB, menu
 	}
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var perms []models.AuthPerm
-		var menuIdsArr []uint
-		tx.Model(&models.AuthMenu{}).Where("id in (?) and menuType in (?)", menuIds, "action").Pluck("id", &menuIdsArr)
-		for _, menuId := range menuIdsArr {
+		zap.S().Debug("roleId: ", roleId, "menuIds: ", zap.Any("menuIds", menuIds))
+		for _, menuId := range menuIds {
+			if menuId == 0 {
+				continue
+			}
 			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "role", TypeId: roleId, MenuId: menuId})
 		}
 		if err := tx.Create(&perms).Error; err != nil {
@@ -168,9 +171,10 @@ func (a authPermImpl) BatchSaveTenantMenusByMenuIds(tenantId uint, db *gorm.DB, 
 	}
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var perms []models.AuthPerm
-		var menuIdsArr []uint
-		tx.Model(&models.AuthMenu{}).Where("id in (?) and menuType in (?)", menuIds, "action").Pluck("id", &menuIdsArr)
-		for _, menuId := range menuIdsArr {
+		for _, menuId := range menuIds {
+			if menuId == 0 {
+				continue
+			}
 			perms = append(perms, models.AuthPerm{ID: util.ToolsUtil.MakeUuid(), Type: "tenant", TypeId: tenantId, MenuId: menuId})
 		}
 		if err := tx.Create(&perms).Error; err != nil {

@@ -32,6 +32,26 @@ const columns: DataTableColumns<Auth.Tenant> = [
     key: 'name',
   },
   {
+    title: '域名',
+    align: 'center',
+    key: 'domain',
+  },
+  {
+    title: '邮箱',
+    align: 'center',
+    key: 'email',
+  },
+  {
+    title: '描述',
+    align: 'center',
+    key: 'description',
+  },
+  {
+    title: '创建时间',
+    align: 'center',
+    key: 'created_at',
+  },
+  {
     title: '操作',
     align: 'center',
     key: 'actions',
@@ -39,6 +59,7 @@ const columns: DataTableColumns<Auth.Tenant> = [
       return (
         <NSpace justify="center">
           <NButton
+            v-if="row.id !== 1"
             size="small"
             onClick={() => modalRef.value.openModal('edit', row)}
           >
