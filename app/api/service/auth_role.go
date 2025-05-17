@@ -22,6 +22,7 @@ type AuthRoleService interface {
 	Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error)
 	Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 	Del(id uint, auth *req.AuthReq) (e error)
+	Change(id uint, auth *req.AuthReq) error
 }
 
 type roleService struct {
@@ -82,24 +83,33 @@ func (r roleService) Detail(id uint, auth *req.AuthReq) (res resp.RoleResp, e er
 func (r roleService) Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error) {
 	var role models.AuthRole
 	sql := r.db.Model(&models.AuthRole{})
-	if r := sql.Where("name = ?", strings.Trim(addReq.Name, " ")).Limit(1).First(&role); r.RowsAffected > 0 {
-		return response.AssertArgumentError.Make("角色名称已存在!")
+	var count int64
+	sql.Where("name = ? and tenant_id = ?", addReq.Name, auth.TenantId).Limit(1).Count(&count)
+	if count > 0 {
+		return fmt.Errorf("角色名称已存在!")
 	}
 	response.Copy(&role, addReq)
 	role.Name = strings.Trim(addReq.Name, " ")
 	role.TenantId = auth.TenantId
 	// 事务
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		txErr := tx.Create(&role).Error
-		var te error
-		if te = response.CheckErr(txErr, "Add Create in tx err"); te != nil {
-			return te
+		err := tx.Create(&role).Error
+		if err != nil {
+			return err
 		}
-		te = r.permSrv.BatchSaveRoleMenusByMenuIds(role.ID, tx, addReq.MenuIds)
-		return te
+		if addReq.MenuIds != "" {
+			te := r.permSrv.BatchSaveRoleMenusByMenuIds(role.ID, tx, addReq.MenuIds)
+			if te != nil {
+				return te
+			}
+		}
+		return nil
 	})
-	e = response.CheckErr(err, "Add Transaction err")
-	return
+	if err != nil {
+		return fmt.Errorf("添加失败! %s", err.Error())
+	}
+
+	return nil
 }
 
 func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error) {
@@ -109,9 +119,12 @@ func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 		return
 	}
 	var role models.AuthRole
-	if r := sql.Where("id != ? AND name = ?", editReq.ID, strings.Trim(editReq.Name, " ")).Limit(1).First(&role); r.RowsAffected > 0 {
-		return response.AssertArgumentError.Make("角色名称已存在!")
+	var count int64
+	sql.Where("name = ? and tenant_id = ? and id <> ?", strings.Trim(editReq.Name, " "), auth.TenantId, editReq.ID).Limit(1).Count(&count)
+	if count > 0 {
+		return fmt.Errorf("角色名称已存在!")
 	}
+	response.Copy(&role, editReq)
 	role.ID = editReq.ID
 	roleMap := structs.Map(editReq)
 	delete(roleMap, "ID")
@@ -122,19 +135,13 @@ func (r roleService) Edit(editReq *req.RoleEditReq, auth *req.AuthReq) (e error)
 	}
 	// 事务
 	err = r.db.Transaction(func(tx *gorm.DB) error {
-		txErr := tx.Model(&role).Updates(roleMap).Error
-		var te error
-		if te = response.CheckErr(txErr, "Edit Updates in tx err"); te != nil {
-			return te
+		if err = tx.Model(&role).Updates(roleMap).Error; err != nil {
+			return fmt.Errorf("修改失败! %s", err.Error())
 		}
-		if te = r.permSrv.BatchDeleteRoleMenuByRoleId(editReq.ID, tx); te != nil {
-			return te
-		}
-		if te = r.permSrv.BatchSaveRoleMenusByMenuIds(editReq.ID, tx, editReq.MenuIds); te != nil {
-			return te
-		}
-		te = r.permSrv.CacheRoleMenusByRoleId(editReq.ID)
-		return te
+		r.permSrv.BatchDeleteRoleMenuByRoleId(editReq.ID, tx)
+		r.permSrv.BatchSaveRoleMenusByMenuIds(editReq.ID, tx, editReq.MenuIds)
+		r.permSrv.CacheRoleMenusByRoleId(editReq.ID)
+		return nil
 	})
 	e = response.CheckErr(err, "Edit Transaction err")
 	return
@@ -146,11 +153,13 @@ func (r roleService) Del(id uint, auth *req.AuthReq) (e error) {
 	if e = response.CheckErr(err, "Del First err"); e != nil {
 		return
 	}
-	if r := sql.Where("role_id = ?", id).Limit(1).Find(&models.User{}); r.RowsAffected > 0 {
-		return response.AssertArgumentError.Make("角色已被管理员使用,请先移除!")
+	var count int64
+	r.db.Model(&models.User{}).Where("role_id = ?", id).Limit(1).Count(&count)
+	if count > 0 {
+		return fmt.Errorf("该角色下有用户, 不能删除!")
 	}
 	if !auth.IsAdmin {
-		return response.AssertArgumentError.Make("你没有权限删除此角色!")
+		return fmt.Errorf("你没有权限删除此角色!")
 	}
 	var role models.AuthRole
 	err = r.db.Where("id = ?", id).First(&role).Error
@@ -174,6 +183,26 @@ func (r roleService) Del(id uint, auth *req.AuthReq) (e error) {
 	})
 	e = response.CheckErr(err, "Del Transaction err")
 	return
+}
+
+func (r roleService) Change(id uint, auth *req.AuthReq) error {
+	var role models.AuthRole
+	err := r.db.Where("id = ?", id).First(&role).Error
+	if err != nil {
+		return fmt.Errorf("角色不存在!")
+	}
+	if !auth.IsAdmin {
+		return fmt.Errorf("你没有权限修改此角色!")
+	}
+	if auth.RoleId == id {
+		return fmt.Errorf("当前角色不能修改!")
+	}
+	role.IsDisable = 1 - role.IsDisable
+	err = r.db.Save(&role).Error
+	if err != nil {
+		return fmt.Errorf("修改失败!")
+	}
+	return nil
 }
 
 func NewAuthRoleService(db *gorm.DB, rolePermSrv AuthPermService, cache *cache.Redis) AuthRoleService {

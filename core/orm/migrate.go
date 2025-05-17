@@ -64,7 +64,6 @@ func dst() []interface{} {
 		&models.ProcessVar{},
 		&models.TemplateForm{},
 		&models.Log{},
-		//	对外业务
 		&models.LicenseKey{},
 		&models.LicensePackage{},
 	}

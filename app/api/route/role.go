@@ -23,6 +23,7 @@ func roleRoutes(t role, r *types.ApiRouter) {
 	api.POST("/add", t.add, r.Log("添加角色"))
 	api.POST("/edit", t.edit, r.Log("编辑角色"))
 	api.POST("/delete", t.delete, r.Log("删除角色"))
+	api.POST("/change", t.change, r.Log("角色状态修改"))
 }
 
 func (t role) all(ctx *gin.Context) {
@@ -31,11 +32,11 @@ func (t role) all(ctx *gin.Context) {
 }
 
 func (t role) list(c *gin.Context) {
-	var detailReq req.IdReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyQuery(c, &detailReq)) {
+	var page req.PageReq
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyQuery(c, &page)) {
 		return
 	}
-	res, err := t.Srv.Detail(detailReq.ID, req.GetAuth(c))
+	res, err := t.Srv.List(page, req.GetAuth(c))
 	response.CheckAndRespWithData(c, res, err)
 }
 
@@ -50,7 +51,7 @@ func (t role) detail(c *gin.Context) {
 
 func (t role) add(c *gin.Context) {
 	var addReq req.RoleAddReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &addReq)) {
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyJSON(c, &addReq)) {
 		return
 	}
 	err := t.Srv.Add(&addReq, req.GetAuth(c))
@@ -59,7 +60,7 @@ func (t role) add(c *gin.Context) {
 
 func (t role) edit(c *gin.Context) {
 	var editReq req.RoleEditReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &editReq)) {
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyJSON(c, &editReq)) {
 		return
 	}
 	err := t.Srv.Edit(&editReq, req.GetAuth(c))
@@ -68,9 +69,18 @@ func (t role) edit(c *gin.Context) {
 
 func (t role) delete(c *gin.Context) {
 	var delReq req.IdReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyBody(c, &delReq)) {
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyJSON(c, &delReq)) {
 		return
 	}
 	err := t.Srv.Del(delReq.ID, req.GetAuth(c))
+	response.CheckAndResp(c, err)
+}
+
+func (t role) change(c *gin.Context) {
+	var changeReq req.IdReq
+	if response.IsFailWithResp(c, util.VerifyUtil.VerifyJSON(c, &changeReq)) {
+		return
+	}
+	err := t.Srv.Change(changeReq.ID, req.GetAuth(c))
 	response.CheckAndResp(c, err)
 }

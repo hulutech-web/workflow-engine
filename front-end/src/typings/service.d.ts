@@ -46,4 +46,16 @@ declare namespace Service {
     /** 返回的数据 */
     data: T
   }
+
+  interface PageResp<T> {
+    /** 总数 */
+    count: number
+    /** 页No */
+    pageNo: number
+    /** 每页Size */
+    pageSize: number
+    /** 数据 */
+    lists: T
+  }
 }
+

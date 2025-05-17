@@ -78,37 +78,37 @@ type MenuAddReq struct {
 	Path          string       `json:"path" form:"path" validate:"required,max=255" label:"菜单路径"`
 	Redirect      string       `json:"redirect" form:"redirect" validate:"max=255" label:"重定向地址"`
 	ComponentPath string       `json:"componentPath" form:"componentPath" validate:"max=255" label:"组件路径"`
-	Title         string       `json:"title" form:"title" label:"页面标题"`                       // 页面标题
-	Icon          string       `json:"icon" form:"icon" label:"图标"`                             // 图标
+	Title         string       `json:"title" form:"title" label:"页面标题"`                   // 页面标题
+	Icon          string       `json:"icon" form:"icon" label:"图标"`                       // 图标
 	RequiresAuth  bool         `json:"requiresAuth" form:"requiresAuth" label:"是否需要登录权限"` // 是否需要登录权限
 	KeepAlive     bool         `json:"keepAlive" form:"keepAlive" label:"是否开启页面缓存"`       // 是否开启页面缓存
-	Hide          bool         `json:"hide" form:"hide" label:"是否隐藏"`                         // 不显示在菜单中
-	Sort          uint         `json:"sort" form:"sort" label:"菜单排序"`                         // 菜单排序
-	Href          string       `json:"href" form:"href" label:"嵌套外链"`                         // 嵌套外链
+	Hide          bool         `json:"hide" form:"hide" label:"是否隐藏"`                     // 不显示在菜单中
+	Sort          uint         `json:"sort" form:"sort" label:"菜单排序"`                     // 菜单排序
+	Href          string       `json:"href" form:"href" label:"嵌套外链"`                     // 嵌套外链
 	ActiveMenu    string       `json:"activeMenu" form:"activeMenu" label:"当前路由高亮菜单"`     // 当前路由高亮菜单
-	WithoutTab    bool         `json:"withoutTab" form:"withoutTab" label:"是否添加到Tab"`        // 不添加到Tab
-	PinTab        bool         `json:"pinTab" form:"pinTab" label:"固定Tab"`                      // 固定Tab
-	MenuType      string       `json:"menuType" form:"menuType" label:"菜单类型"`                 // dir or page
+	WithoutTab    bool         `json:"withoutTab" form:"withoutTab" label:"是否添加到Tab"`     // 不添加到Tab
+	PinTab        bool         `json:"pinTab" form:"pinTab" label:"固定Tab"`                // 固定Tab
+	MenuType      string       `json:"menuType" form:"menuType" label:"菜单类型"`             // dir or page
 	Button        []MenuButton `json:"button" form:"button" label:"按钮"`
 }
 type MenuEditReq struct {
-	ID            uint         `json:"id" form:"id"`
+	ID            uint         `json:"id" validate:"required,gt=0" form:"id"`
 	Pid           uint         `json:"pid" form:"pid" validate:"gte=0" label:"父菜单ID"`
 	Name          string       `json:"name" form:"name" validate:"required,max=125" label:"菜单名称"`
 	Path          string       `json:"path" form:"path" validate:"required,max=255" label:"菜单路径"`
 	Redirect      string       `json:"redirect" form:"redirect" validate:"max=255" label:"重定向地址"`
 	ComponentPath string       `json:"componentPath" form:"componentPath" validate:"max=255" label:"组件路径"`
-	Title         string       `json:"title" form:"title" label:"页面标题"`                       // 页面标题
-	Icon          string       `json:"icon" form:"icon" label:"图标"`                             // 图标
+	Title         string       `json:"title" form:"title" label:"页面标题"`                   // 页面标题
+	Icon          string       `json:"icon" form:"icon" label:"图标"`                       // 图标
 	RequiresAuth  bool         `json:"requiresAuth" form:"requiresAuth" label:"是否需要登录权限"` // 是否需要登录权限
 	KeepAlive     bool         `json:"keepAlive" form:"keepAlive" label:"是否开启页面缓存"`       // 是否开启页面缓存
-	Hide          bool         `json:"hide" form:"hide" label:"是否隐藏"`                         // 不显示在菜单中
-	Sort          uint         `json:"sort" form:"sort" label:"菜单排序"`                         // 菜单排序
-	Href          string       `json:"href" form:"href" label:"嵌套外链"`                         // 嵌套外链
+	Hide          bool         `json:"hide" form:"hide" label:"是否隐藏"`                     // 不显示在菜单中
+	Sort          uint         `json:"sort" form:"sort" label:"菜单排序"`                     // 菜单排序
+	Href          string       `json:"href" form:"href" label:"嵌套外链"`                     // 嵌套外链
 	ActiveMenu    string       `json:"activeMenu" form:"activeMenu" label:"当前路由高亮菜单"`     // 当前路由高亮菜单
-	WithoutTab    bool         `json:"withoutTab" form:"withoutTab" label:"是否添加到Tab"`        // 不添加到Tab
-	PinTab        bool         `json:"pinTab" form:"pinTab" label:"固定Tab"`                      // 固定Tab
-	MenuType      string       `json:"menuType" form:"menuType" label:"菜单类型"`                 // dir or page
+	WithoutTab    bool         `json:"withoutTab" form:"withoutTab" label:"是否添加到Tab"`     // 不添加到Tab
+	PinTab        bool         `json:"pinTab" form:"pinTab" label:"固定Tab"`                // 固定Tab
+	MenuType      string       `json:"menuType" form:"menuType" label:"菜单类型"`             // dir or page
 	Button        []MenuButton `json:"button" form:"button" label:"按钮"`
 }
 type MenuButton struct {
