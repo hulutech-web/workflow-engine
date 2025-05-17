@@ -173,21 +173,23 @@ export default () => {
       },
     },
     columns: [
-      { field: "ID", title: "ID", width: 100 },
+      { field: "id", title: "编号", width: 100 },
       { field: "dept_name", title: "名称", width: 100 },
-      // 配置日期选择器
-      {
-        field: "html",
-        title: "层级",
-        sortable: true,
-      },
       {
         field: "Manager",
         title: "经理",
+        action:  true,
+        slots: {
+          default: "Manager",
+        },
       },
       {
         field: "Director",
         title: "管理员",
+        action:  true,
+        slots: {
+          default: "Director",
+        },
       },
       {
         field: "action",

@@ -1,17 +1,17 @@
 <template>
     <div>
-        <a-card title="员工管理">
+        <n-card title="员工管理">
             <template #extra>
                 <div>
-                    <a-button type="primary" @click="addEmp">创建员工</a-button>
+                    <n-button type="primary" @click="addEmp">创建员工</n-button>
                 </div>
             </template>
             <vxe-grid ref='xGrid' v-bind="gridOptions" v-on="gridEvent">
                 <template #action="{ row }">
                     <div>
-                        <a-button type="primary">删除</a-button>
-                        <a-button type="primary">编辑</a-button>
-                        <a-button type="primary" @click="bind(row)">绑定用户</a-button>
+                        <n-button type="primary">删除</n-button>
+                        <n-button type="primary">编辑</n-button>
+                        <n-button type="primary" @click="bind(row)">绑定用户</n-button>
                     </div>
                 </template>
                 <template #dept="{ row }">
@@ -20,17 +20,19 @@
                     </div>
                 </template>
             </vxe-grid>
-            <a-modal :footer="false" v-model:open="open" width="1000px" title="用户" centered
-                :bodyStyle="{ height: '800px' }">
+            <n-modal v-model:show="open"  title="用户">
+              <n-card style="width:800px;">
                 <Userlist @bind="bindins" />
-            </a-modal>
-        </a-card>
+              </n-card>
+            </n-modal>
+        </n-card>
     </div>
 </template>
 
 <script setup lang="ts">
-import { message } from 'ant-design-vue';
-
+import { useMessage } from 'naive-ui';
+import useRulesStore from "@/store/useRulesStore";
+const message = useMessage()
 
 const { gridOptions, bindUser } = useEmp()
 const router = useRouter()

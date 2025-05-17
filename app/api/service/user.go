@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
@@ -11,12 +12,14 @@ import (
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"gorm.io/gorm"
+	"net/url"
 	"strings"
 )
 
 type UserService interface {
 	FindByUsername(username string, tenantId uint) (*models.User, error)
 	List(page *req.PageReq, query *req.UserQueryReq, auth *req.AuthReq) (response.PageResp, error)
+	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
 	Detail(userId uint) (resp.UserResp, error)
 	Add(userReq *req.UserAddReq, auth *req.AuthReq) error
 	Edit(userReq *req.UserEditReq, auth *req.AuthReq) error
@@ -33,6 +36,13 @@ type userServiceImpl struct {
 	permSrv AuthPermService
 }
 
+func (d userServiceImpl) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
+	var tmpls []models.User
+	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
+
+	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls)
+	return result, err
+}
 func (u userServiceImpl) FindByUsername(username string, tenantId uint) (*models.User, error) {
 	var user models.User
 	if err := u.db.Where("username =? AND tenant_id =?", username, tenantId).Preload("Role").Preload("Tenant").First(&user).Error; err != nil {

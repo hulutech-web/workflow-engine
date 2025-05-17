@@ -7,6 +7,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
+	"github.com/sirupsen/logrus"
 	"go.uber.org/fx"
 )
 
@@ -20,6 +21,7 @@ func userRoutes(t user, r *types.ApiRouter) {
 
 	api.GET("/self", t.self)
 	api.GET("/list", t.list)
+	api.GET("/index", t.index)
 	api.GET("/detail", t.detail)
 	api.POST("/add", t.add, r.Log("添加用户"))
 	api.POST("/edit", t.edit, r.Log("编辑用户"))
@@ -41,6 +43,18 @@ func (t user) list(ctx *gin.Context) {
 	}
 	res, err := t.Srv.List(&pageReq, &listReq, req.GetAuth(ctx))
 	response.CheckAndRespWithData(ctx, res, err)
+}
+func (r *user) index(ctx *gin.Context) {
+	query := ctx.Request.URL.Query()
+	index, err := r.Srv.Index(ctx, query)
+	if err != nil {
+		response.Fail(ctx, response.Failed)
+		return
+	}
+	logrus.WithFields(logrus.Fields{
+		"index": index,
+	}).Info("返回成功")
+	response.OkWithData(ctx, index)
 }
 
 func (t user) detail(ctx *gin.Context) {

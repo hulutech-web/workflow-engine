@@ -24,6 +24,7 @@ var Module = fx.Module("api.route",
 	fx.Invoke(flowRoutes),
 	fx.Invoke(processRoutes),
 	fx.Invoke(flowlinkRoutes),
+	fx.Invoke(flowTypeRoutes),
 )
 
 type Routes struct {

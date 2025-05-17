@@ -7,10 +7,11 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
+	"net/url"
 )
 
 type FlowService interface {
-	Index(ctx *gin.Context) (*PageResult, error)
+	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
 	List(ctx *gin.Context) ([]models.Flow, error)
 	Store(ctx *gin.Context, part models.Flow) error
 	Create(ctx *gin.Context) (error, []models.Template, []models.Flowtype)
@@ -25,13 +26,13 @@ type flowService struct {
 	db *gorm.DB
 }
 
-func (f *flowService) Index(ctx *gin.Context) (*PageResult, error) {
-	var depts []models.Flow
-	paginatorService := NewPaginatorServiceImpl(f.db, ctx)
-	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&depts)
+func (d flowService) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
+	var tmpls []models.Flow
+	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
+
+	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls)
 	return result, err
 }
-
 func (f *flowService) List(ctx *gin.Context) ([]models.Flow, error) {
 	return nil, nil
 }

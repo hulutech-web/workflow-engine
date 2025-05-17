@@ -30,7 +30,8 @@ func flowRoutes(a flow, r *types.ApiRouter) {
 }
 
 func (r *flow) Index(ctx *gin.Context) {
-	index, err := r.Srv.Index(ctx)
+	query := ctx.Request.URL.Query()
+	index, err := r.Srv.Index(ctx, query)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
 		return
@@ -38,8 +39,9 @@ func (r *flow) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	response.OkOnlyData(ctx, index)
+	response.OkWithData(ctx, index)
 }
+
 func (r *flow) Create(ctx *gin.Context) {
 	err, templates, flowtypes := r.Srv.Create(ctx)
 	if err != nil {

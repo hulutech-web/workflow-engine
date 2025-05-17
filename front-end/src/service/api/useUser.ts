@@ -1,4 +1,4 @@
-import { http } from "@/plugins/axios";
+import { request } from '../http'
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -6,55 +6,26 @@ const storage = useStorage();
 export default () => {
     // 方法
     const loadUsers = async (id) => {
-        return await http.request({
-            url: `user`,
-            method: "GET",
-        });
+        return await request.Get(`user`);
     };
 
     const storeUser = async (data) => {
-        return await http.request({
-            url: `user`,
-            method: "POST",
-            data: data
-        })
+        return await request.Post(`user`,data)
     }
 
     const showUser = async (id) => {
-        return await http.request({
-            url: `user/${id}`,
-            method: "GET",
-        })
+        return await request.Get(`user/${id}`)
     }
 
     const updateUser = async (data) => {
-        return await http.request({
-            url: `user/${data.ID}`,
-            method: "PUT",
-            data: data
-        })
+        return await request.Put( `user/${data.ID}`,data)
     }
 
     const deleteUser = async (id) => {
-        return await http.request({
-            url: `user/${id}`,
-            method: "DELETE",
-        })
+        return await request.Delete(`user/${id}`)
     }
 
-    const searchUser=async(name)=>{
-        return await http.request({
-            url: `user/search?name=${name}`,
-            method: "GET",
-        })
-    }
 
-    const topUsers = async()=>{
-        return await http.request({
-            url:`user/top`,
-            method:"GET"
-        })
-    }
     const serveApiUrl = import.meta.env.VITE_API_URL;
     const gridOptions = reactive<VxeGridProps<RowVO>>({
         border: "full",
@@ -75,20 +46,9 @@ export default () => {
             titleAlign: "right",
             items: [
                 {
-                    field: "mobile",
-                    title: "手机号",
-                    span: 6,
-                    titlePrefix: {
-                        useHTML: true,
-                        message: "模糊查询",
-                        icon: "vxe-icon-question-circle-fill",
-                    },
-                    itemRender: { name: "$input", props: { placeholder: "请输入手机号" } },
-                },
-                {
-                    field: "name",
+                    field: "username",
                     title: "姓名",
-                    span: 6,
+                    span: 8,
                     titlePrefix: {
                         useHTML: true,
                         message: "模糊查询",
@@ -97,7 +57,7 @@ export default () => {
                     itemRender: { name: "$input", props: { placeholder: "请输入姓名" } },
                 },
                 {
-                    span: 24,
+                    span: 12,
                     align: "left",
                     collapseNode: true,
                     itemRender: {
@@ -185,28 +145,25 @@ export default () => {
             // 只接收Promise，具体实现自由发挥
             ajax: {
                 // 当点击工具栏查询按钮或者手动提交指令 query或reload 时会被触发
-                query: ({ page, sorts, filters, form }) => {
-                    return new Promise((resolve, reject) => {
-                        const queryParams: any = Object.assign({}, form);
-                        // 处理排序条件
-                        const firstSort = sorts[0];
-                        if (firstSort) {
-                            queryParams.sort = firstSort.field;
-                            queryParams.order = firstSort.order;
-                        }
-                        // 处理筛选条件
-                        filters.forEach(({ field, values }) => {
-                            queryParams[field] = values.join(",");
-                        });
+              query: ({ page, sorts, filters, form }) => {
+                return new Promise(async (resolve, reject) => {
+                  const queryParams: any = Object.assign({}, form)
+                  // 处理排序条件
+                  const firstSort = sorts[0]
+                  if (firstSort) {
+                    queryParams.sort = firstSort.field
+                    queryParams.order = firstSort.order
+                  }
+                  // 处理筛选条件
+                  filters.forEach(({ field, values }) => {
+                    queryParams[field] = values.join(',')
+                  })
 
-                        const data = http.request({
-                            url: `user?pageSize=${page.pageSize}&currentPage=${page.currentPage
-                                }&${XEUtils.serialize(queryParams)}`,
-                            method: "GET",
-                        });
-                        resolve(data);
-                    });
-                },
+                  const {data} = await request.Get(`user/index?pageSize=${page.pageSize}&currentPage=${page.currentPage
+                  }&${XEUtils.serialize(queryParams)}`)
+                  resolve(data);
+                })
+              },
                 save: ({ body }) => {
                     return new Promise((resolve, reject) => {
                         //删除item中的#字段
@@ -223,19 +180,18 @@ export default () => {
             },
         },
         columns: [
-            { field: "id", title: "ID", width: 100 },
-            { field: "name", title: "名称" },
+            { field: "id", title: "序号", width: 100 },
+            { field: "username", title: "名称" },
             // 配置日期选择器
             {
-                field: "mobile",
+                field: "phone",
                 title: "手机号",
                 sortable: true,
 
             },
             {
-                field: "id_number",
-                title: "身份证号",
-
+                field: "email",
+                title: "邮箱",
             },
             {
                 field: "action",
@@ -273,8 +229,6 @@ export default () => {
         loadUsers,
         updateUser,
         deleteUser,
-        searchUser,
-        topUsers,
         storeUser,
         showUser,
     };
