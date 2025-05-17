@@ -12,6 +12,7 @@ import { useMessage } from "naive-ui";
 const message = useMessage();
 function isMySQLCondition(expression) {
   // 简化并修正后的正则表达式尝试，以匹配给定的示例
+  console.log("表达式",expression)
   const pattern =
     /^(?:[a-zA-Z0-9_]+(?:\s*(?:>|<|=|<>|!=|>=|<=)\s*(?:"[^"]*"|'[^']*'|[\u4e00-\u9fa5]+|\d+|NULL))\s*(?:AND|OR|NOT)?)+$/i;
 

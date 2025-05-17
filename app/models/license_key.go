@@ -6,7 +6,7 @@ import "time"
 type LicenseKey struct {
 	Model
 	KeyID       string           `json:"key_id" gorm:"column:key_id;unique;" comment:"秘钥KeyID"`
-	KeyValue    string           `json:"key_value" gorm:"column:key_value;uniqueIndex;not null" comment:"秘钥内容（加密存储）"`
+	KeyValue    string           `json:"key_value" gorm:"column:key_value;not null" comment:"秘钥内容（加密存储）"`
 	TenantID    uint             `json:"tenant_id" gorm:"column:tenant_id;index" comment:"租户ID（未售出时为NULL）"`
 	PackageID   uint             `json:"package_id" gorm:"null" comment:"关联套餐ID"`
 	Status      LicenseKeyStatus `json:"status" gorm:"index;default:'inactive'" comment:"状态（inactive/active/expired/disabled）"`

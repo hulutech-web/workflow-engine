@@ -1,8 +1,9 @@
 import jsPlumb from "jsplumb";
-import { useDialog } from 'naive-ui'
+import { useModal  } from "naive-ui";
+
 import { onContextMenu } from "./tool";
 const { deleteProcess } = useProcess();
-
+const Modal = useModal();
 async function initFlowChart(initData, callback) {
   await nextTick(); // 确保DOM更新完成
   let data = toRaw(initData);
@@ -21,7 +22,8 @@ async function initFlowChart(initData, callback) {
     const node = data.list[key];
     nodeList.push(node);
   });
-
+  // console.log("nodeList", nodeList);
+  // 初始化节点
   // 初始化jsPlumb实例
   jsPlumbInstance = jsPlumb.jsPlumb.getInstance({
     container: document.getElementById("flow-chart-container"),
@@ -50,6 +52,7 @@ async function initFlowChart(initData, callback) {
     });
     async function canDelCbk(nodeId) {
       console.log(nodeId);
+
       let index = nodeList.findIndex((node) => `node-${node.id}` === nodeId);
       if (index != -1) {
         // 获取当前被删除的节点
@@ -82,10 +85,10 @@ async function initFlowChart(initData, callback) {
           let newStyle = node2.style;
           // //replace
           newStyle = newStyle.replace(
-            /left:(\d+)px;/,
+            /left:(\d+\.?\d*)px;/,
             `left:${event.pos[0]}px;`
           );
-          newStyle = newStyle.replace(/top:(\d+)px;/, `top:${event.pos[1]}px;`);
+          newStyle = newStyle.replace(/top:(\d+\.?\d*)px;/, `top:${event.pos[1]}px;`);
           displayNodeList[index]["style"] = newStyle;
           callback(displayNodeList);
         },
@@ -140,23 +143,21 @@ async function initFlowChart(initData, callback) {
       return true;
     });
     jsPlumbInstance.bind("click", (conn, originalEvent) => {
-
-      let is_confirm = window.confirm("确定删除该连线吗？")
-      if(is_confirm){
+      const isConfirmed = window.confirm("确定要执行此操作吗？");
+      if(isConfirmed){
         jsPlumbInstance.deleteConnection(conn);
-      }else{
-
       }
-      // const dialog = useDialog()
-      // dialog.success({
+      // Modal.confirm({
       //   //居中
+      //   centered: true,
       //   title: "提示",
-      //   content: "确定删除所点击的链接吗？",
-      //   draggable: true,
-      //   onMaskClick: () => {
+      //   content: "",
+      //   okText: "确定",
+      //   cancelText: "取消",
+      //   onOk: () => {
       //
       //   },
-      //   onEsc() {
+      //   onCancel() {
       //     console.log("Cancel");
       //   },
       // });
@@ -166,14 +167,12 @@ async function initFlowChart(initData, callback) {
     nodeList.forEach((node) => {
       if (node.process_to) {
         node.process_to.split(",").forEach((targetId) => {
-          //检查当前node与targetId是否已经连线，删除连线
-          if (!jsPlumbInstance.select({source: `node-${node.id}`, target:`node-${targetId}`}).length) {
           jsPlumbInstance.connect({
             source: `node-${node.id}`,
             target: `node-${targetId}`,
-            paintStyle: { stroke: "#4169E1", strokeWidth:2 }, // 线条样式
-            endpointStyle: { fill: "#4169E1", radius: 3 }, // 端点样式
-            connector: [
+            paintStyle: { stroke: "#4169E1", strokeWidth: 3 }, // 线条样式
+            endpointStyle: { fill: "#4169E1", radius: 4 }, // 端点样式
+            Connector: [
               "Bezier",
               {
                 curviness: 75,
@@ -199,7 +198,6 @@ async function initFlowChart(initData, callback) {
               ],
             ],
           });
-          }
         });
       }
       // 设置节点作为连接节点
