@@ -39,7 +39,7 @@ func (r *dept) Index(ctx *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"index": index,
 	}).Info("返回成功")
-	ctx.JSON(http.StatusOK, index)
+	response.OkWithData(ctx, index)
 }
 
 func (r *dept) List(ctx *gin.Context) {

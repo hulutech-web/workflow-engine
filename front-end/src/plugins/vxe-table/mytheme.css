@@ -1,15 +1,22 @@
+
 html.my-theme {
+  --vxe-ui-font-primary-color: #18A058 !important;
+  --vxe-ui-font-primary-tinge-color: #d4d5d7;
+  --vxe-ui-font-primary-lighten-color: #0c7a43;
+  --vxe-ui-font-primary-darken-color: #0c7a43;
+
+  --vxe-ui-font-primary-disabled-color: #BFBFBF;
   --vxe-font-color: rgba(0, 0, 0, 0.88);
-  --vxe-primary-color:#1677ff !important;
+  --vxe-primary-color:#18A058 !important;
   --vxe-button-max-width:100px;
-  --vxe-primary-lighten-color:#3f87ec !important;
-  --vxe-button-dropdown-panel-background-color:#3f87ec !important;
+  --vxe-primary-lighten-color:#18A058 !important;
+  --vxe-button-dropdown-panel-background-color:#18A058 !important;
   --vxe-border-radius:6px;
   /* 成功色 */
   --vxe-success-color: #04B96B;
   --vxe-success-lighten-color:#18ad6c;
   }
-  
+
   html.my-theme .vxe-button{
     padding:4px 15px;
   }

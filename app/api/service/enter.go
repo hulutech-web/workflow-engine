@@ -17,4 +17,5 @@ var Module = fx.Module("service",
 	fx.Provide(NewFlowService),
 	fx.Provide(NewProcessService),
 	fx.Provide(NewFlowlinkService),
+	fx.Provide(NewFlowTypeService),
 )

@@ -1,4 +1,4 @@
-import { request } from '../http'
+import { request } from "@/service/http";
 import router from "@/plugins/router";
 import XEUtils from "xe-utils";
 const storage = useStorage();
@@ -10,38 +10,33 @@ export default () => {
   };
 
   const storeEmp = async (data) => {
-    return await request.Post(`emp`,data);
-  };
+    return await request.Post(`emp`,data)
+  }
 
   const showEmp = async (id) => {
-    return await request.Get( `emp/${id}`);
-  };
+    return await request.Get(`emp/${id}`)
+  }
 
   const updateEmp = async (data) => {
-    return await request.Put(`emp/${data.ID}`,data);
-  };
+    return await request.Put(`emp/${data.ID}`,data)
+  }
 
   const deleteEmp = async (id) => {
-    return await request.Delete(`emp/${id}`);
-  };
+    return await request.Delete(`emp/${id}`)
+  }
 
   const searchEmp = async (name) => {
-    return await request.Post(`emp/search`,{ name: name });
-  };
+    return await request.Post(`emp/search`,{ name: name })
+  }
 
   const getEmpOpt = async () => {
-    return await request.Get(`emp/options`);
-  };
+    return await request.Get(`emp/options`)
+  }
 
-//   员工绑定用户
-  const bindUser = async (data) => {
-    return await request.Post(`emp/bind`,data);
-  };
-
-  const serveApiUrl = import.meta.env.VITE_API_URL;
+  const serveApiUrl = import.meta.env.VITE_API_URL
   const gridOptions = reactive<VxeGridProps<RowVO>>({
     border: "full",
-    // size: "small",
+    size: "small",
     showHeaderOverflow: true,
     showOverflow: true,
     keepSource: true,
@@ -60,12 +55,17 @@ export default () => {
       items: [
         {
           field: "name",
-          title: "姓名",
-          span: 24,
-          itemRender: { name: "$input", props: { placeholder: "请输入员工姓名" } },
+          title: "名称",
+          span: 12,
+          titlePrefix: {
+            useHTML: true,
+            message: "模糊查询",
+            icon: "vxe-icon-question-circle-fill",
+          },
+          itemRender: { name: "$input", props: { placeholder: "请输入名称" } },
         },
         {
-          span: 24,
+          span: 12,
           align: "left",
           collapseNode: true,
           itemRender: {
@@ -104,7 +104,9 @@ export default () => {
       },
     },
     printConfig: {
-      columns: [{ field: "name" }],
+      columns: [
+        { field: "name" },
+      ],
     },
     sortConfig: {
       trigger: "cell",
@@ -168,7 +170,7 @@ export default () => {
       },
     },
     columns: [
-      { field: "id", title: "id", width: 100 },
+      { field: "id", title: "序号", width: 100 },
       // 配置日期选择器
       {
         field: "name",
@@ -181,28 +183,28 @@ export default () => {
         sortable: true,
       },
       {
-        field: "email",
-        title: "邮箱",
-        sortable: true,
-      },
-      {
-        field: "Dept",
+        field:"Dept",
         title: "部门",
         sortable: true,
         slots: {
-          default: "dept",
+          default: "dept"
         },
       },
       {
+        field:"action",
         title: "操作",
         sortable: true,
         slots: {
-          default: "action",
+          default: "action"
         },
       },
     ],
-    importConfig: {},
-    exportConfig: {},
+    importConfig: {
+
+    },
+    exportConfig: {
+
+    },
     checkboxConfig: {
       labelField: "ID",
       checkStrictly: true,
@@ -231,7 +233,6 @@ export default () => {
     getEmpOpt,
     deleteEmp,
     searchEmp,
-    bindUser,
     storeEmp,
     showEmp,
   };

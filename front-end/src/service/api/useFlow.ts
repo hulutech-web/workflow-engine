@@ -66,7 +66,7 @@ export default () => {
           itemRender: { name: "$input", props: { placeholder: "请输入名称" } },
         },
         {
-          span: 24,
+          span: 8,
           align: "left",
           collapseNode: true,
           itemRender: {

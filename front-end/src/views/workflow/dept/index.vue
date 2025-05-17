@@ -1,61 +1,54 @@
 <template>
     <div>
-        <a-row :gutter="[24, 1]">
-            <a-col :span="12">
-                <a-card>
+        <n-row :gutter="[24, 1]">
+            <n-col :span="12">
+                <n-card>
                     <p>部门</p>
-                    <a-button type="primary" :icon="h(PlusOutlined)">
+                    <n-button type="primary">
                         新增部门
-                    </a-button>
-                    <a-table bordered :columns="columns" :dataSource="depts" :pagination="false">
-                        <template #bodyCell="{ column, text, record }">
-                            <template v-if="column.dataIndex === 'html'">
-                                <span class="text-blue-500 text-xl mr-3">
-                                    {{ record.html }}
-                                </span>
-                                {{ record.dept_name }}
-                            </template>
-                            <template v-if="column.dataIndex === 'Manager'">
-                                {{ record.Manager ? record.Manager.name : '' }}
+                    </n-button>
+                  <vxe-grid ref='xGrid' v-bind="gridOptions" v-on="gridEvent">
+                    <template #Manager="{ row }">
+                      <div>
+                       {{row.Manager?row.Manager.name:''}}
+                      </div>
+                    </template>
+                    <template #Director="{ row }">
+                      <div>
+                        {{row.Director?row.Director.name:''}}
+                      </div>
+                    </template>
+                    <template #action="{ row }">
+                      <div>
+                        <n-button type="primary">删除</n-button>
+                        <n-button type="primary">编辑</n-button>
+                      </div>
+                    </template>
+                  </vxe-grid>
 
-                                <a-button type="dashed" size="small" @click="bindManager(record)" danger>设置经理</a-button>
-                            </template>
-                            <template v-if="column.dataIndex === 'Director'">
-                                {{ record.Director ? record.Director.name : '' }}
-
-                                <a-button type="primary" size="small" @click="bindDirector(record)">设置主管</a-button>
-                            </template>
-                            <template v-if="column.dataIndex === 'action'">
-                                <a-space>
-                                    <a-button type="primary">修改</a-button>
-                                    <a-button type="dashed" danger>删除</a-button>
-                                </a-space>
-                            </template>
-                        </template>
-                    </a-table>
-
-                    <a-modal :footer="false" v-model:open="open" width="1000px" title="用户" centered @close="onClose"
+                    <n-modal  v-model:show="open" width="1000px" title="用户"
                         :bodyStyle="{ height: '800px' }">
+                      <n-card style="width:600px">
                         <Emplist @bind="bindins" />
-                    </a-modal>
-                </a-card>
-            </a-col>
-            <a-col :span="12">
-                <a-card>
+                      </n-card>
+                    </n-modal>
+                </n-card>
+            </n-col>
+            <n-col :span="12">
+                <n-card>
                     <p>部门</p>
-                </a-card>
-                <a-card>
+                </n-card>
+                <n-card>
 
-                </a-card>
-            </a-col>
-        </a-row>
+                </n-card>
+            </n-col>
+        </n-row>
     </div>
 </template>
 
 <script setup lang="ts">
 import { h } from 'vue';
-import { ConsoleSqlOutlined, PlusOutlined } from '@ant-design/icons-vue';
-const { loadDepts, setManager, setDirector } = useDept();
+const { loadDepts, setManager, setDirector,gridOptions } = useDept();
 const depts = ref([])
 const columns = [
     {
@@ -116,6 +109,22 @@ const bindins = async (val) => {
         managerState.value.manager_id = val.emp_id
         await setManager(managerState.value)
     }
+}
+
+const xGrid = ref()
+const gridEvent: VxeGridListeners<RowVO> = {
+  proxyQuery() {
+    console.log('数据代理查询事件')
+    const grid = xGrid.value
+    // 获取表格中的数据
+    const data = grid.getTableData().fullData
+  },
+  proxyDelete() {
+    console.log('数据代理删除事件')
+  },
+  proxySave() {
+    console.log('数据代理保存事件')
+  }
 }
 </script>
 

@@ -1,4 +1,4 @@
-INSERT INTO `auth_menus` (created_at,updated_at,pid,name,`path`,redirect,componentPath,isDisabled,icon,menuType,title,requiresAuth,keepAlive,hide,sort,href,activeMenu,withoutTab,pinTab) VALUES
+INSERT INTO `auth_menus` (`created_at`,`updated_at`,`pid`,`name`,`path`,`redirect`,`componentPath`,`isDisabled`,`icon`,`menuType`,`title`,`requiresAuth`,`keepAlive`,`hide`,`sort`,`href`,`activeMenu`,`withoutTab`,`pinTab`) VALUES
 	 ('2025-05-11 16:18:50.855','2025-05-11 16:18:50.855',0,'workbench','/workbench','','/dashboard/workbench/index.vue',0,'icon-park-outline:alarm','page','工作台',1,0,0,0,NULL,NULL,0,1),
 	 ('2025-05-11 16:18:50.855','2025-05-13 22:43:36.204',0,'auth','/auth','','',0,'icon-park-outline:coordinate-system','dir','系统设置',1,0,0,99,'','',0,0),
 	 ('2025-05-11 16:18:50.855','2025-05-11 16:18:50.855',2,'auth_menu','/auth/menu','','/auth/menu/index.vue',0,'icon-park-outline:application-menu','page','系统菜单',1,0,0,1,'','',0,0),
@@ -11,8 +11,8 @@ INSERT INTO `auth_menus` (created_at,updated_at,pid,name,`path`,redirect,compone
 	 ('2025-05-12 23:57:49.182','2025-05-12 23:57:49.182',9,'emp_index','/emp/index','','/workflow/emp/index.vue',0,'icon-park-outline:data-user','page','员工管理',1,0,0,0,'','',1,0),
 	 ('2025-05-12 23:58:40.783','2025-05-12 23:58:40.783',6,'template','/template','','',0,'carbon:prompt-template','dir','模板',1,0,0,0,'','',1,0),
 	 ('2025-05-12 23:59:40.802','2025-05-12 23:59:40.802',11,'template_index','/template/index','','/workflow/template/index.vue',0,'icon-park-outline:document-folder','page','流程模板',1,0,0,0,'','',1,0),
-	 ('2025-05-13 00:02:33.778','2025-05-13 00:25:06.541',6,'template_form','/template_form','','',0,'icon-park-outline:book-open','dir','模板字段',1,0,0,0,'','',1,0),
-	 ('2025-05-13 00:03:46.197','2025-05-13 00:03:46.197',13,'templateform_index','/temlateform/index','','/workflow/template_form/index.vue',0,'icon-park-outline:list-fail','page','字段配置',1,0,0,0,'','',1,0),
+	 ('2025-05-13 00:02:33.778','2025-05-17 17:08:21.619',6,'flowtype','/workflow/flowtype','','',0,'icon-park-outline:book-open','dir','流程类型',1,0,0,0,'','',1,0),
+	 ('2025-05-13 00:03:46.197','2025-05-17 17:10:26.457',13,'flowtype_index','/workflow/flowtype/index','','/workflow/flowtype/index.vue',0,'icon-park-outline:list-fail','page','类型配置',1,0,0,0,'','',1,0),
 	 ('2025-05-13 20:59:39.117','2025-05-13 22:45:04.111',6,'workflow_flow','/workflow/flow','','',0,'carbon:ibm-engineering-lifecycle-mgmt','dir','流程引擎',1,0,0,0,'','',1,0),
 	 ('2025-05-13 21:01:02.841','2025-05-13 22:46:48.647',15,'flow_index','/workflow/flow/index','','/workflow/flow/index.vue',0,'icon-park-outline:benz','page','设计',1,0,0,1,'','',1,0),
 	 ('2025-05-13 21:02:51.047','2025-05-13 22:46:36.252',15,'flow_create','/workflow/flow/create','','/workflow/flow/create.vue',0,'carbon:calendar-add','page','创建流程',1,0,1,0,'','',0,0),
