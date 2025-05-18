@@ -263,7 +263,7 @@
                   <n-col :span="4">
                     <div class="text-center">确认条件</div>
                     <div class="text-center">
-                      <n-button type="primary" @click="validateExpr(index)" size="small">确认</n-button>
+                      <n-button type="error" @click="validateExpr(index)" size="small">校验</n-button>
                     </div>
                   </n-col>
                 </n-row>
