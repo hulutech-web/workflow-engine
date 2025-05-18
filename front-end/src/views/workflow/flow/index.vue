@@ -87,6 +87,7 @@ const startFlow = (row) => {
     message.error("流程尚未发布，无法发起流程")
     return
   }
+
   router.push({path: `/workflow/flow/${row.id}/initiation`})
 }
 

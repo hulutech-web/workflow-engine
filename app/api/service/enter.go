@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/hulutech-web/workflow-engine/app/api/workflow"
 	"go.uber.org/fx"
 )
 
@@ -22,4 +23,5 @@ var Module = fx.Module("service",
 	fx.Provide(NewFlowTypeService),
 	fx.Provide(NewEntryService),
 	fx.Provide(NewProcService),
+	fx.Provide(workflow.NewEngin),
 )
