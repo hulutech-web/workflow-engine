@@ -44,6 +44,7 @@ const (
 type Option func(*Service)
 
 func NewEvent(logger *zap.Logger, opts ...Option) *Service {
+	zap.L().Info("Creating event service")
 	es := &Service{
 		subs:        make(map[string][]subEntry),
 		logger:      logger,
