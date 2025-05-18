@@ -1,8 +1,6 @@
 package api
 
 import (
-	"github.com/hulutech-web/workflow-engine/app/api/event"
-	"github.com/hulutech-web/workflow-engine/app/api/queue"
 	"github.com/hulutech-web/workflow-engine/app/api/route"
 	"github.com/hulutech-web/workflow-engine/app/api/service"
 	"github.com/hulutech-web/workflow-engine/core/event"
