@@ -8,6 +8,7 @@ type TenantAddReq struct {
 	Domain      string `json:"domain" form:"domain" validate:"required,domain" label:"租户域名"`
 	Logo        string `json:"logo" form:"logo" validate:"omitempty,url" label:"租户Logo"`
 	Description string `json:"description" form:"description" validate:"max=255" label:"租户描述"`
+	Menus       []uint `json:"menus" form:"menus" label:"菜单ID"`
 	IsDisable   uint8  `json:"is_disable" form:"is_disable" validate:"oneof=0 1" label:"是否禁用"`
 	ExpiredAt   int64  `json:"expired_at" form:"expired_at" validate:"omitempty,gte=0" label:"租户过期时间"`
 }
@@ -21,6 +22,7 @@ type TenantEditReq struct {
 	Domain      string `json:"domain" form:"domain" validate:"required,domain" label:"租户域名"`
 	Logo        string `json:"logo" form:"logo" validate:"omitempty,url" label:"租户Logo"`
 	Description string `json:"description" form:"description" validate:"max=255" label:"租户描述"`
+	Menus       []uint `json:"menus" form:"menus" label:"菜单ID"`
 	IsDisable   uint8  `json:"is_disable" form:"is_disable" validate:"oneof=0 1" label:"是否禁用"`
 	ExpiredAt   int64  `json:"expired_at" form:"expired_at" validate:"omitempty,gte=0" label:"租户过期时间"`
 }
@@ -124,7 +126,7 @@ type RoleAddReq struct {
 	IsDisable uint8  `json:"is_disable" form:"is_disable" validate:"oneof=0 1" label:"是否禁用"`
 	Sort      uint16 `json:"sort" form:"sort" label:"角色排序"`
 	IsAdmin   uint8  `json:"is_admin" form:"is_admin" validate:"oneof=0 1" label:"是否为管理员"`
-	MenuIds   string `json:"menu_ids" form:"menu_ids" label:"菜单ID"`
+	Menus     []uint `json:"menus" form:"menus" label:"菜单ID"`
 }
 
 type RoleEditReq struct {
@@ -134,7 +136,7 @@ type RoleEditReq struct {
 	IsDisable uint8  `json:"is_disable" form:"is_disable" validate:"oneof=0 1" label:"是否禁用"`
 	Sort      uint16 `json:"sort" form:"sort" label:"角色排序"`
 	IsAdmin   uint8  `json:"is_admin" form:"is_admin" validate:"oneof=0 1" label:"是否为管理员"`
-	MenuIds   string `json:"menu_ids" form:"menu_ids" label:"菜单ID"`
+	Menus     []uint `json:"menus" form:"menus" label:"菜单ID"`
 }
 
 type RoleQueryReq struct {

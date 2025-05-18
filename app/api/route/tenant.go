@@ -31,11 +31,12 @@ func (t tenant) all(ctx *gin.Context) {
 }
 
 func (t tenant) list(c *gin.Context) {
-	var detailReq req.IdReq
-	if response.IsFailWithResp(c, util.VerifyUtil.VerifyQuery(c, &detailReq)) {
+	var page req.PageReq
+	var listReq req.TenantQueryReq
+	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &page, &listReq)) {
 		return
 	}
-	res, err := t.Srv.Detail(detailReq.ID)
+	res, err := t.Srv.List(page, listReq)
 	response.CheckAndRespWithData(c, res, err)
 }
 
