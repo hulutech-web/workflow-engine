@@ -18,12 +18,12 @@ import (
 var Module = fx.Options(
 	// 配置模块
 	config.Module,
-	// 事件模块
-	event.Module,
 	// 日志模块
 	logging.Module,
 	// 缓存模块
 	cache.Module,
+	// 事件模块
+	event.Module,
 	// 队列模块
 	queue.Module,
 	// 数据库模块

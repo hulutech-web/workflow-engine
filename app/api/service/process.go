@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/workflow/common"
+	"github.com/hulutech-web/workflow-engine/app/api/service/workflow/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/sirupsen/logrus"

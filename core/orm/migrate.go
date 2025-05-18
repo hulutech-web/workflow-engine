@@ -46,6 +46,7 @@ func modifyFieldType(db *gorm.DB) error {
 }
 func dst() []interface{} {
 	return []interface{}{
+		&models.Config{},
 		&models.User{},
 		&models.AuthTenant{},
 		&models.AuthMenu{},

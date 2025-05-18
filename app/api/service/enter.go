@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/hulutech-web/workflow-engine/app/api/workflow"
+	"github.com/hulutech-web/workflow-engine/app/api/service/workflow"
 	"go.uber.org/fx"
 )
 

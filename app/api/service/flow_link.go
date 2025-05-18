@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/hulutech-web/workflow-engine/app/api/workflow/common"
+	"github.com/hulutech-web/workflow-engine/app/api/service/workflow/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
