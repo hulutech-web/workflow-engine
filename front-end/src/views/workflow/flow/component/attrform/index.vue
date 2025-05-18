@@ -210,11 +210,11 @@
               </n-col>
               <n-col :span="6">
                 <div class="show-expr">
-                  <div v-if="!item.Expression">
+                  <div v-if="!item.expression">
                     <span class="text-sm text-gray-400">暂无条件</span>
                   </div>
                   <div v-else>
-                    <div v-for="(e, i) in JSON.parse(item.Expression)" :key="i">
+                    <div v-for="(e, i) in JSON.parse(item.expression)" :key="i">
                       {{ e.field }}{{ e.operator }}{{ e.value }}{{ e.extra }}
                     </div>
                   </div>
@@ -225,24 +225,22 @@
                   <n-col :span="4">
                     <div class="text-center">字段</div>
                     <n-select style="width: 100%;" v-model:value="bindExprs[index]['field']" size="small"
-                              :options="fields.map(item=>{
-                                return {
-                                  label: item.field_name,
-                                  value: item.field
-                                }
-                              })">
+                              @update:value="hideCondi"
+                              :options="options.field_options">
                     </n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">条件</div>
-                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['operator']" size="small"
+                    <n-select style="width: 100px;" v-model:value="bindExprs[index]['operator']" size="small"
                               :options="selectOpt.condi_opts">
 
                     </n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">值</div>
-                    <n-input v-model:value="bindExprs[index]['value']" size="small"></n-input>
+                    <n-input v-model:value="bindExprs[index]['value']" size="small" v-if="!autoInputShow"></n-input>
+                    <n-select v-model:value="bindExprs[index]['value']" size="small" v-if="autoInputShow"
+                              :options="autoOptions"></n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">其他条件</div>
@@ -441,6 +439,16 @@ export default {
       selectOpt.value.flows = attrs.process.child_flow_id
       selectOpt.value.processes = attrs.process.child_after
       selectOpt.value.back_processes = attrs.process.child_back_process
+
+      //   初始化选项1
+      options.value.field_options = attrs.fields.map(item => {
+        return {
+          label: item.field_name,
+          value: item.field,
+          field_type: item.field_type,
+          field_value:item.field_value,
+        }
+      })
     }
 
     const fillSubmitState = (attrs) => {
@@ -581,7 +589,8 @@ export default {
         }
 
 
-      ]
+      ],
+      field_options: []
     })
 
 
@@ -656,6 +665,7 @@ export default {
 
     const validateExpr = (index) => {
       let targetArr = stateExprs.value[0].filter(item => item.index == index)
+      console.log(targetArr)
       const {
         success,
         msg
@@ -725,25 +735,80 @@ export default {
       submitState.value.style_icon = attrs.process.icon
     }
 
+    const autoOptions = ref([])
+    const autoInputShow = ref(false)
+    //根据选项值，动态disable选项参数
+    const hideCondi = (value: string, option: SelectOption) => {
+      console.log(option,bindExprs.value)
+      if (option.field_type == "select" || option.field_type == "radio") {
+        //   1、渲染一个新组件
+        autoInputShow.value = true;
+        let indx =
+          selectOpt.value.condi_opts.filter(i => !(i.value==="=") && !(i.value==="!="))
+        indx.map((i, ind) => {
+          i.disabled = true
+        })
+        //   2、选项值为option.field_value
+        autoOptions.value = option.field_value.map(item => {
+          return {
+            label: item,
+            value: item,
+          }
+        })
+        return;
+        //   3、构造动态选项
+      } else {
+        changeSelectDisable(option)
+      }
+    }
+
     //根据不同的输入框，给定不同的选项类型
-    const changeSelectDisable = (field_type, typename) => {
-      switch (field_type) {
+    const changeSelectDisable = (field) => {
+      // 清除所有选项值
+      function resetOptions() {
+        selectOpt.value.condi_opts.map(i => {
+          delete(i.disabled)
+        })
+        autoInputShow.value = false
+      }
+      resetOptions()
+      let indx = []
+      switch (field.field_type) {
         case "textarea":
           // 只保留包含于不包含，其他disable
+          indx =
+            selectOpt.value.condi_opts.filter(i => !i.value.includes("in") && !i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
+
           break;
         case "file":
           // 直接禁用输入框
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
           break;
         case "number":
           // 只保留大于，大于等于，小于小于等于，等于，不等于，其他disable
+          indx =
+            selectOpt.value.condi_opts.filter(i => i.value.includes("in") || i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
           break;
         case "select":
           // 渲染select  选项框，并将field_value作为选项
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
           break;
         case "date":
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
           // 直接禁用输入框
           break;
         case "radio":
+          indx =
+            selectOpt.value.condi_opts.filter(i => i.value.includes("in") || i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
           // 渲染select  选项框，并将field_value作为选项
           break;
         case "checkbox":
@@ -751,6 +816,11 @@ export default {
           break;
         default:
           // 渲染包含和不包含，其他禁用
+          indx =
+            selectOpt.value.condi_opts.filter(i => !i.value.includes("in") && !i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
           break;
       }
     }
@@ -857,6 +927,9 @@ export default {
       changeAuto,
 
       options,
+      hideCondi,
+      autoOptions,
+      autoInputShow
     };
   }
 };
