@@ -13,6 +13,7 @@ type TenantResp struct {
 	Description string          `json:"description" structs:"description"`
 	IsDisable   uint8           `json:"is_disable" structs:"is_disable"`
 	ExpiredAt   int64           `json:"expired_at" structs:"expired_at"`
+	Menus       []uint          `json:"menus,omitempty" structs:"menus"`
 	CreatedAt   carbon.DateTime `json:"created_at" structs:"created_at"`
 	UpdatedAt   carbon.DateTime `json:"updated_at" structs:"updated_at"`
 }

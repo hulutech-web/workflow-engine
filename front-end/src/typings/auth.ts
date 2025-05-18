@@ -22,6 +22,37 @@ declare namespace Auth {
         remark: string;
         sort: number;
         is_disable: number;
-        menu_ids: string
+        menus: number[];
     }
+
+  interface Tenant {
+    id: number;
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    domain: string;
+    logo: string;
+    description: string;
+    is_disable: number;
+    expired_at: number;
+    menus: number[];
+    created_at: string;
+    updated_at: string;
+  }
+  
+    interface TenantReq {
+      id: number;
+      name: string;
+      address: string;
+      phone: string;
+      email: string;
+      domain: string;
+      logo: string;
+      description: string;
+      is_disable: number;
+      expired_at: number;
+      menus: number[];
+    }
+
 }

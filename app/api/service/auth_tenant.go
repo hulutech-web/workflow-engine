@@ -70,6 +70,7 @@ func (t tenantServiceImpl) Detail(id uint) (resp.TenantResp, error) {
 	}
 	var res resp.TenantResp
 	response.Copy(&res, tenant)
+	t.db.Model(&models.AuthPerm{}).Where("type = ? and type_id = ?", "tenant", id).Pluck("menu_id", &res.Menus)
 	return res, nil
 }
 
@@ -84,9 +85,21 @@ func (t tenantServiceImpl) Add(addReq req.TenantAddReq, auth *req.AuthReq) error
 	}
 	var tenant models.AuthTenant
 	response.Copy(&tenant, addReq)
-	if err := t.db.Create(&tenant).Error; err != nil {
+	err := t.db.Transaction(func(tx *gorm.DB) error {
+		if err := t.db.Create(&tenant).Error; err != nil {
+			return fmt.Errorf("数据库插入错误: %v", err)
+		}
+		if len(addReq.Menus) > 0 {
+			if err := t.permSrv.BatchSaveTenantMenusByMenuIds(tenant.ID, tx, addReq.Menus); err != nil {
+				return fmt.Errorf("菜单权限保存错误: %v", err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
 		return fmt.Errorf("数据库插入错误: %v", err)
 	}
+
 	return nil
 }
 
@@ -110,8 +123,13 @@ func (t tenantServiceImpl) Edit(editReq req.TenantEditReq, auth *req.AuthReq) er
 	if err := t.db.Save(&tenant).Error; err != nil {
 		return fmt.Errorf("数据库更新错误: %v", err)
 	}
-	_ = t.permSrv.BatchDeleteByTenantId(editReq.ID, t.db)
-	t.cache.HDel(types.Admin.BackstageTenantsKey, fmt.Sprintf("%d", editReq.ID))
+	if len(editReq.Menus) > 0 {
+		_ = t.permSrv.BatchDeleteByTenantId(editReq.ID, t.db)
+		t.cache.HDel(types.Admin.BackstageTenantsKey, fmt.Sprintf("%d", editReq.ID))
+		if err := t.permSrv.BatchSaveTenantMenusByMenuIds(tenant.ID, t.db, editReq.Menus); err != nil {
+			return fmt.Errorf("菜单权限保存错误: %v", err)
+		}
+	}
 	return nil
 }
 
