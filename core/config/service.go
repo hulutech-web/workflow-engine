@@ -34,7 +34,7 @@ func NewConfig() *Config {
 		Redis: Redis{
 			Host:     "127.0.0.1",
 			Port:     6379,
-			Password: "",
+			Password: "redis_QCHytt",
 			Db:       0,
 		},
 		Jwt: Jwt{
