@@ -71,7 +71,7 @@
       transform-origin="center"
     >
       <n-card
-        style="width: 1000px;height:800px;"
+        style="width: 1200px;height:800px;"
         title="节点属性"
         :bordered="false"
         size="huge"

@@ -43,8 +43,8 @@ func (f *flowlinkService) Update(ctx *gin.Context, flow models.Flow) error {
 		style := node.Style
 		process.Style = style
 		//"width:128px;height:30px;line-height:30px;color:#FF8C00;left:461px;top:84px;"使用一个正则匹配到left:461px;top:84px;
-		re := regexp.MustCompile(`left:(\d+)px;top:(\d+)px;`)
-
+		//re := regexp.MustCompile(`left:(\d+)px;top:(\d+)px;`)
+		re := regexp.MustCompile(`left:(\d+\.?\d*)px;top:(\d+\.?\d*)px;`)
 		matches := re.FindStringSubmatch(style)
 		// 检查是否找到匹配项
 		if matches != nil && len(matches) > 2 {

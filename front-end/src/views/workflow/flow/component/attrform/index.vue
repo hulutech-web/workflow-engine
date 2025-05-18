@@ -27,7 +27,7 @@
                 <p class="text-md">下一步骤</p>
                 <n-row>
                   <n-col :span="16" v-for="(p, index) in formState.next_process" :key="index">
-                    <n-tag :bordered="false" color="geekblue" v-if="p.NextProcess&&p.NextProcess.id != -1">
+                    <n-tag :bordered="false" :color="{color:'geekblue'}" v-if="p.NextProcess&&p.NextProcess.id != -1">
                       {{ p.NextProcess.process_name }}
                     </n-tag>
                   </n-col>
@@ -54,7 +54,7 @@
             <div id="child_flow" v-if="formState.process.position == 2">
               <div class="control-group">
                 <n-form-item label="子流程">
-                  <n-select v-model:value="submitState.child_flow_id" :value="formState.process.child_flow_id">
+                  <n-select v-model:value="submitState.child_flow_id" :default-value="formState.process.child_flow_id">
                     <!--                    <n-select-option value="0">请选择</n-select-option>-->
 
                     <!--                    <n-select-option v-for="(flow, ind) in formState.flows" :key="ind" :value="flow.id"-->
@@ -68,7 +68,7 @@
 
               <div class="control-group">
                 <n-form-item label="子流程结束后动作">
-                  <n-radio-group v-model:value="submitState.child_after" :value="formState.process.child_after">
+                  <n-radio-group v-model:value="submitState.child_after" :default-value="formState.process.child_after">
                     <n-radio :value="1">
                       同时结束父流程
                     </n-radio>
@@ -83,7 +83,7 @@
               <div v-if="submitState.child_after == 2">
                 <n-form-item label="返回步骤">
                   <n-select name="child_back_process" v-model:value="submitState.child_back_process"
-                            :value="formState.child_back_process">
+                            :default-value="formState.child_back_process">
                     <!--                    <n-select-option value="0">-->
                     <!--                      无-->
                     <!--                    </n-select-option>-->
@@ -149,7 +149,7 @@
                 <vxe-grid ref='xDeptGrid' v-bind="gridDeptOptions" v-on="gridDeptEvent" v-if="selectedEmp == false">
                   <template #action="{ row }">
                     <div>
-                     选择
+                      选择
                     </div>
                   </template>
                 </vxe-grid>
@@ -181,7 +181,7 @@
 
 
         <n-tab-pane name="4" tab="转出条件">
-          <div style="height: 700px;">
+          <div class="condi-container">
             <n-row>
               <n-col :span="4">
                 <div class="text-md font-bold">
@@ -196,7 +196,7 @@
               <n-col :span="14">
                 <div class="text-md font-bold">
                   更改规则
-                  <n-alert message="注意：填写完规则后请完成校验！！！" type="info"/>
+                  <span class="text-orange-500">注意：填写完规则后请完成校验！！！</span>
                 </div>
               </n-col>
             </n-row>
@@ -210,11 +210,11 @@
               </n-col>
               <n-col :span="6">
                 <div class="show-expr">
-                  <div v-if="!item.Expression">
+                  <div v-if="!item.expression">
                     <span class="text-sm text-gray-400">暂无条件</span>
                   </div>
                   <div v-else>
-                    <div v-for="(e, i) in JSON.parse(item.Expression)" :key="i">
+                    <div v-for="(e, i) in JSON.parse(item.expression)" :key="i">
                       {{ e.field }}{{ e.operator }}{{ e.value }}{{ e.extra }}
                     </div>
                   </div>
@@ -224,48 +224,29 @@
                 <n-row>
                   <n-col :span="4">
                     <div class="text-center">字段</div>
-                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['field']">
-                      <!--                      <n-select-option :value="f.field" v-for="(f, index) in fields" :key="index">-->
-                      <!--                        {{ f.field_name }}-->
-                      <!--                      </n-select-option>-->
+                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['field']" size="small"
+                              @update:value="hideCondi"
+                              :options="options.field_options">
                     </n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">条件</div>
-                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['operator']">
-                      <!--                      <n-select-option value=">">-->
-                      <!--                        大于-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value="<">-->
-                      <!--                        小于-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value="=">-->
-                      <!--                        等于-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value="<=">-->
-                      <!--                        小于等于-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value=">=">-->
-                      <!--                        大于等于-->
-                      <!--                      </n-select-option>-->
+                    <n-select style="width: 100px;" v-model:value="bindExprs[index]['operator']" size="small"
+                              :options="selectOpt.condi_opts">
+
                     </n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">值</div>
-                    <n-input v-model:value="bindExprs[index]['value']"></n-input>
+                    <n-input v-model:value="bindExprs[index]['value']" size="small" v-if="!autoInputShow"></n-input>
+                    <n-select v-model:value="bindExprs[index]['value']" size="small" v-if="autoInputShow"
+                              :options="autoOptions"></n-select>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">其他条件</div>
-                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['extra']">
-                      <!--                      <n-select-option value="" default>-->
-                      <!--                        无-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value="AND">-->
-                      <!--                        并且-->
-                      <!--                      </n-select-option>-->
-                      <!--                      <n-select-option value="OR">-->
-                      <!--                        或者-->
-                      <!--                      </n-select-option>-->
+                    <n-select style="width: 100%;" v-model:value="bindExprs[index]['extra']" size="small"
+                              :options="selectOpt.extra_opts">
+
                     </n-select>
                   </n-col>
 
@@ -275,14 +256,14 @@
                     </div>
                     <div class="text-center">
                       <n-button-group>
-                        <n-button type="primary" @click="addCondi(index)">新增</n-button>
+                        <n-button type="primary" @click="addCondi(index)" size="small">新增</n-button>
                       </n-button-group>
                     </div>
                   </n-col>
                   <n-col :span="4">
                     <div class="text-center">确认条件</div>
                     <div class="text-center">
-                      <n-button type="primary" @click="validateExpr(index)">确认</n-button>
+                      <n-button type="error" @click="validateExpr(index)" size="small">校验</n-button>
                     </div>
                   </n-col>
                 </n-row>
@@ -305,6 +286,7 @@
                       <n-col :span="4">
                         <n-space>
                           <n-button type="error" class="cursor-pointer ml-4" size="small" @click="delExpr(index, ind)">
+                            X
                           </n-button>
                         </n-space>
                       </n-col>
@@ -378,17 +360,19 @@ import useEmpconfig from './empconfig'
 import {useMessage} from "naive-ui";
 import {ExplainConditionSql} from "./sql/explain";
 import useDeptConfig from "./deptconfig"
+
 const {getCurrCond} = useProcess()
 const {gridOptions} = useEmpconfig()
-const {gridDeptOptions} =useDeptConfig();
+const {gridDeptOptions} = useDeptConfig();
 const {loadDepts} = useDept()
-const message = useMessage();
+
 
 export default {
   props: ['attrs'],
   emits: ["updProcess"],
   setup(props, context) {
     // #region 常规
+    const message = useMessage();
     const MyIcons = ref(icons)
     const columns = [
       {
@@ -452,6 +436,19 @@ export default {
       submitState.value.child_flow_id = attrs.process.child_flow_id
       submitState.value.child_after = attrs.process.child_after
       submitState.value.child_back_process = attrs.process.child_back_process
+      selectOpt.value.flows = attrs.process.child_flow_id
+      selectOpt.value.processes = attrs.process.child_after
+      selectOpt.value.back_processes = attrs.process.child_back_process
+
+      //   初始化选项1
+      options.value.field_options = attrs.fields.map(item => {
+        return {
+          label: item.field_name,
+          value: item.field,
+          field_type: item.field_type,
+          field_value:item.field_value,
+        }
+      })
     }
 
     const fillSubmitState = (attrs) => {
@@ -592,7 +589,8 @@ export default {
         }
 
 
-      ]
+      ],
+      field_options: []
     })
 
 
@@ -648,7 +646,7 @@ export default {
       let keys = ['field', 'operator', 'value']
       console.log("bindExprs.value[index]", bindExprs.value[index])
       if (keys.some(i => bindExprs.value[index][i] === '') == true) {
-        return message.error("请填写完整")
+        return message.warning("请填写完整")
       }
       if (bindExprs.value[index]['index'] == index) {
         stateExprs.value[index] = stateExprs.value[index] || []
@@ -667,18 +665,19 @@ export default {
 
     const validateExpr = (index) => {
       let targetArr = stateExprs.value[0].filter(item => item.index == index)
+      console.log(targetArr)
       const {
         success,
         msg
       } = ExplainConditionSql(targetArr)
       if (success == false) {
-        message.error(msg)
+        message.warning(msg)
       } else {
         message.success("条件校验成功")
         submitState.value.process_condition = stateExprs.value[0]
       }
     }
-const xDeptGrid=ref()
+    const xDeptGrid = ref()
 
     const getCurrentCond = async (process) => {
       let param = {
@@ -735,10 +734,152 @@ const xDeptGrid=ref()
       submitState.value.style_color = attrs.process.style_color
       submitState.value.style_icon = attrs.process.icon
     }
+
+    const autoOptions = ref([])
+    const autoInputShow = ref(false)
+    //根据选项值，动态disable选项参数
+    const hideCondi = (value: string, option: SelectOption) => {
+      console.log(option,bindExprs.value)
+      if (option.field_type == "select" || option.field_type == "radio") {
+        //   1、渲染一个新组件
+        autoInputShow.value = true;
+        let indx =
+          selectOpt.value.condi_opts.filter(i => !(i.value==="=") && !(i.value==="!="))
+        indx.map((i, ind) => {
+          i.disabled = true
+        })
+        //   2、选项值为option.field_value
+        autoOptions.value = option.field_value.map(item => {
+          return {
+            label: item,
+            value: item,
+          }
+        })
+        return;
+        //   3、构造动态选项
+      } else {
+        changeSelectDisable(option)
+      }
+    }
+
+    //根据不同的输入框，给定不同的选项类型
+    const changeSelectDisable = (field) => {
+      // 清除所有选项值
+      function resetOptions() {
+        selectOpt.value.condi_opts.map(i => {
+          delete(i.disabled)
+        })
+        autoInputShow.value = false
+      }
+      resetOptions()
+      let indx = []
+      switch (field.field_type) {
+        case "textarea":
+          // 只保留包含于不包含，其他disable
+          indx =
+            selectOpt.value.condi_opts.filter(i => !i.value.includes("in") && !i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
+
+          break;
+        case "file":
+          // 直接禁用输入框
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
+          break;
+        case "number":
+          // 只保留大于，大于等于，小于小于等于，等于，不等于，其他disable
+          indx =
+            selectOpt.value.condi_opts.filter(i => i.value.includes("in") || i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
+          break;
+        case "select":
+          // 渲染select  选项框，并将field_value作为选项
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
+          break;
+        case "date":
+          selectOpt.value.condi_opts.map(i => i.disabled = true)
+          // 直接禁用输入框
+          break;
+        case "radio":
+          indx =
+            selectOpt.value.condi_opts.filter(i => i.value.includes("in") || i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
+          // 渲染select  选项框，并将field_value作为选项
+          break;
+        case "checkbox":
+          // 直接禁用输入框
+          break;
+        default:
+          // 渲染包含和不包含，其他禁用
+          indx =
+            selectOpt.value.condi_opts.filter(i => !i.value.includes("in") && !i.value.includes(("not in")))
+          indx.map((i, ind) => {
+            i.disabled = true
+          })
+          break;
+      }
+    }
+
+    const selectOpt = ref({
+      flows: [],
+      processes: [],
+      range_emp_ids: [],
+      range_dept_ids: [],
+      condi_opts: [
+        {
+          label: '等于',
+          value: '='
+        },
+        {
+          label: '不等于',
+          value: '!='
+        },
+        {
+          label: '大于',
+          value: '>'
+        },
+        {
+          label: '小于',
+          value: '<'
+        },
+        {
+          label: '大于等于',
+          value: '>='
+        },
+        {
+          label: '小于等于',
+          value: '<='
+        },
+        {
+          label: '包含',
+          value: 'in'
+        },
+        {
+          label: '不包含',
+          value: 'not in'
+        },
+      ],
+      extra_opts: [
+        {
+          label: '并且',
+          value: 'AND'
+        },
+        {
+          label: '或者',
+          value: 'OR',
+        }
+      ]
+    })
     // #endregion
     return {
       activeKey,
       submitState,
+      selectOpt,
       dataSource,
       columns,
       MyIcons,
@@ -786,6 +927,9 @@ const xDeptGrid=ref()
       changeAuto,
 
       options,
+      hideCondi,
+      autoOptions,
+      autoInputShow
     };
   }
 };
@@ -795,31 +939,41 @@ const xDeptGrid=ref()
 <style lang="scss">
 .show-item {
   width: 140px;
-  height: 240px;
+  height: 140px;
   border-bottom-style: 2px solid #d9d9d9;
   box-sizing: border-box;
   border-radius: 4px;
-  padding: 4px 11px;
-  margin: 0 8px;
-  font-size: 18px;
+  padding: 0px 11px;
+  //font-size: 16px;
+  font-weight: bolder;
   color: #1478FF;
   line-height: 22px;
   background-color: #fafafa;
   display: inline-block;
   position: relative;
-  margin: 4px;
+  margin: 0 4px;
 }
 
 .show-item::before {
   position: absolute;
   content: '';
-  width: 6px;
+  width: 2px;
   height: 100%;
   background: #1478FF;
-  position: absolute;
   left: 0px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.show-item::after {
+  position: absolute;
+  content: '';
+  //  设置底部边框
+  border-bottom: 1px solid #ddd;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;
 }
 
 .show-expr {
@@ -835,16 +989,14 @@ const xDeptGrid=ref()
   background-color: #fafafa;
   display: inline-block;
   position: relative;
-  margin: 4px;
 }
 
 .show-expr::before {
   position: absolute;
   content: '';
-  width: 6px;
+  width: 2px;
   height: 100%;
   background: #20C06B;
-  position: absolute;
   left: 0px;
   top: 50%;
   transform: translateY(-50%);
@@ -878,5 +1030,12 @@ const xDeptGrid=ref()
   top: 50%;
 
   transform: translateY(-50%);
+}
+
+.condi-container {
+  max-height: 700px;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
 }
 </style>

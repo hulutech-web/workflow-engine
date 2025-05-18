@@ -1,39 +1,40 @@
 <template>
     <div>
-        <a-row>
-            <a-col :span="8"></a-col>
-            <a-col :span="8">
+        <n-row>
+            <n-col :span="8"></n-col>
+            <n-col :span="8">
                 <div class="p-3">
-                    <a-card>
+                    <n-card>
                         <p class="text-xl font-bold mb-3 text-center">
                             <span>{{ flow.flow_name }}</span>
                         <div>
-                            <a-tag v-if="flow.Template" color="blue" class="ml-2">
+                            <n-tag v-if="flow.Template" color="blue" class="ml-2">
                                 {{ flow.Template.template_name }}
-                            </a-tag>
+                            </n-tag>
                         </div>
                         </p>
 
-                        <a-form-item label="标题" :rules="[{ required: true, message: '输入标题' }]" style="max-width: 600px"
+                        <n-form-item label="标题" :rules="[{ required: true, message: '输入标题' }]" style="max-width: 600px"
                             v-bind="{
                                 labelCol: { span: 8 },
                                 wrapperCol: { span: 16 },
                             }">
-                            <a-input placeholder="请输入标题" v-model:value="title" />
-                        </a-form-item>
+                            <n-input placeholder="请输入标题" v-model:value="title" />
+                        </n-form-item>
                         <Form :fields="fillFields" @submit="onSubmit" ref="huluFormRef"></Form>
-                    </a-card>
+                    </n-card>
                 </div>
-            </a-col>
-            <a-col :span="8"></a-col>
+            </n-col>
+            <n-col :span="8"></n-col>
 
-        </a-row>
+        </n-row>
     </div>
 
 </template>
 
 <script setup lang='ts'>
-import { message } from 'ant-design-vue';
+import {useMessage } from "naive-ui"
+const message = useMessage()
 
 const { loadFlowEntryConfig, storeEntry } = useEntry();
 const route = useRoute();

@@ -44,6 +44,7 @@ func (r *emp) List(ctx *gin.Context) {
 	list, err := r.Srv.List(ctx)
 	if err != nil {
 		response.Fail(ctx, response.Failed)
+		return
 	}
 	response.OkWithData(ctx, list)
 }
