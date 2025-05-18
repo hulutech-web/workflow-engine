@@ -27,7 +27,7 @@ type EntryService interface {
 type entryService struct {
 	db    *gorm.DB
 	cache *cache.Redis
-	wf    *workflow.Engine
+	wf    workflow.EngineImpl
 }
 
 func (d entryService) Create(ctx *gin.Context) (models.Flow, error) {
@@ -179,7 +179,7 @@ func (d entryService) EntryData(ctx *gin.Context, id int) (error, map[string]int
 	}
 }
 
-func (d entryService) Resend(ctx *gin.Context, et req.EntryIDReq) error {
+func (d *entryService) Resend(ctx *gin.Context, et req.EntryIDReq) error {
 	entry := models.Entry{}
 	query := d.db
 	query.Model(&models.Entry{}).Where("id=?", et.EntryID).Where("status=?", -1).
@@ -219,7 +219,7 @@ func (d entryService) Resend(ctx *gin.Context, et req.EntryIDReq) error {
 	}
 	return nil
 }
-func NewEntryService(db *gorm.DB, cache *cache.Redis, wf *workflow.Engine) EntryService {
+func NewEntryService(db *gorm.DB, cache *cache.Redis, wf workflow.EngineImpl) EntryService {
 	//wf := workflow.NewEngin()
 	return &entryService{
 		db:    db,
