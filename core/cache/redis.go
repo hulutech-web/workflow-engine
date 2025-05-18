@@ -26,9 +26,18 @@ func NewRedis(config *config.Config) (*Redis, error) {
 		return nil, fmt.Errorf("redis 解析dsn失败: %v", err)
 	}
 	poolSize := config.Redis.PoolSize
-	if poolSize == 0 {
-		poolSize = 10
+	if opt.PoolSize == 0 {
+		opt.PoolSize = 10 // 默认连接池大小
 	}
+	opt.MinIdleConns = 5                   // 最小空闲连接数
+	opt.MaxActiveConns = poolSize * 2      // 最大连接数
+	opt.PoolTimeout = 1 * time.Second      // 获取连接超时时间
+	opt.MaxIdleConns = poolSize - 5        // 最大空闲连接数
+	opt.ConnMaxIdleTime = 10 * time.Minute // 连接最大空闲时间
+	opt.DialTimeout = 10 * time.Second     // 连接建立超时时间
+	opt.ReadTimeout = 5 * time.Second      // 读操作超时
+	opt.WriteTimeout = 5 * time.Second     // 写操作超时
+
 	ctx := context.Background()
 	client := redis.NewClient(opt)
 	return &Redis{

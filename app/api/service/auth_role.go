@@ -8,6 +8,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/core/cache"
+	"github.com/hulutech-web/workflow-engine/core/event"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"gorm.io/gorm"
 
@@ -28,6 +29,7 @@ type roleService struct {
 	db      *gorm.DB
 	permSrv AuthPermService
 	cache   *cache.Redis
+	event   *event.Service
 }
 
 func (r roleService) All(auth *req.AuthReq) (res []resp.RoleSimpleResp, e error) {
@@ -107,7 +109,7 @@ func (r roleService) Add(addReq *req.RoleAddReq, auth *req.AuthReq) (e error) {
 	if err != nil {
 		return fmt.Errorf("添加失败! %s", err.Error())
 	}
-
+	r.event.Publish(event.Event{Name: "role.created", Data: role})
 	return nil
 }
 
@@ -204,6 +206,6 @@ func (r roleService) Change(id uint, auth *req.AuthReq) error {
 	return nil
 }
 
-func NewAuthRoleService(db *gorm.DB, rolePermSrv AuthPermService, cache *cache.Redis) AuthRoleService {
-	return &roleService{db: db, permSrv: rolePermSrv, cache: cache}
+func NewAuthRoleService(db *gorm.DB, rolePermSrv AuthPermService, cache *cache.Redis, eventBus *event.Service) AuthRoleService {
+	return &roleService{db: db, permSrv: rolePermSrv, cache: cache, event: eventBus}
 }
