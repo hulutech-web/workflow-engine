@@ -14,8 +14,8 @@
             size="large"
             :getPopupcontainer="(triggerNode) => {return triggerNode.parentNode || document.body}"
             v-model:value="form.tenantId"
+            :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body;}"
             placeholder="请选择租户"
-            class="login-select"
           >
             <a-select-option :value="0">请选择租户</a-select-option>
             <a-select-option v-for="(item,ind) in tenantList" :key="ind" :value="item.value" :disabled="item.disabled">{{ item.label }}</a-select-option>
@@ -59,16 +59,15 @@ const value1=ref("")
   const loading = ref(false);
 
   const form = reactive<Account.LoginForm>({
-    username: undefined,
-    password: undefined,
-    tenantId: undefined,
+    username: 'admin',
+    password: 'admin888',
+    tenantId: 1,
   });
-
   const tenantList = ref<Base.SelectOption[]>([]);
 
   const fetchTenantList = async () => {
-    tenantList.value = await getTenant()
-    console.log(tenantList.value)
+   const { data } = await getTenant()
+    tenantList.value = data;
   }
 
   const emit = defineEmits<{
