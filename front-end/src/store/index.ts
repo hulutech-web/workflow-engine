@@ -1,15 +1,10 @@
-import type { App } from 'vue'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { createPinia } from 'pinia';
+export { storeToRefs } from 'pinia';
+export * from './account';
+export * from './menu';
+export * from './setting';
+export * from './loading';
 
-export * from './app/index'
-export * from './auth'
-export * from './dict'
-export * from './router'
-export * from './tab'
+const pinia = createPinia();
 
-// 安装pinia全局状态库
-export function installPinia(app: App) {
-  const pinia = createPinia()
-  pinia.use(piniaPluginPersistedstate)
-  app.use(pinia)
-}
+export default pinia;

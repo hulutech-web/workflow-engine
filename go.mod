@@ -20,6 +20,8 @@ require (
 	github.com/spf13/cast v1.7.1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
+	github.com/wenlng/go-captcha-assets v1.0.7
+	github.com/wenlng/go-captcha/v2 v2.0.4
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	go.uber.org/fx v1.23.0
 	go.uber.org/zap v1.27.0
@@ -44,6 +46,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/pgx/v5 v5.5.5 // indirect
@@ -71,6 +74,7 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/arch v0.17.0 // indirect
 	golang.org/x/crypto v0.38.0 // indirect
+	golang.org/x/image v0.27.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
 	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect

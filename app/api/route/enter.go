@@ -26,6 +26,7 @@ var Module = fx.Module("api.route",
 	fx.Invoke(flowlinkRoutes),
 	fx.Invoke(flowTypeRoutes),
 	fx.Invoke(entryRoutes),
+	fx.Invoke(captchaRoutes),
 )
 
 type Routes struct {

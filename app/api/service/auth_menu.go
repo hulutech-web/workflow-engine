@@ -52,7 +52,7 @@ func (a authMenuServiceImpl) SelectMenuByRoleId(auth *req.AuthReq) (mapList inte
 		var err error
 		if role.IsAdmin == 1 {
 			var mIds []uint
-			a.db.Model(&models.AuthMenu{}).Where("menuType in (?)", []string{"dir", "page"}).Order("sort asc, id desc").Pluck("id", &mIds)
+			a.db.Model(&models.AuthMenu{}).Where("menu_type in (?)", []string{"menu"}).Order("sort asc, id desc").Pluck("id", &mIds)
 			menuIds = mIds
 		} else {
 			menuIds, err = a.permSrv.SelectMenuIdsByRoleId(role.ID)
@@ -88,9 +88,9 @@ func (a authMenuServiceImpl) List(auth *req.AuthReq) (res interface{}, e error) 
 	}
 	var respList []resp.MenuResp
 	response.Copy(&respList, menus)
-	//return util.ArrayUtil.ListToTree(
-	//	util.ConvertUtil.StructsToMaps(respList), "id", "pid", "children"), nil
-	return respList, nil
+	return util.ArrayUtil.ListToTree(
+		util.ConvertUtil.StructsToMaps(respList), "id", "pid", "children"), nil
+	// return respList, nil
 }
 
 func (a authMenuServiceImpl) Detail(id uint, auth *req.AuthReq) (res resp.MenuResp, e error) {
@@ -101,7 +101,7 @@ func (a authMenuServiceImpl) Detail(id uint, auth *req.AuthReq) (res resp.MenuRe
 	response.Copy(&res, menu)
 	if menu.MenuType == "page" {
 		var buttons []models.AuthMenu
-		a.db.Model(&models.AuthMenu{}).Where("pid = ? and menuType = ?", id, "action").Order("sort asc, id desc").Find(&buttons)
+		a.db.Model(&models.AuthMenu{}).Where("pid = ? and menu_type = ?", id, "action").Order("sort asc, id desc").Find(&buttons)
 		var buttonList []resp.MenuButton
 		if len(buttons) > 0 {
 			response.Copy(&buttonList, buttons)
@@ -126,11 +126,11 @@ func (a authMenuServiceImpl) Add(addReq *req.MenuAddReq, auth *req.AuthReq) (e e
 		if menu.MenuType == "page" {
 			for _, button := range addReq.Button {
 				b := models.AuthMenu{
-					Pid:      menu.ID,
-					Title:    button.Title,
-					MenuType: "action",
-					Name:     button.Name,
-					Hide:     true,
+					Pid:        menu.ID,
+					Title:      button.Title,
+					MenuType:   "action",
+					Name:       button.Name,
+					RenderMenu: false,
 				}
 				if err := tx.Create(&b).Error; err != nil {
 					return err
@@ -163,7 +163,7 @@ func (a authMenuServiceImpl) Edit(editReq *req.MenuEditReq, auth *req.AuthReq) (
 		if menu.MenuType == "page" {
 			if len(editReq.Button) > 0 {
 				var btnIds []uint
-				tx.Model(&models.AuthMenu{}).Where("pid = ? and menuType = ?", menu.ID, "action").Pluck("id", &btnIds)
+				tx.Model(&models.AuthMenu{}).Where("pid = ? and menu_type = ?", menu.ID, "action").Pluck("id", &btnIds)
 				var nowBtnIds []uint
 				for _, button := range editReq.Button {
 					var b models.AuthMenu
@@ -174,11 +174,11 @@ func (a authMenuServiceImpl) Edit(editReq *req.MenuEditReq, auth *req.AuthReq) (
 						response.Copy(&b, button)
 					} else {
 						b = models.AuthMenu{
-							Pid:      menu.ID,
-							Title:    button.Title,
-							MenuType: "action",
-							Name:     button.Name,
-							Hide:     true,
+							Pid:        menu.ID,
+							Title:      button.Title,
+							MenuType:   "action",
+							Name:       button.Name,
+							RenderMenu: false,
 						}
 					}
 					if err := tx.Save(&b).Error; err != nil {

@@ -31,6 +31,8 @@ var Admin = admin{
 		"account_login",
 		"account_register",
 		"account_tenant",
+		"captcha_get",
+		"captcha_validate",
 	},
 	// 无需授权的URI
 	NotAuthUri: []string{},

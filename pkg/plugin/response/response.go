@@ -45,6 +45,7 @@ var (
 
 	RequestErrDuplicateNameError = RespType{code: 406, msg: "请求参数名称重复"}
 	SystemError                  = RespType{code: 500, msg: "系统错误"}
+	CaptchaError                 = RespType{code: 10002, msg: "验证码错误"}
 )
 
 // Error 实现error方法

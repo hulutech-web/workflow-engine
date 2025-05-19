@@ -1,18 +1,17 @@
 package api
 
 import (
-	"github.com/hulutech-web/workflow-engine/app/api/event"
-	"github.com/hulutech-web/workflow-engine/app/api/queue"
+	ae "github.com/hulutech-web/workflow-engine/app/api/event"
+	aq "github.com/hulutech-web/workflow-engine/app/api/queue"
 	"github.com/hulutech-web/workflow-engine/app/api/route"
 	"github.com/hulutech-web/workflow-engine/app/api/service"
-	"github.com/hulutech-web/workflow-engine/core/event"
-	"github.com/hulutech-web/workflow-engine/core/queue"
+
 	"go.uber.org/fx"
 )
 
 var Module = fx.Options(
 	service.Module,
 	route.Module,
-	event.Module,
-	queue.Module,
+	ae.Module,
+	aq.Module,
 )
