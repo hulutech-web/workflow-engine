@@ -1,39 +1,28 @@
-import type { App } from 'vue'
-import { installRouter } from '@/router'
-import { installPinia } from '@/store'
-import setupPlugin  from '@/plugins'
-import AppVue from './App.vue'
-import AppLoading from './components/common/AppLoading.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from '@/router';
+import stepin from 'stepin/es';
+import pinia from '@/store';
+import '@/mock';
+// 生产打包时可去除 ant-design-vue/dist/antd.variable.less 的引用。
+// 开发引入此包是为了加载优化，防止首次打开页面过慢
+import 'ant-design-vue/dist/antd.variable.less';
+import 'stepin/es/style';
+// import 'default-passive-events';
+import '@/theme/index.less';
+import { AuthPlugin, IconfontPlugin } from '@/plugins';
 
-async function setupApp() {
-  // 载入全局loading加载状态
-  const appLoading = createApp(AppLoading)
-  appLoading.mount('#appLoading')
+const app = createApp(App);
 
-  // 创建vue实例
-  const app = createApp(AppVue)
-
-  // 注册模块Pinia
-  await installPinia(app)
-
-  // 注册模块 Vue-router
-  await installRouter(app)
-
-  // 注册一些插件
-  await setupPlugin(app)
-  /* 注册模块 指令/静态资源 */
-
-  Object.values(
-    import.meta.glob<{ install: (app: App) => void }>('./modules/*.ts', {
-      eager: true,
-    }),
-  ).map(i => app.use(i))
-
-  // 卸载载入动画
-  appLoading.unmount()
-
-  // 挂载
-  app.mount('#app')
-}
-
-setupApp()
+app.use(pinia);
+app.use(router);
+app.use(stepin, { router });
+app.use(AuthPlugin, { action: 'disable' });
+// iconfont 插件。url为你的 iconfont 图标资源地址（你的iconfont 仓库可获取此地址）
+app.use(IconfontPlugin, {
+  url: ['//at.alicdn.com/t/c/font_3805284_ulvha6ct7d.js', '//at.alicdn.com/t/c/font_4430217_19gqe4agmcp.js'],
+});
+app.config.errorHandler = function (err) {
+  console.error('未捕获的异常，', err);
+};
+app.mount('#stepin-app');

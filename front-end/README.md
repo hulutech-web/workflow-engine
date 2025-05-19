@@ -1,121 +1,83 @@
-<div align="center">
-<img src="https://s2.loli.net/2023/10/27/WzQ4JLNV5epKh6X.png" style="width:150px"/>
-    <h1>Nova Admin</h1>
-</div>
+<h1 align="center">Stepin Template</h1>
 
 <div align="center">
-    <img src="https://img.shields.io/github/license/chansee97/nova-admin"/>
-    <img src="https://badgen.net/github/stars/chansee97/nova-admin?icon=github"/>
-    <img src="https://gitee.com/chansee97/nova-admin/badge/star.svg"/>
-    <img src="https://img.shields.io/github/forks/chansee97/nova-admin"/>
+
+开箱即用的中后台前端/设计解决方案
+<br/>
+(原[ Vue Antd Admin](https://github.com/iczer/vue-antd-admin/) Vue3 版本)
+
+![GitHub package.json version (subfolder of monorepo)](https://img.shields.io/github/package-json/v/stepui/stepin-template)
+![GitHub repo size](https://img.shields.io/github/repo-size/stepui/stepin-template)
+![GitHub last commit](https://img.shields.io/github/last-commit/stepui/stepin-template)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/stepui/stepin-template)
+![Docs by iczer](https://img.shields.io/badge/docs%20by-iczer-green)
+
+![preview](./docs/images/preview.png) 
+
 </div>
 
-<div align='center'>
+简体中文 | [English](./README-en_US.md)
 
-  English |  [中文](./README.zh-CN.md)
-</div>
+- 预览地址: https://stepin-template.pages.dev
+- 使用文档: https://docs.stepin-template.pages.dev
+- 常见问题: https://docs.stepin-template.pages.dev/issue
+- 国内镜像: https://gitee.com/stepui/stepin-template
 
-## Introduction
+## 特性
 
-[Nova-admin](https://github.com/chansee97/nova-admin) is a clean and concise back-end management template based on Vue3, Vite5, Typescript, and Naive UI. It implements complete functionality in a simple way, while also considering code standards, readability, and avoiding excessive encapsulation to facilitate secondary development.
+- 强大的主题定制功能，实时动态切换
+- 多页签功能，助力后台管理高效开发
+- 内置权限控制，兼容 ABAC 和 RBAC 模型
+- 丰富的内置业务组件和常用页面模板
 
-- [Nova-Admin preview](https://nova-admin.pages.dev/)
-- [Nova-Admin docs](https://nova-admin-docs.pages.dev/)
+## 浏览器支持
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
+| --- | --- | --- | --- | --- |
+| last 2 versions | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+## 环境要求
 
-## Features
+|git|node|yarn|
+|---|----|----|
+|`^2.15.0`|`^16.14.0`|`^1.21.1`|
 
-- Developed based on the latest technology stack including Vue3, Vite5, TypeScript, NaiveUI, Unocss, etc.
-- Based on [alova](https://alova.js.org/) encapsulation and configuration, providing unified response handling and multi-scenario capabilities.
-- Comprehensive front-end and back-end permission management solution.
-- Supports local static routes and dynamically generated routes from the back end, with easy route configuration.
-- Secondary encapsulation of commonly used components to meet basic work requirements.
-- Dark theme adaptation, maintaining the Naive style for interface aesthetics.
-- Only performs eslint validation during submission without excessive restrictions for simpler development.
-- Flexible and configurable interface style layout.
-- Multilanguage (i18n) support.
+## 使用
 
-## Project preview
+### 拉取代码
 
-![preview-1.png](https://s2.loli.net/2024/03/31/UZoajnEekMX9cLi.png)
-![preview-2.jpg](https://s2.loli.net/2024/03/31/8VwMSyXWtO6avKg.jpg)
-![preview-5.png](https://s2.loli.net/2024/03/31/TCtE2ZBU7MJ6HrY.png)
-![preview-6.png](https://s2.loli.net/2024/03/31/YM1OrxZCimzLcd6.png)
-![preview-4.png](https://s2.loli.net/2024/03/31/hgYHKjACqs7rcPV.png)
-![preview-3.png](https://s2.loli.net/2024/03/31/TuYajAH9LWsMPf5.png)
-
-## Repo
-
-- [Gitee](https://gitee.com/chansee97/nova-admin)
-- [Github](https://github.com/chansee97/nova-admin)
-
-## Interface document
-
-This project uses ApiFox for interface mock, check the online documentation for more interface details
-[online aipfox docs](https://nova-admin.apifox.cn)
-
-## Install and use
-
-The local development environment is recommended to use pnpm 8.x, Node.js must be version 20.x.
-
-It is recommended to directly download the compressed package from [Releases](https://github.com/chansee97/nova-admin/releases)
-
-```bash
-# install dependencies
-pnpm i
-
-# Run
-pnpm dev
-
-# Build product
-pnpm build
-
+```sh
+git clone https://github.com/stepui/stepin-template.git
 ```
 
-You can deploy **nova-admin** in a production environment using docker-compose.
-```bash
-# Build product
-docker compose -f docker-compose.product.yml up --build -d
+### 安装依赖
+
+```sh
+yarn install
 ```
-> The nginx.conf provided is for reference only. You can adjust it according to your own needs.
 
-## Related projects
+### 启动
 
-- [Nova-admin-nest](https://github.com/chansee97/nove-admin-nest) (under development) Nova-Admin supporting background project based on TS, NestJs, typeorm
+```sh
+yarn dev
+```
 
-## Learn to communicate
+### 预览
 
-Nova-Admin is a completely open-source and free project. It is still being optimized and iterated. It is designed to help developers more conveniently develop medium and large management systems. If you have any questions, please ask questions in the QQ exchange group.
+启动成功后，控制台会显示本地访问地址：http://127.0.0.1:5173，浏览器打开即可预览。
 
-| Q-Group | wechat-Group |
-| :--: |:--: |
-| <img src="https://cdn.jsdelivr.net/gh/chansee97/static/nova-admin/q-group.png" width=170> |<img src="https://cdn.jsdelivr.net/gh/chansee97/static/wechat.png" width=170>|
+更新多信息请参考 [使用文档](http://stepui.gitee.io/stepin-template-docs/)
 
-> Please indicate the purpose of adding WeChat.
+## 参与贡献
 
-## Contribution
+我们非常欢迎你的贡献，你可以通过以下方式和我们一起共建 :star2:：
 
-If you find any issues or have suggestions for improvement, please create an [issue](nova-admin/issues/new) or submit a PR. We welcome your contributions!
+- 在你的公司或个人项目中使用 Stepin Template。
+- 通过 [Issue](https://github.com/stepui/stepin-template/issues/new) 报告:bug:或进行咨询。
+- 提交 [Pull Request](https://github.com/stepui/stepin-template/pulls) 改进 Stepin Template 的代码。
+- 加入社群，与小伙伴们一同交流心得。QQ 群：441231578
 
-## Support
-
-If you feel that this project is helpful for your work or study, please help me order a ✨ Star, which will be a great encouragement and support for me, or you can buy me a cup of coffee below
-
-| wechat | alipay |
-| :--: |:--: |
-| <img src="https://cdn.jsdelivr.net/gh/chansee97/static/sponsor-wechat.png" width=170> | <img src="https://cdn.jsdelivr.net/gh/chansee97/static/sponsor-alipay.png" width=170>|
-
-## Contributors
-
-Thanks for all their contributions!
-
-<a href="https://github.com/chansee97/nova-admin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=chansee97/nova-admin" alt="contributors" />
-</a>
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=chansee97/nova-admin&type=Date)](https://star-history.com/#chansee97/nova-admin&Date)
-
-## License
-
-[MIT](LICENSE)
+## 打赏作者
+如果该项目对您有所帮助，可以请作者喝一杯咖啡。
+<p>
+  <img src="./docs/images/alipay.png" width="320px" style="display: inline-block; border-radius: 8px;" />
+  <img src="./docs/images/wechatpay.png" width="320px" style="display: inline-block; margin-left: 24px; border-radius: 8px;" />
+</p>
