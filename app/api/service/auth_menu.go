@@ -88,9 +88,9 @@ func (a authMenuServiceImpl) List(auth *req.AuthReq) (res interface{}, e error) 
 	}
 	var respList []resp.MenuResp
 	response.Copy(&respList, menus)
-	//return util.ArrayUtil.ListToTree(
-	//	util.ConvertUtil.StructsToMaps(respList), "id", "pid", "children"), nil
-	return respList, nil
+	return util.ArrayUtil.ListToTree(
+		util.ConvertUtil.StructsToMaps(respList), "id", "pid", "children"), nil
+	// return respList, nil
 }
 
 func (a authMenuServiceImpl) Detail(id uint, auth *req.AuthReq) (res resp.MenuResp, e error) {
