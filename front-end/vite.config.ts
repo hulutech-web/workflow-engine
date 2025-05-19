@@ -35,7 +35,7 @@ export default ({ command, mode }) => {
           target: env.VITE_API_URL,
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          // rewrite: (path) => path.replace(/^\/api/, ''),
         },
       },
       hmr: true,

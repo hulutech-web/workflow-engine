@@ -1,6 +1,6 @@
 import { storeToRefs } from 'pinia';
 import { NavigationGuard, NavigationHookAfter } from 'vue-router';
-import http from '@/store/http';
+import http from '@/utils/request/http';
 import { useAccountStore, useLoadingStore } from '@/store';
 import { useAuthStore } from '@/plugins';
 import NProgress from 'nprogress';

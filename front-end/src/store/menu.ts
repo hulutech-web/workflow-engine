@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from 'pinia';
-import http from './http';
+import http from '@/utils/request/http';
 import { ref, watch } from 'vue';
 import { Response } from '@/types';
 import { RouteOption } from '@/router/interface';
