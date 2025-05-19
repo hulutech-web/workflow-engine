@@ -46,22 +46,21 @@ type UserSelfResp struct {
 }
 
 type MenuResp struct {
-	ID         uint            `json:"id" structs:"id"`
-	Pid        uint            `json:"pid" structs:"pid"`
-	Name       string          `json:"name" structs:"name"`
-	Path       string          `json:"path" structs:"path"`
-	Component  string          `json:"component" structs:"component"`
-	Icon       string          `json:"icon" structs:"icon"`
-	MenuType   string          `json:"menu_type" structs:"menu_type"`
-	Cacheable  bool            `json:"cacheable" structs:"cacheable"`
-	RenderMenu bool            `json:"render_menu" structs:"render_menu"`
-	Permission string          `json:"permission" structs:"permission"`
-	Sort       uint16          `json:"sort" structs:"sort"`
-	Target     string          `json:"target" structs:"target"`
-	Badge      string          `json:"badge" structs:"badge"`
-	Button     []MenuButton    `json:"button" structs:"button"`
-	CreatedAt  carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt  carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	ID         uint         `json:"id" structs:"id"`
+	Title      string       `json:"title" structs:"title"`
+	Pid        uint         `json:"pid" structs:"pid"`
+	Name       string       `json:"name" structs:"name"`
+	Path       string       `json:"path" structs:"path"`
+	Component  string       `json:"component" structs:"component"`
+	Icon       string       `json:"icon" structs:"icon"`
+	MenuType   string       `json:"menu_type" structs:"menu_type"`
+	Cacheable  bool         `json:"cacheable" structs:"cacheable"`
+	RenderMenu bool         `json:"render_menu" structs:"render_menu"`
+	Permission string       `json:"permission" structs:"permission"`
+	Sort       uint16       `json:"sort" structs:"sort"`
+	Target     string       `json:"target" structs:"target"`
+	Badge      string       `json:"badge" structs:"badge"`
+	Button     []MenuButton `json:"button" structs:"button"`
 }
 
 type MenuButton struct {

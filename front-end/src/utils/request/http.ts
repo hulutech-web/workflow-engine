@@ -1,17 +1,16 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import createHttp from '@/utils/request/axiosHttp';
-import { isResponse } from '@/types';
 import NProgress from 'nprogress';
 import { notification } from 'ant-design-vue';
-
+import Cookie from 'js-cookie';
+import {isResponse} from "@/types";
 const http = createHttp({
   timeout: 10000,
   baseURL: 'api',
   withCredentials: true,
-  xsrfCookieName: 'Authorization',
-  xsrfHeaderName: 'Authorization',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
+        'Authorization': `${Cookie.get('Authorization')}`,
     },
 });
 
@@ -33,7 +32,7 @@ http.interceptors.response.use(
     const { data } = rep;
     if (isResponse(data)) {
         if (data.code === 200) {
-            return Promise.resolve(data.data);
+            return Promise.resolve(data);
         } else if (data.code === 310) {
             notification.error({
                 message: data.msg,
@@ -85,21 +84,15 @@ export const get = <T = any>(
     url: string,
     params?: Record<string, unknown>,
     config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
-    return http.request<T>(url, 'GET', params, config);
+): Promise<Api.Response<T>> => {
+    return http.request<T, Api.Response<T>>(url, 'GET', params, config);
 };
 
-// POST请求使用data负载
+// 泛型方式定义请求函数类型
 export const post = <T = any>(
     url: string,
     data?: unknown,
     config?: AxiosRequestConfig
-): Promise<AxiosResponse<T>> => {
-    return http.request<T>(url, 'post_json', data, {
-        ...config,
-        headers: {
-            'Content-Type': 'application/json', // 👈 关键配置
-            ...config?.headers,
-        }
-    });
+): Promise<Api.Response<T>> => {
+    return http.request<T, Api.Response<T>>(url, 'POST_JSON', data, config);
 };

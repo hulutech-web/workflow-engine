@@ -1,20 +1,18 @@
 import { defineStore } from 'pinia';
 import http from '../utils/request/http';
-import { Response } from '@/types';
 import { useMenuStore } from './menu';
 import { useAuthStore } from '@/plugins';
 import { useLoadingStore } from './loading';
 import {login} from "@/api/account";
 
 export interface Profile {
-  account: Account;
+  user: Account;
   permissions: string[];
   role: string;
 }
 export interface Account {
   username: string;
   avatar: string;
-  gender: number;
 }
 
 export type TokenResult = {
@@ -50,7 +48,12 @@ export const useAccountStore = defineStore('account', {
         password: password,
       } as Account.LoginForm;
       const res = await login(data)
-      console.log(res)
+      if (res) {
+        this.logged = true;
+        http.setAuthorization(`${res.data.token}`, 7200 * 1000, 'Authorization');
+        await useMenuStore().getMenuList();
+        return res.data;
+      }
     },
     async logout() {
       return new Promise<boolean>((resolve) => {
@@ -64,12 +67,13 @@ export const useAccountStore = defineStore('account', {
       const { setAuthLoading } = useLoadingStore();
       setAuthLoading(true);
       return http
-        .request<Account, Response<Profile>>('/account', 'get')
+        .request('/user/self', 'get')
         .then((response) => {
-          if (response.code === 0) {
+          if (response) {
             const { setAuthorities } = useAuthStore();
-            const { account, permissions, role } = response.data;
-            this.account = account;
+            const { user, permissions, role } = response.data;
+            console.log(user, permissions, role)
+            this.account = user;
             this.permissions = permissions;
             this.role = role;
             setAuthorities(permissions);

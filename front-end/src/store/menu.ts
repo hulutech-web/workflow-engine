@@ -12,6 +12,8 @@ import { useLoadingStore } from '@/store';
 
 export interface MenuProps {
   id?: number;
+  pid?: number;
+  sort?: number;
   name: string;
   path: string;
   title?: string;
@@ -26,6 +28,7 @@ export interface MenuProps {
   children?: MenuProps[];
   cacheable?: boolean;
   view?: string;
+  button?: number[];
 }
 
 /**
@@ -120,13 +123,14 @@ export const useMenuStore = defineStore('menu', () => {
     const { setPageLoading } = useLoadingStore();
     setPageLoading(true);
     return http
-      .request<MenuProps[], Response<MenuProps[]>>('/menu', 'GET')
+      .request<MenuProps[], Response<MenuProps[]>>('/auth/menu/route', 'GET')
       .then((res) => {
         const { data } = res;
+        console.log(data)
         menuList.value = data;
         replaceRoutes(toRoutes(data), false);
         checkMenuPermission();
-        return data;
+        return res;
       })
       .finally(() => setPageLoading(false));
   }

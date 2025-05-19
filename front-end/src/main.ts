@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
+import Antd from 'ant-design-vue';
 import router from '@/router';
 import stepin from 'stepin/es';
 import pinia from '@/store';
@@ -12,7 +13,7 @@ import '@/theme/index.less';
 import { AuthPlugin, IconfontPlugin } from '@/plugins';
 
 const app = createApp(App);
-
+app.use(Antd)
 app.use(pinia);
 app.use(router);
 app.use(stepin, { router });
