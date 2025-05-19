@@ -3,7 +3,6 @@ import App from './App.vue';
 import router from '@/router';
 import stepin from 'stepin/es';
 import pinia from '@/store';
-import '@/mock';
 // 生产打包时可去除 ant-design-vue/dist/antd.variable.less 的引用。
 // 开发引入此包是为了加载优化，防止首次打开页面过慢
 import 'ant-design-vue/dist/antd.variable.less';

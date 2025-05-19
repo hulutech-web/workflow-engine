@@ -7,15 +7,16 @@
         @finish="login"
         class="login-form w-[400px] p-lg xl:w-[440px] xl:p-xl h-fit text-text"
       >
-        <div class="third-platform">
-          <div class="third-title mb-md text-lg">第三方登录：</div>
-          <div class="third-list flex text-[28px]">
-            <WechatOutlined class="icon wechat flex-1 cursor-pointer text-gray-400 hover:text-green-600" />
-            <TwitterOutlined class="icon twitter flex-1 cursor-pointer text-gray-400 hover:text-blue-400" />
-            <QqOutlined class="icon qq flex-1 cursor-pointer text-gray-400 hover:text-red-600" />
-          </div>
-        </div>
-        <a-divider>Or</a-divider>
+        <a-form-item :required="true" name="tenantId">
+          <a-select
+            v-model:value="form.tenantId"
+            placeholder="请选择租户"
+            class="login-select"
+          >
+            <a-select-option :value="0">请选择租户</a-select-option>
+            <a-select-option v-for="item in tenantList" :key="item.value" :value="item.value" :disabled="item.disabled">{{ item.label }}</a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item :required="true" name="username">
           <a-input
             v-model:value="form.username"
@@ -45,28 +46,33 @@
   </ThemeProvider>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref } from 'vue';
+  import { reactive, ref, onMounted } from 'vue';
   import { useAccountStore } from '@/store';
   import { ThemeProvider } from 'stepin';
+  import {getTenant} from "@/api/account";
 
-  export interface LoginFormProps {
-    username: string;
-    password: string;
-  }
   const loading = ref(false);
 
-  const form = reactive({
+  const form = reactive<Account.LoginForm>({
     username: undefined,
     password: undefined,
+    tenantId: undefined,
   });
 
+  const tenantList = ref<Base.SelectOption[]>([]);
+
+  const fetchTenantList = async () => {
+    tenantList.value = await getTenant()
+    console.log(tenantList.value)
+  }
+
   const emit = defineEmits<{
-    (e: 'success', fields: LoginFormProps): void;
-    (e: 'failure', reason: string, fields: LoginFormProps): void;
+    (e: 'success', fields: Account.LoginForm): void;
+    (e: 'failure', reason: string, fields: Account.LoginForm): void;
   }>();
 
   const accountStore = useAccountStore();
-  function login(params: LoginFormProps) {
+  function login(params: Account.LoginForm) {
     loading.value = true;
     accountStore
       .login(params.username, params.password)
@@ -78,4 +84,8 @@
       })
       .finally(() => (loading.value = false));
   }
+
+  onMounted(() => {
+    fetchTenantList();
+  })
 </script>

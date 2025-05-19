@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import http from './http';
+import http from '../utils/request/http';
 import { Response } from '@/types';
 import { useMenuStore } from './menu';
 import { useAuthStore } from '@/plugins';
 import { useLoadingStore } from './loading';
+import {login} from "@/api/account";
 
 export interface Profile {
   account: Account;
@@ -31,18 +32,25 @@ export const useAccountStore = defineStore('account', {
   },
   actions: {
     async login(username: string, password: string) {
-      return http
-        .request<TokenResult, Response<TokenResult>>('/login', 'post_json', { username, password })
-        .then(async (response) => {
-          if (response.code === 0) {
-            this.logged = true;
-            http.setAuthorization(`Bearer ${response.data.token}`, new Date(response.data.expires));
-            await useMenuStore().getMenuList();
-            return response.data;
-          } else {
-            return Promise.reject(response);
-          }
-        });
+      // return http
+      //   .request<TokenResult, Response<TokenResult>>('/login', 'post_json', { username, password })
+      //   .then(async (response) => {
+      //     if (response.code === 0) {
+      //       this.logged = true;
+      //       http.setAuthorization(`${response.data.token}`, new Date(response.data.expires));
+      //       await useMenuStore().getMenuList();
+      //       return response.data;
+      //     } else {
+      //       return Promise.reject(response);
+      //     }
+      //   });
+      const data = {
+        tenantId: 1,
+        username: username,
+        password: password,
+      } as Account.LoginForm;
+      const res = await login(data)
+      console.log(res)
     },
     async logout() {
       return new Promise<boolean>((resolve) => {
