@@ -46,26 +46,22 @@ type UserSelfResp struct {
 }
 
 type MenuResp struct {
-	ID            uint            `json:"id" structs:"id"`
-	Pid           uint            `json:"pid" structs:"pid"`
-	Name          string          `json:"name" structs:"name"`
-	Path          string          `json:"path" structs:"path"`
-	Redirect      string          `json:"redirect" structs:"redirect"`
-	ComponentPath string          `json:"componentPath" structs:"componentPath"`
-	Title         string          `json:"title" structs:"title"`               // 页面标题
-	Icon          string          `json:"icon" structs:"icon"`                 // 图标
-	RequiresAuth  bool            `json:"requiresAuth" structs:"requiresAuth"` // 是否需要登录权限
-	KeepAlive     bool            `json:"keepAlive" structs:"keepAlive"`       // 是否开启页面缓存
-	Hide          bool            `json:"hide" structs:"hide"`                 // 不显示在菜单中
-	Sort          uint            `json:"sort" structs:"sort"`                 // 菜单排序
-	Href          string          `json:"href" structs:"href"`                 // 嵌套外链
-	ActiveMenu    string          `json:"activeMenu" structs:"activeMenu"`     // 当前路由高亮菜单
-	WithoutTab    bool            `json:"withoutTab" structs:"withoutTab"`     // 不添加到Tab
-	PinTab        bool            `json:"pinTab" structs:"pinTab"`             // 固定Tab
-	MenuType      string          `json:"menuType" structs:"menuType"`         // dir or page
-	Button        []MenuButton    `json:"button" structs:"button"`
-	CreatedAt     carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt     carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	ID         uint            `json:"id" structs:"id"`
+	Pid        uint            `json:"pid" structs:"pid"`
+	Name       string          `json:"name" structs:"name"`
+	Path       string          `json:"path" structs:"path"`
+	Component  string          `json:"component" structs:"component"`
+	Icon       string          `json:"icon" structs:"icon"`
+	MenuType   string          `json:"menu_type" structs:"menu_type"`
+	Cacheable  bool            `json:"cacheable" structs:"cacheable"`
+	RenderMenu bool            `json:"render_menu" structs:"render_menu"`
+	Permission string          `json:"permission" structs:"permission"`
+	Sort       uint16          `json:"sort" structs:"sort"`
+	Target     string          `json:"target" structs:"target"`
+	Badge      string          `json:"badge" structs:"badge"`
+	Button     []MenuButton    `json:"button" structs:"button"`
+	CreatedAt  carbon.DateTime `json:"created_at" structs:"created_at"`
+	UpdatedAt  carbon.DateTime `json:"updated_at" structs:"updated_at"`
 }
 
 type MenuButton struct {

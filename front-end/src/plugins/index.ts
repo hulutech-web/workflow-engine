@@ -1,8 +1,2 @@
-import { setup as VXETable } from './vxe-table'
-import { setup as ContextMenu } from './vxe-table'
-
-const modules = [VXETable,ContextMenu]
-
-export default function register(app: App) {
-  modules.map((setup) => setup(app))
-}
+export { useAuthStore, default as AuthPlugin } from './auth/auth-plugin';
+export { default as IconfontPlugin } from './iconfont';
