@@ -7,7 +7,7 @@
   import { useMenuStore, MenuProps } from '@/store/menu';
   import { storeToRefs } from 'pinia';
   import { useAuthStore } from '@/plugins';
-
+  import { getMenuList, editMenu, addMenu, deleteMenu } from '@/api/auth/menu'
   const { useAuth } = useAuthStore();
 
   const iconList: IconSelectOption[] = [];
@@ -91,7 +91,7 @@
     const toNode = (list: MenuProps[]): TreeSelectProps['treeData'] => {
       return list.map((item) => ({
         title: item.title!,
-        value: item.name! as string,
+        value: item.id!as number,
         children: item.children && toNode(item.children!),
       }));
     };
@@ -103,6 +103,8 @@
 
   const formData = reactive<MenuProps>({
     id: undefined,
+    pid: undefined,
+    menu_type: 'page',
     name: '',
     title: undefined,
     icon: undefined,
@@ -111,7 +113,6 @@
     path: '',
     component: '',
     renderMenu: true,
-    parent: undefined,
     permission: undefined,
     cacheable: true,
   });
@@ -120,7 +121,7 @@
   const pathInput = ref();
 
   watch(
-    () => formData.parent,
+    () => formData.pid,
     (val) => {
       if (!val) {
         return;
@@ -154,7 +155,7 @@
     form.value
       ?.validate()
       .then(() => {
-        formData.id ? updateMenu(formData) : addMenu(formData);
+        formData.id ? editMenu(formData) : addMenu(formData);
         showForm.value = false;
       })
       .finally(() => {
@@ -210,7 +211,7 @@
     formData.target = record.target;
     formData.renderMenu = record.renderMenu;
     formData.permission = record.permission;
-    formData.parent = record.parent;
+    formData.pid = record.pid;
     pageType.value =
       formData.component === 'LinkView' ? 'link' : formData.component === 'iframe' ? 'iframe' : 'component';
     showForm.value = true;
@@ -243,12 +244,15 @@
   };
 
   const remove = useAuth('delete', function (record: MenuProps) {
-    removeMenu(record.id!);
+    deleteMenu(record.id!);
   });
 
   const menuStore = useMenuStore();
 
-  const { getMenuList, updateMenu, addMenu, removeMenu } = useMenuStore();
+  const handleMenuType = (val: string) => {
+    console.log(val, '--handleMenuType')
+  }
+
   const { menuList } = storeToRefs(menuStore);
   onMounted(() => {
     getMenuList();
@@ -298,16 +302,23 @@
         <a-form-item required name="title" label="菜单标题">
           <a-input v-model:value="formData.title" />
         </a-form-item>
-        <a-form-item name="parent" label="父级菜单">
+        <a-form-item name="pid" label="父级菜单">
           <a-tree-select
             tree-default-expand-all
             placeholder="设置父级菜单"
-            v-model:value="formData.parent"
+            v-model:value="formData.pid"
             :treeData="treeData"
           />
         </a-form-item>
         <a-form-item name="icon" label="菜单图标">
           <IconSelector :column="6" :options="groupList" mode="single" v-model:value="formData.icon" />
+        </a-form-item>
+        <a-form-item name="menu_type" label="菜单类型">
+          <a-radio-button-group v-model:value="formData.menu_type" @change="handleMenuType">
+            <a-radio-button value="menu">菜单</a-radio-button>
+            <a-radio-button value="page">页面</a-radio-button>
+            <a-radio-button value="button">按钮</a-radio-button>
+          </a-radio-button-group>
         </a-form-item>
         <a-form-item required :name="pageTypeConfig[pageType].props" :wrapperCol="{ span: 21, offset: 1 }">
           <!-- <a-input v-model:value="formData.component" /> -->

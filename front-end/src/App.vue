@@ -2,7 +2,7 @@
   <a-config-provider :getPopupContainer="getPopupContainer">
     <ThemeProvider is-root v-bind="themeConfig" :apply-style="false">
       <stepin-view
-        system-name="Stepin"
+        system-name="Workflow"
         logo-src="@/assets/vite.svg"
         :class="`${contentClass}`"
         :user="user"

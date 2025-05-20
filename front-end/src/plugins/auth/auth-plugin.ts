@@ -25,6 +25,9 @@ export const useAuthStore = defineStore<string, AuthState, {}, AuthActions>('aut
       this.authorities = authorities;
     },
     hasAuthority(authority) {
+      if (this.authorities.indexOf('*') !== -1) {
+        return true;
+      }
       return this.authorities.indexOf(authority) !== -1;
     },
     /**
@@ -36,6 +39,7 @@ export const useAuthStore = defineStore<string, AuthState, {}, AuthActions>('aut
     useAuth<T extends Function>(key: AuthKey, func: T): T {
       const _this = this;
       return function t() {
+        console.log('useAuth', key, func)
         if (!_this.hasAuthority(key)) {
           alert.error(msgFormatter(key));
         } else {

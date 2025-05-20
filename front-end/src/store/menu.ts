@@ -1,7 +1,6 @@
 import { defineStore, storeToRefs } from 'pinia';
 import http from '@/utils/request/http';
 import { ref, watch } from 'vue';
-import { Response } from '@/types';
 import { RouteOption } from '@/router/interface';
 import { replaceRoutes, removeRoute } from '@/router/dynamicRoutes';
 import { useSettingStore } from './setting';
@@ -23,8 +22,8 @@ export interface MenuProps {
   link?: string;
   component: string;
   renderMenu?: boolean;
+  menu_type?: 'menu' | 'page' | 'action'
   permission?: string;
-  parent?: string;
   children?: MenuProps[];
   cacheable?: boolean;
   view?: string;
@@ -123,10 +122,9 @@ export const useMenuStore = defineStore('menu', () => {
     const { setPageLoading } = useLoadingStore();
     setPageLoading(true);
     return http
-      .request<MenuProps[], Response<MenuProps[]>>('/auth/menu/route', 'GET')
+      .request<MenuProps[], Api.Response<MenuProps[]>>('/auth/menu/route', 'GET')
       .then((res) => {
         const { data } = res;
-        console.log(data)
         menuList.value = data;
         replaceRoutes(toRoutes(data), false);
         checkMenuPermission();
@@ -137,7 +135,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   async function addMenu(menu: MenuProps) {
     return http
-      .request<any, Response<any>>('/menu', 'POST_JSON', menu)
+      .request<any, Api.Response<any>>('/menu', 'POST_JSON', menu)
       .then((res) => {
         return res.data;
       })
@@ -146,7 +144,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   async function updateMenu(menu: MenuProps) {
     return http
-      .request<any, Response<any>>('/menu', 'PUT_JSON', menu)
+      .request<any, Api.Response<any>>('/menu', 'PUT_JSON', menu)
       .then((res) => {
         return res.data;
       })
@@ -155,7 +153,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   async function removeMenu(id: number) {
     return http
-      .request<any, Response<any>>('/menu', 'DELETE', { id })
+      .request<any, Api.Response<any>>('/menu', 'DELETE', { id })
       .then(async (res) => {
         if (res.code === 0) {
           removeRoute(res.data.name);
