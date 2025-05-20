@@ -10,6 +10,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/logging"
 	"github.com/hulutech-web/workflow-engine/core/orm"
 	"github.com/hulutech-web/workflow-engine/core/queue"
+	_ "github.com/hulutech-web/workflow-engine/public/webroot/swagger"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -37,6 +38,11 @@ var Module = fx.Options(
 	fx.Invoke(setup),
 )
 
+// @title Workflow Engine API
+// @version 1.0
+// @description 工作流引擎接口文档
+// @host localhost:8080
+// @BasePath /api
 func setup(
 	lifecycle fx.Lifecycle,
 	server *http.Service,

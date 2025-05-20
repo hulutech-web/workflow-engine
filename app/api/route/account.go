@@ -23,6 +23,14 @@ func accountRoutes(a account, r *types.ApiRouter) {
 	api.POST("/register", a.register)
 }
 
+// @BasePath /api
+// @Summary 用户登录
+// @Tags 账户管理
+// @Accept json
+// @Produce json
+// @Param request body req.AccountLoginReq true "登录参数"
+// @Success 200 {object} response.Response{data=resp.AccountLoginResp}
+// @Router /account/login [post]
 func (a account) login(c *gin.Context) {
 	var loginReq req.AccountLoginReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &loginReq)) {
@@ -32,6 +40,13 @@ func (a account) login(c *gin.Context) {
 	response.CheckAndRespWithData(c, res, err)
 }
 
+// @BasePath /api
+// @Summary 用户登出
+// @Tags 账户管理
+// @Security ApiKeyAuth
+// @Param token header string true "访问令牌"
+// @Success 200 {object} response.Response
+// @Router /account/logout [get]
 func (a account) logout(c *gin.Context) {
 	var logoutReq req.AccountTokenReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &logoutReq)) {
@@ -41,11 +56,25 @@ func (a account) logout(c *gin.Context) {
 	response.CheckAndResp(c, err)
 }
 
+// @BasePath /api
+// @Summary 租户列表
+// @Tags 账户管理
+// @Produce json
+// @Success 200 {object} response.Response{data=[]resp.SelectOption}
+// @Router /account/tenant [get]
 func (a account) tenant(c *gin.Context) {
 	res, err := a.Srv.TenantList()
 	response.CheckAndRespWithData(c, res, err)
 }
 
+// @BasePath /api
+// @Summary 用户注册
+// @Tags 账户管理
+// @Accept json
+// @Produce json
+// @Param request body req.AccountRegisterReq true "注册参数"
+// @Success 200 {object} response.Response{data=resp.AccountLoginResp}
+// @Router /account/register [post]
 func (a account) register(c *gin.Context) {
 	var registerReq req.AccountRegisterReq
 	if response.IsFailWithResp(c, util.VerifyUtil.Verify(c, &registerReq)) {
