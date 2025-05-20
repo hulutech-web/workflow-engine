@@ -133,7 +133,7 @@ func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
 }
 
 func getToken(c *gin.Context) string {
-	token := c.GetHeader("Authorization")
+	token := c.GetHeader("token")
 	if token == "" {
 		token = c.Query("token")
 	}

@@ -50,7 +50,7 @@ export const useAccountStore = defineStore('account', {
       const res = await login(data)
       if (res) {
         this.logged = true;
-        http.setAuthorization(`${res.data.token}`, 7200 * 1000, 'Authorization');
+        http.setAuthorization(`${res.data.token}`, 7200 * 1000, 'token');
         await useMenuStore().getMenuList();
         return res.data;
       }

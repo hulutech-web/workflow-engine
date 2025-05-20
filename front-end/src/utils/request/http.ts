@@ -8,9 +8,11 @@ const http = createHttp({
   timeout: 10000,
   baseURL: 'api',
   withCredentials: true,
+    xsrfCookieName: 'token',
+    xsrfHeaderName: 'token',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
-        'Authorization': `${Cookie.get('Authorization')}`,
+        'token': `${Cookie.get('token')}`,
     },
 });
 
