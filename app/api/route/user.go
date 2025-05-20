@@ -30,11 +30,29 @@ func userRoutes(t user, r *types.ApiRouter) {
 	api.POST("/disable", t.disable, r.Log("禁用用户"))
 }
 
+// @BasePath /api
+// @Summary 用户权限
+// @Description 用户权限相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Success 200 {object} response.Response{data=resp.UserSelfResp} "成功"
+// @Router /user/self [get]
 func (t user) self(ctx *gin.Context) {
 	res, err := t.Srv.Self(req.GetAuth(ctx))
 	response.CheckAndRespWithData(ctx, res, err)
 }
 
+// @BasePath /api
+// @Summary 用户列表
+// @Description 用户列表相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.UserQueryReq true "查询条件"
+// @Param request body req.PageReq true "分页条件"
+// @Success 200 {object} response.Response{data=response.PageResp} "成功"
+// @Router /user/list [get]
 func (t user) list(ctx *gin.Context) {
 	var pageReq req.PageReq
 	var listReq req.UserQueryReq
@@ -44,6 +62,7 @@ func (t user) list(ctx *gin.Context) {
 	res, err := t.Srv.List(&pageReq, &listReq, req.GetAuth(ctx))
 	response.CheckAndRespWithData(ctx, res, err)
 }
+
 func (r *user) index(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
 	index, err := r.Srv.Index(ctx, query)
@@ -57,6 +76,15 @@ func (r *user) index(ctx *gin.Context) {
 	response.OkWithData(ctx, index)
 }
 
+// @BasePath /api
+// @Summary 用户详情
+// @Description 用户详情相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param id path uint true "用户ID"
+// @Success 200 {object} response.Response{data=resp.UserResp} "成功"
+// @Router /user/detail/{id} [get]
 func (t user) detail(ctx *gin.Context) {
 	var idReq req.IdReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &idReq)) {
@@ -66,6 +94,15 @@ func (t user) detail(ctx *gin.Context) {
 	response.CheckAndRespWithData(ctx, res, err)
 }
 
+// @BasePath /api
+// @Summary 添加用户
+// @Description 添加用户相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.UserAddReq true "用户信息"
+// @Success 200 {object} response.Response "成功"
+// @Router /user/add [post]
 func (t user) add(ctx *gin.Context) {
 	var userReq req.UserAddReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &userReq)) {
@@ -75,6 +112,15 @@ func (t user) add(ctx *gin.Context) {
 	response.CheckAndResp(ctx, err)
 }
 
+// @BasePath /api
+// @Summary 编辑用户
+// @Description 编辑用户相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.UserEditReq true "用户信息"
+// @Success 200 {object} response.Response "成功"
+// @Router /user/edit [post]
 func (t user) edit(ctx *gin.Context) {
 	var editReq req.UserEditReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &editReq)) {
@@ -84,6 +130,15 @@ func (t user) edit(ctx *gin.Context) {
 	response.CheckAndResp(ctx, err)
 }
 
+// @BasePath /api
+// @Summary 更新用户
+// @Description 更新用户相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.UserUpdateReq true "用户信息"
+// @Success 200 {object} response.Response "成功"
+// @Router /user/update [post]
 func (t user) update(ctx *gin.Context) {
 	var updateReq req.UserUpdateReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &updateReq)) {
@@ -93,6 +148,15 @@ func (t user) update(ctx *gin.Context) {
 	response.CheckAndResp(ctx, err)
 }
 
+// @BasePath /api
+// @Summary 删除用户
+// @Description 删除用户相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.IdReq true "用户ID"
+// @Success 200 {object} response.Response "成功"
+// @Router /user/delete/{id} [post]
 func (t user) delete(ctx *gin.Context) {
 	var idReq req.IdReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &idReq)) {
@@ -102,6 +166,15 @@ func (t user) delete(ctx *gin.Context) {
 	response.CheckAndResp(ctx, err)
 }
 
+// @BasePath /api
+// @Summary 禁用用户
+// @Description 禁用用户相关接口
+// @Tags 用户管理
+// @Produce  json
+// @Param token header string true "access_token"
+// @Param request body req.IdReq true "用户ID"
+// @Success 200 {object} response.Response "成功"
+// @Router /user/disable [post]
 func (t user) disable(ctx *gin.Context) {
 	var idReq req.IdReq
 	if response.IsFailWithResp(ctx, util.VerifyUtil.Verify(ctx, &idReq)) {

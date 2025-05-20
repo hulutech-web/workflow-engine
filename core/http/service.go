@@ -6,6 +6,8 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"github.com/hulutech-web/workflow-engine/core/http/middleware"
 	"github.com/hulutech-web/workflow-engine/core/logging"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/fx"
 	"net/http"
 	"time"
@@ -31,6 +33,8 @@ func NewService(c *config.Config) *Service {
 	eng.NoRoute(func(c *gin.Context) {
 		c.File("./public/webroot/index.html")
 	})
+	// 添加swagger路由
+	eng.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	addr := fmt.Sprintf("%s:%d", c.Server.Host, c.Server.Port)
 	server := &http.Server{
 		Addr:         addr,

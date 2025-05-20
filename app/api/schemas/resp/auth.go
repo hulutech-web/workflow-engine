@@ -1,21 +1,23 @@
 package resp
 
-import "github.com/dromara/carbon/v2"
+import (
+	"github.com/hulutech-web/workflow-engine/pkg/plugin/types"
+)
 
 type TenantResp struct {
-	ID          uint            `json:"id" structs:"id"`
-	Name        string          `json:"name" structs:"name"`
-	Address     string          `json:"address" structs:"address"`
-	Phone       string          `json:"phone" structs:"phone"`
-	Email       string          `json:"email" structs:"email"`
-	Domain      string          `json:"domain" structs:"domain"`
-	Logo        string          `json:"logo" structs:"logo"`
-	Description string          `json:"description" structs:"description"`
-	IsDisable   uint8           `json:"is_disable" structs:"is_disable"`
-	ExpiredAt   int64           `json:"expired_at" structs:"expired_at"`
-	Menus       []uint          `json:"menus,omitempty" structs:"menus"`
-	CreatedAt   carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt   carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	ID          uint           `json:"id" structs:"id"`
+	Name        string         `json:"name" structs:"name"`
+	Address     string         `json:"address" structs:"address"`
+	Phone       string         `json:"phone" structs:"phone"`
+	Email       string         `json:"email" structs:"email"`
+	Domain      string         `json:"domain" structs:"domain"`
+	Logo        string         `json:"logo" structs:"logo"`
+	Description string         `json:"description" structs:"description"`
+	IsDisable   uint8          `json:"is_disable" structs:"is_disable"`
+	ExpiredAt   int64          `json:"expired_at" structs:"expired_at"`
+	Menus       []uint         `json:"menus,omitempty" structs:"menus"`
+	CreatedAt   types.DateTime `json:"created_at" structs:"created_at"`
+	UpdatedAt   types.DateTime `json:"updated_at" structs:"updated_at"`
 }
 
 type UserResp struct {
@@ -36,8 +38,8 @@ type UserResp struct {
 		ID   uint   `json:"id" structs:"id"`
 		Name string `json:"name" structs:"name"`
 	} `json:"tenant" structs:"tenant"`
-	CreatedAt carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	CreatedAt types.DateTime `json:"created_at" structs:"created_at"`
+	UpdatedAt types.DateTime `json:"updated_at" structs:"updated_at"`
 }
 
 type UserSelfResp struct {
@@ -73,21 +75,21 @@ type MenuButton struct {
 
 // RoleSimpleResp 系统角色返回简单信息
 type RoleSimpleResp struct {
-	ID        uint            `json:"id" structs:"id"`     // 主键
-	Name      string          `json:"name" structs:"name"` // 角色名称
-	CreatedAt carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	ID        uint           `json:"id" structs:"id"`     // 主键
+	Name      string         `json:"name" structs:"name"` // 角色名称
+	CreatedAt types.DateTime `json:"created_at" structs:"created_at"`
+	UpdatedAt types.DateTime `json:"updated_at" structs:"updated_at"`
 }
 
 // RoleResp 系统角色返回信息
 type RoleResp struct {
-	ID        uint            `json:"id" structs:"id"`                 // 主键
-	Name      string          `json:"name" structs:"name"`             // 角色名称
-	Remark    string          `json:"remark" structs:"remark"`         // 角色备注
-	Menus     []uint          `json:"menus" structs:"menus"`           // 关联菜单
-	Member    int64           `json:"member" structs:"member"`         // 成员数量
-	Sort      uint16          `json:"sort" structs:"sort"`             // 角色排序
-	IsDisable uint8           `json:"is_disable" structs:"is_disable"` // 是否禁用: [0=否, 1=是]
-	CreatedAt carbon.DateTime `json:"created_at" structs:"created_at"`
-	UpdatedAt carbon.DateTime `json:"updated_at" structs:"updated_at"`
+	ID        uint           `json:"id" structs:"id"`                 // 主键
+	Name      string         `json:"name" structs:"name"`             // 角色名称
+	Remark    string         `json:"remark" structs:"remark"`         // 角色备注
+	Menus     []uint         `json:"menus" structs:"menus"`           // 关联菜单
+	Member    int64          `json:"member" structs:"member"`         // 成员数量
+	Sort      uint16         `json:"sort" structs:"sort"`             // 角色排序
+	IsDisable uint8          `json:"is_disable" structs:"is_disable"` // 是否禁用: [0=否, 1=是]
+	CreatedAt types.DateTime `json:"created_at" structs:"created_at"`
+	UpdatedAt types.DateTime `json:"updated_at" structs:"updated_at"`
 }

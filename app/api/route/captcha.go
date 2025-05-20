@@ -20,6 +20,13 @@ func captchaRoutes(a captcha, r *types.ApiRouter) {
 	r.POST("/captcha/validate", a.Validate)
 }
 
+// Get @BasePath /api
+// @Summary 生成验证码
+// @Description 生成验证码
+// @Tags 验证码
+// @Produce json
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
+// @Router /captcha/get [get]
 func (r captcha) Get(c *gin.Context) {
 	captcha_key, code, image_base64, thumb_base64, err := r.Srv.Generate()
 	if err != nil {
@@ -34,6 +41,15 @@ func (r captcha) Get(c *gin.Context) {
 	})
 }
 
+// Validate @BasePath /api
+// @Summary 验证码验证
+// @Description 验证码验证
+// @Tags 验证码
+// @Produce json
+// @Param angle query string true "验证码角度"
+// @Param captcha_key query string true "验证码key"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
+// @Router /captcha/validate [post]
 func (a captcha) Validate(c *gin.Context) {
 	var rq req.CaptchaReq
 	if err := c.ShouldBind(&rq); err != nil {
