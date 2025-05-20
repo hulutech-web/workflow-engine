@@ -82,8 +82,8 @@ type MenuAddReq struct {
 	Component  string       `json:"component" form:"component" validate:"required,max=255" label:"菜单组件"`
 	Icon       string       `json:"icon" form:"icon" validate:"max=255" label:"菜单图标"`
 	MenuType   string       `json:"menu_type" form:"menu_type" validate:"required,oneof=menu action" label:"菜单类型"`
-	Cacheable  bool         `json:"cacheable" form:"cacheable" validate:"oneof=0 1" label:"是否缓存"`
-	RenderMenu bool         `json:"render_menu" form:"render_menu" validate:"oneof=0 1" label:"是否渲染菜单"`
+	Cacheable  bool         `json:"cacheable" form:"cacheable"  label:"是否缓存"`
+	RenderMenu bool         `json:"render_menu" form:"render_menu" label:"是否渲染菜单"`
 	Permission string       `json:"permission" form:"permission" validate:"max=255" label:"权限标识"`
 	Sort       uint16       `json:"sort" form:"sort" label:"菜单排序"`
 	Target     string       `json:"target" form:"target" validate:"max=255" label:"打开方式"`
@@ -99,8 +99,8 @@ type MenuEditReq struct {
 	Component  string       `json:"component" form:"component" validate:"required,max=255" label:"菜单组件"`
 	Icon       string       `json:"icon" form:"icon" validate:"max=255" label:"菜单图标"`
 	MenuType   string       `json:"menu_type" form:"menu_type" validate:"required,oneof=menu action" label:"菜单类型"`
-	Cacheable  bool         `json:"cacheable" form:"cacheable" validate:"oneof=0 1" label:"是否缓存"`
-	RenderMenu bool         `json:"render_menu" form:"render_menu" validate:"oneof=0 1" label:"是否渲染菜单"`
+	Cacheable  bool         `json:"cacheable" form:"cacheable" label:"是否缓存"`
+	RenderMenu bool         `json:"render_menu" form:"render_menu" label:"是否渲染菜单"`
 	Permission string       `json:"permission" form:"permission" validate:"max=255" label:"权限标识"`
 	Sort       uint16       `json:"sort" form:"sort" label:"菜单排序"`
 	Target     string       `json:"target" form:"target" validate:"max=255" label:"打开方式"`

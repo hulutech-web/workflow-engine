@@ -1,16 +1,9 @@
 <script lang="ts" setup>
   import { LogoutOutlined } from '@ant-design/icons-vue';
   import { onMounted } from 'vue';
-  import { ThemeProvider, alert } from 'stepin';
+  import { ThemeProvider } from 'stepin';
 
   onMounted(() => {
-    alert.info(
-      `<div class="text-text">
-        Stepin is a fast, light framework to Vue3 – try it out today with the
-        <span class="underline">Stepin Template Beta</span>.
-      </div>`,
-      { renderRaw: true, duration: -1 }
-    );
   });
 
   const navList = [
@@ -55,7 +48,7 @@
         <div class="front-header flex items-baseline py-md px-xl">
           <router-link to="/home" class="text-xxl text-text hover:text-text">
             <img src="@/assets/vite.svg" />
-            Stepin
+            Workflow Engine
           </router-link>
           <div
             style="width: calc(100% - 430px)"

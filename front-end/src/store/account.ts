@@ -72,7 +72,6 @@ export const useAccountStore = defineStore('account', {
           if (response) {
             const { setAuthorities } = useAuthStore();
             const { user, permissions, role } = response.data;
-            console.log(user, permissions, role)
             this.account = user;
             this.permissions = permissions;
             this.role = role;

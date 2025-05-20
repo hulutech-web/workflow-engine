@@ -61,6 +61,7 @@ type MenuResp struct {
 	Target     string       `json:"target" structs:"target"`
 	Badge      string       `json:"badge" structs:"badge"`
 	Button     []MenuButton `json:"button" structs:"button"`
+	Children   []MenuResp   `json:"children,omitempty" structs:"children"`
 }
 
 type MenuButton struct {
