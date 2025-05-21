@@ -67,6 +67,8 @@ func dst() []interface{} {
 		&models.Log{},
 		&models.LicenseKey{},
 		&models.LicensePackage{},
+		&models.File{},
+		&models.FileCate{},
 	}
 }
 

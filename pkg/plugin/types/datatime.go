@@ -29,6 +29,18 @@ func (t *DateTime) Scan(value interface{}) error {
 	switch v := value.(type) {
 	case time.Time:
 		t.Time = v
+	case string:
+		if v == "" { // 处理空字符串
+			t.Time = time.Time{}
+			return nil
+		}
+		return fmt.Errorf("不支持的字符串值: %s", v)
+	case []byte: // 处理某些驱动以 []byte 形式返回空值的情况（如 MySQL 的空字符串）
+		if len(v) == 0 {
+			t.Time = time.Time{}
+			return nil
+		}
+		return fmt.Errorf("不支持的字节值: %s", string(v))
 	default:
 		return fmt.Errorf("不支持的数据库类型: %T", value)
 	}

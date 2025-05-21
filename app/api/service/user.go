@@ -234,7 +234,7 @@ func (u userServiceImpl) Self(auth *req.AuthReq) (*resp.UserSelfResp, error) {
 		if len(menuIds) > 0 {
 			var menus []models.AuthMenu
 			err := u.db.Where(
-				"id in ? AND menu_type in ?", menuIds, 0, []string{"menu"}).Order(
+				"id in ? AND menu_type in ?", menuIds, 0, []string{"menu", "page"}).Order(
 				"sort asc, id desc").Find(&menus).Error
 			if e = response.CheckErr(err, "Self SystemAuthMenu Find err"); e != nil {
 				return nil, e
@@ -250,7 +250,7 @@ func (u userServiceImpl) Self(auth *req.AuthReq) (*resp.UserSelfResp, error) {
 			var menus []models.AuthMenu
 			tentMenus, e = u.permSrv.SelectMenuIdsByTenantId(auth.TenantId)
 			err := u.db.Where(
-				"id in ? AND menu_type in ?", tentMenus, 0, []string{"menu"}).Order(
+				"id in ? AND menu_type in ?", tentMenus, 0, []string{"menu", "page"}).Order(
 				"sort asc, id desc").Find(&menus).Error
 			if e = response.CheckErr(err, "Self SystemAuthMenu Find err"); e != nil {
 				return nil, e

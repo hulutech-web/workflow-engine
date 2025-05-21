@@ -22,7 +22,7 @@ type AuthMenu struct {
 	Path       string `gorm:"column:path"`
 	Component  string `gorm:"column:component"`
 	Icon       string `gorm:"column:icon"`
-	MenuType   string `json:"menu_type" gorm:"column:menu_type"` // page, action
+	MenuType   string `json:"menu_type" gorm:"column:menu_type;index"` // page, action
 	Cacheable  bool   `json:"cacheable" gorm:"column:cacheable"`
 	RenderMenu bool   `json:"renderM_mnu" gorm:"column:render_menu"`
 	Permission string `json:"permission" gorm:"column:permission"`

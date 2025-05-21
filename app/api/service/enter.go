@@ -24,5 +24,7 @@ var Module = fx.Module("service",
 	fx.Provide(NewEntryService),
 	fx.Provide(NewProcService),
 	fx.Provide(NewCaptchaService),
+	fx.Provide(NewConfigService),
+	fx.Provide(NewUploadService),
 	fx.Provide(workflow.NewEngin),
 )

@@ -18,7 +18,7 @@ import (
 
 func NewOrm(config *config.Config) (*gorm.DB, error) {
 	var err error
-	log := logger.New(
+	l := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
 			SlowThreshold:             200 * time.Millisecond,
@@ -27,14 +27,14 @@ func NewOrm(config *config.Config) (*gorm.DB, error) {
 			IgnoreRecordNotFoundError: false,
 		})
 	conf := &gorm.Config{
-		Logger:                 log,
+		Logger:                 l,
 		PrepareStmt:            true,
 		SkipDefaultTransaction: true,
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   config.Database.TablePrefix, // 表名前缀
 			SingularTable: false,                       // 使用单一表名, eg. `User` => `user`
 		},
-		
+
 		DisableForeignKeyConstraintWhenMigrating: true,
 		// 关键新增配置
 		NowFunc: func() time.Time {
