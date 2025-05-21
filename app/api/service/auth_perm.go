@@ -57,7 +57,7 @@ func (a authPermImpl) CacheRoleMenusByRoleId(roleId uint) (e error) {
 		return err
 	}
 	var menus []models.AuthMenu
-	a.db.Where("id in (?) and menu_type in (?)", menuIds, []string{"menu"}).Order("id desc").Find(&menus)
+	a.db.Where("id in (?) and menu_type in (?)", menuIds, []string{"menu", "page"}).Order("id desc").Find(&menus)
 	if len(menus) == 0 {
 		return fmt.Errorf("角色没有权限")
 	}
@@ -143,7 +143,7 @@ func (a authPermImpl) CacheTenantMenusByTenantId(tenantId uint) (e error) {
 		return fmt.Errorf("查询租户权限失败: %v", err)
 	}
 	var menus []models.AuthMenu
-	a.db.Where("id in (?) and menu_type in (?)", menuIds, []string{"menu"}).Order("id desc").Find(&menus)
+	a.db.Where("id in (?) and menu_type in (?)", menuIds, []string{"menu", "page"}).Order("id desc").Find(&menus)
 	if len(menus) == 0 {
 		return fmt.Errorf("租户没有权限")
 	}

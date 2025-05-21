@@ -6,6 +6,7 @@ type Config struct {
 	Redis    Redis    `yaml:"redis" json:"redis"`
 	Jwt      Jwt      `yaml:"jwt" json:"jwt"`
 	Logging  Logging  `yaml:"logging" json:"logging"`
+	Storage  Storage  `yaml:"storage" json:"storage"`
 }
 
 type Server struct {
@@ -51,4 +52,10 @@ type Jwt struct {
 	Secret        string `yaml:"secret" json:"secret"`
 	AccessExpiry  string `yaml:"access_expiry" json:"access_expiry"`
 	RefreshExpiry string `yaml:"refresh_expiry" json:"refresh_expiry"`
+}
+
+type Storage struct {
+	PublicUrl    string `yaml:"public_url" json:"public_url"`
+	PublicPrefix string `yaml:"public_prefix" json:"public_prefix"`
+	LocalPath    string `yaml:"local_path" json:"local_path"`
 }

@@ -52,7 +52,7 @@ func (a authMenuServiceImpl) SelectMenuByRoleId(auth *req.AuthReq) (mapList inte
 		var err error
 		if role.IsAdmin == 1 {
 			var mIds []uint
-			a.db.Model(&models.AuthMenu{}).Where("menu_type in (?)", []string{"menu"}).Order("sort asc, id desc").Pluck("id", &mIds)
+			a.db.Model(&models.AuthMenu{}).Where("menu_type in (?)", []string{"menu", "page"}).Order("sort asc, id desc").Pluck("id", &mIds)
 			menuIds = mIds
 		} else {
 			menuIds, err = a.permSrv.SelectMenuIdsByRoleId(role.ID)
