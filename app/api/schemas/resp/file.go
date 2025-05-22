@@ -12,3 +12,11 @@ type FileResp struct {
 	Path     string `json:"path" structs:"path"`
 	TenantId uint   `json:"tenant_id" structs:"tenant_id"`
 }
+
+type FileCateResp struct {
+	ID       uint           `json:"id" structs:"id"`
+	Name     string         `json:"name" structs:"name"`
+	Sort     int            `json:"sort" structs:"sort"`
+	Pid      uint           `json:"pid" structs:"pid"`
+	Children []FileCateResp `json:"children,omitempty" structs:"children"`
+}

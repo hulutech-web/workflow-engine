@@ -106,6 +106,5 @@ func (u uploadService) upload(file *multipart.FileHeader, auth *req.AuthReq, fil
 	}
 	var res resp.FileResp
 	response.Copy(&res, fileAdd)
-	res.Url = util.UrlUtil.ToAbsoluteUrl(up.Uri, opt["engine_type"].(string), opt)
 	return res, nil
 }

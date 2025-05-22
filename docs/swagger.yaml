@@ -43,6 +43,107 @@ definitions:
     - tenantId
     - username
     type: object
+  req.FileCateAddReq:
+    properties:
+      name:
+        description: 分类名称
+        maxLength: 30
+        minLength: 1
+        type: string
+      pid:
+        description: 父级ID
+        minimum: 0
+        type: integer
+      type:
+        description: '分类类型: [10=图片,20=视频]'
+        enum:
+        - 10
+        - 20
+        - 30
+        type: integer
+    required:
+    - name
+    - type
+    type: object
+  req.FileCateListReq:
+    properties:
+      keyword:
+        description: 分类名称
+        type: string
+      type:
+        description: '分类类型: [10=图片,20=视频]'
+        enum:
+        - 10
+        - 20
+        - 30
+        type: integer
+    type: object
+  req.FileCateRenameReq:
+    properties:
+      id:
+        description: 主键
+        type: integer
+      keyword:
+        description: 分类名称
+        maxLength: 30
+        minLength: 1
+        type: string
+    required:
+    - id
+    - keyword
+    type: object
+  req.FileListReq:
+    properties:
+      cid:
+        description: 类目ID
+        type: integer
+      keyword:
+        description: 文件名称
+        type: string
+      type:
+        description: '文件类型: [10=图片, 20=视频]'
+        enum:
+        - 10
+        - 20
+        type: integer
+    type: object
+  req.FileMoveReq:
+    properties:
+      cid:
+        description: 类目ID
+        type: integer
+      ids:
+        description: 主键
+        items:
+          type: integer
+        type: array
+    required:
+    - ids
+    type: object
+  req.FileRenameReq:
+    properties:
+      id:
+        description: 主键
+        type: integer
+      keyword:
+        description: 文件名称
+        maxLength: 30
+        minLength: 1
+        type: string
+    required:
+    - id
+    - keyword
+    type: object
+  req.IdListReq:
+    properties:
+      ids:
+        description: 主键ID列表
+        items:
+          type: integer
+        type: array
+    required:
+    - ids
+    type: object
   req.IdReq:
     properties:
       id:
@@ -456,6 +557,8 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+      path:
         type: string
       size:
         type: integer
@@ -1070,12 +1173,16 @@ paths:
         name: token
         required: true
         type: string
-      - description: 分页请求参数
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/req.PageReq'
+      - description: 页码
+        in: query
+        minimum: 1
+        name: pageNo
+        type: integer
+      - description: 每页大小
+        in: query
+        maximum: 60
+        name: pageSize
+        type: integer
       produces:
       - application/json
       responses:
@@ -1306,6 +1413,241 @@ paths:
       summary: 验证码验证
       tags:
       - 验证码
+  /common/file/cateAdd:
+    post:
+      description: 附件分类添加
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件分类添加参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileCateAddReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件分类添加
+      tags:
+      - 附件管理
+  /common/file/cateDelete:
+    post:
+      description: 附件分类删除
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件分类删除参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.IdListReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件分类删除
+      tags:
+      - 附件管理
+  /common/file/cateList:
+    get:
+      description: 获取附件分类列表
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件分类列表参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileCateListReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  items:
+                    type: object
+                  type: array
+              type: object
+      summary: 附件分类列表
+      tags:
+      - 附件管理
+  /common/file/cateRename:
+    post:
+      description: 附件分类重命名
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件分类重命名参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileCateRenameReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件分类重命名
+      tags:
+      - 附件管理
+  /common/file/fileDelete:
+    post:
+      description: 附件删除
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件删除参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.IdListReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件删除
+      tags:
+      - 附件管理
+  /common/file/fileList:
+    get:
+      description: 获取附件列表
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 页码
+        in: query
+        minimum: 1
+        name: pageNo
+        type: integer
+      - description: 每页大小
+        in: query
+        maximum: 60
+        name: pageSize
+        type: integer
+      - description: 附件列表参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileListReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/response.PageResp'
+                  - properties:
+                      Count:
+                        type: integer
+                      Lists:
+                        items:
+                          $ref: '#/definitions/resp.FileResp'
+                        type: array
+                      PageNo:
+                        type: integer
+                      PageSize:
+                        type: integer
+                    type: object
+              type: object
+      summary: 附件列表
+      tags:
+      - 附件管理
+  /common/file/fileMove:
+    post:
+      description: 附件移动
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件移动参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileMoveReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件移动
+      tags:
+      - 附件管理
+  /common/file/fileRename:
+    post:
+      description: 附件重命名
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 附件重命名参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.FileRenameReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 附件重命名
+      tags:
+      - 附件管理
   /upload/audio:
     post:
       consumes:
