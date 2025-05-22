@@ -634,13 +634,18 @@
                         "required": true
                     },
                     {
-                        "description": "分页请求参数",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.PageReq"
-                        }
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNo",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 60,
+                        "type": "integer",
+                        "description": "每页大小",
+                        "name": "pageSize",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -998,6 +1003,375 @@
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/cateAdd": {
+            "post": {
+                "description": "附件分类添加",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件分类添加",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件分类添加参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileCateAddReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/cateDelete": {
+            "post": {
+                "description": "附件分类删除",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件分类删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件分类删除参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.IdListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/cateList": {
+            "get": {
+                "description": "获取附件分类列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件分类列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件分类列表参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileCateListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/cateRename": {
+            "post": {
+                "description": "附件分类重命名",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件分类重命名",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件分类重命名参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileCateRenameReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/fileDelete": {
+            "post": {
+                "description": "附件删除",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件删除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件删除参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.IdListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/fileList": {
+            "get": {
+                "description": "获取附件列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "pageNo",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 60,
+                        "type": "integer",
+                        "description": "每页大小",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "description": "附件列表参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileListReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResp"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "Count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "Lists": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/resp.FileResp"
+                                                            }
+                                                        },
+                                                        "PageNo": {
+                                                            "type": "integer"
+                                                        },
+                                                        "PageSize": {
+                                                            "type": "integer"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/fileMove": {
+            "post": {
+                "description": "附件移动",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件移动",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件移动参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileMoveReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/file/fileRename": {
+            "post": {
+                "description": "附件重命名",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "附件管理"
+                ],
+                "summary": "附件重命名",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "附件重命名参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.FileRenameReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -1621,6 +1995,146 @@
                     "type": "string",
                     "maxLength": 32,
                     "minLength": 4
+                }
+            }
+        },
+        "req.FileCateAddReq": {
+            "type": "object",
+            "required": [
+                "name",
+                "type"
+            ],
+            "properties": {
+                "name": {
+                    "description": "分类名称",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
+                },
+                "pid": {
+                    "description": "父级ID",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "type": {
+                    "description": "分类类型: [10=图片,20=视频]",
+                    "type": "integer",
+                    "enum": [
+                        10,
+                        20,
+                        30
+                    ]
+                }
+            }
+        },
+        "req.FileCateListReq": {
+            "type": "object",
+            "properties": {
+                "keyword": {
+                    "description": "分类名称",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "分类类型: [10=图片,20=视频]",
+                    "type": "integer",
+                    "enum": [
+                        10,
+                        20,
+                        30
+                    ]
+                }
+            }
+        },
+        "req.FileCateRenameReq": {
+            "type": "object",
+            "required": [
+                "id",
+                "keyword"
+            ],
+            "properties": {
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "keyword": {
+                    "description": "分类名称",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
+                }
+            }
+        },
+        "req.FileListReq": {
+            "type": "object",
+            "properties": {
+                "cid": {
+                    "description": "类目ID",
+                    "type": "integer"
+                },
+                "keyword": {
+                    "description": "文件名称",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "文件类型: [10=图片, 20=视频]",
+                    "type": "integer",
+                    "enum": [
+                        10,
+                        20
+                    ]
+                }
+            }
+        },
+        "req.FileMoveReq": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "cid": {
+                    "description": "类目ID",
+                    "type": "integer"
+                },
+                "ids": {
+                    "description": "主键",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "req.FileRenameReq": {
+            "type": "object",
+            "required": [
+                "id",
+                "keyword"
+            ],
+            "properties": {
+                "id": {
+                    "description": "主键",
+                    "type": "integer"
+                },
+                "keyword": {
+                    "description": "文件名称",
+                    "type": "string",
+                    "maxLength": 30,
+                    "minLength": 1
+                }
+            }
+        },
+        "req.IdListReq": {
+            "type": "object",
+            "required": [
+                "ids"
+            ],
+            "properties": {
+                "ids": {
+                    "description": "主键ID列表",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

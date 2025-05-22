@@ -15,7 +15,7 @@ type IdReq struct {
 }
 
 type IdListReq struct {
-	Ids []string `form:"ids" validate:"required,dive" json:"ids"` // 主键ID列表
+	Ids []uint `form:"ids" validate:"required,dive" json:"ids"` // 主键ID列表
 }
 
 type KeyReq struct {

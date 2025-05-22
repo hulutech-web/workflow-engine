@@ -45,7 +45,7 @@ func (t role) all(ctx *gin.Context) {
 // @Tags 角色管理
 // @Produce  json
 // @Param token header string true "access_token"
-// @Param request body req.PageReq true "分页请求参数"
+// @Param request query req.PageReq true "分页请求参数"
 // @Success 200 {object} response.PageResp{data=[]resp.RoleResp} "成功"
 // @Router /auth/role/list [get]
 func (t role) list(c *gin.Context) {
