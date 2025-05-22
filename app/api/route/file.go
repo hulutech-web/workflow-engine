@@ -19,13 +19,13 @@ func fileRoutes(t file, r *types.ApiRouter) {
 	fileGroup := r.RouterGroup.Group("/common/file")
 
 	fileGroup.GET("/fileList", t.fileList)
-	fileGroup.POST("/fileRename", t.fileRename)
-	fileGroup.POST("/fileMove", t.fileMove)
-	fileGroup.POST("/fileDelete", t.fileDelete)
-	fileGroup.GET("/cateList", t.cateList)
-	fileGroup.POST("/cateAdd", t.cateAdd)
-	fileGroup.POST("/cateRename", t.cateRename)
-	fileGroup.POST("/cateDelete", t.cateDelete)
+	fileGroup.POST("/fileRename", t.fileRename, r.Log("附件重命名"))
+	fileGroup.POST("/fileMove", t.fileMove, r.Log("附件移动"))
+	fileGroup.POST("/fileDelete", t.fileDelete, r.Log("附件删除"))
+	fileGroup.GET("/cateList", t.cateList, r.Log("附件分类列表"))
+	fileGroup.POST("/cateAdd", t.cateAdd, r.Log("附件分类添加"))
+	fileGroup.POST("/cateRename", t.cateRename, r.Log("附件分类重命名"))
+	fileGroup.POST("/cateDelete", t.cateDelete, r.Log("附件分类删除"))
 }
 
 // @BasePath /api
