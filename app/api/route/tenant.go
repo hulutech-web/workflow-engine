@@ -18,7 +18,7 @@ type tenant struct {
 func tenantRoutes(t tenant, r *types.ApiRouter) {
 	api := r.Group("/auth/tenant")
 	api.GET("/all", t.all)
-	api.GET("/list", t.list)
+	api.POST("/list", t.list)
 	api.GET("/detail", t.detail)
 	api.POST("/add", t.add, r.Log("添加租户"))
 	api.POST("/edit", t.edit, r.Log("编辑租户"))
@@ -45,9 +45,8 @@ func (t tenant) all(ctx *gin.Context) {
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.PageReq true "分页请求参数"
-// @Param query body req.TenantQueryReq true "查询请求参数"
 // @Success 200 {object} response.PageResp{data=[]resp.TenantResp} "成功"
-// @Router /auth/tenant/list [get]
+// @Router /auth/tenant/list [post]
 func (t tenant) list(c *gin.Context) {
 	var page req.PageReq
 	var listReq req.TenantQueryReq

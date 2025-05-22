@@ -42,9 +42,11 @@ func NewService(c *config.Config) *Service {
 	})
 	eng.StaticFS(c.Storage.PublicPrefix, http.Dir(c.Storage.LocalPath))
 	// 添加swagger路由
-	eng.GET("/docs/*any", gin.BasicAuth(gin.Accounts{
-		"admin": "123456",
-	}), ginSwagger.WrapHandler(swaggerFiles.Handler))
+	//eng.GET("/docs/*any", gin.BasicAuth(gin.Accounts{
+	//	"admin": "123456",
+	//}), ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	eng.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	addr := fmt.Sprintf("%s:%d", c.Server.Host, c.Server.Port)
 	server := &http.Server{

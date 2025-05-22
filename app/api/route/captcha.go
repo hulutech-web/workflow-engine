@@ -23,7 +23,9 @@ func captchaRoutes(a captcha, r *types.ApiRouter) {
 // Get @BasePath /api
 // @Summary 生成验证码
 // @Description 生成验证码
+// @Tags Captcha
 // @Tags 验证码
+// @Id Get
 // @Produce json
 // @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /captcha/get [get]
@@ -44,7 +46,9 @@ func (r captcha) Get(c *gin.Context) {
 // Validate @BasePath /api
 // @Summary 验证码验证
 // @Description 验证码验证
+// @Tags Captcha
 // @Tags 验证码
+// @Id Validate
 // @Produce json
 // @Param angle query string true "验证码角度"
 // @Param captcha_key query string true "验证码key"

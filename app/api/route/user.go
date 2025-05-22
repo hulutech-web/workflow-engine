@@ -50,7 +50,6 @@ func (t user) self(ctx *gin.Context) {
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.UserQueryReq true "查询条件"
-// @Param request body req.PageReq true "分页条件"
 // @Success 200 {object} response.Response{data=response.PageResp} "成功"
 // @Router /user/list [get]
 func (t user) list(ctx *gin.Context) {

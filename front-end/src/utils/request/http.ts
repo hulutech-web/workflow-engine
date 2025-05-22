@@ -98,3 +98,18 @@ export const post = <T = any>(
 ): Promise<Api.Response<T>> => {
     return http.request<T, Api.Response<T>>(url, 'POST_JSON', data, config);
 };
+
+
+export interface RequestOptions extends AxiosRequestConfig {
+    /** 是否直接将数据从响应中提取出，例如直接返回 res.data，而忽略 res.code 等信息 */
+    isReturnResult?: boolean;
+    /** 请求成功是提示信息 */
+    successMsg?: string;
+    /** 请求失败是提示信息 */
+    errorMsg?: string;
+    /** 成功时，是否显示后端返回的成功信息 */
+    showSuccessMsg?: boolean;
+    /** 失败时，是否显示后端返回的失败信息 */
+    showErrorMsg?: boolean;
+    requestType?: "json" | "form";
+}
