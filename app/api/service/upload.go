@@ -9,6 +9,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/storage"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"gorm.io/gorm"
+	"log"
 	"mime/multipart"
 )
 
@@ -74,10 +75,14 @@ func (u uploadService) upload(file *multipart.FileHeader, auth *req.AuthReq, fil
 			return resp.FileResp{}, fmt.Errorf("上传文件失败:%v", err)
 		}
 		response.Copy(&fileAdd, up)
+		if err := u.db.Create(&fileAdd).Error; err != nil {
+			return resp.FileResp{}, fmt.Errorf("保存文件信息失败:%v", err)
+		}
 		var res resp.FileResp
 		response.Copy(&res, fileAdd)
 		return res, nil
 	}
+	log.Printf("auth.IsSuperTenant=%+v", auth.IsSuperTenant)
 	if opt["engine_type"] == "local" {
 		fileSize := file.Size
 		// mock 上传文件大小限制
@@ -96,7 +101,11 @@ func (u uploadService) upload(file *multipart.FileHeader, auth *req.AuthReq, fil
 		return resp.FileResp{}, fmt.Errorf("上传文件失败:%v", err)
 	}
 	response.Copy(&fileAdd, up)
+	if err := u.db.Create(&fileAdd).Error; err != nil {
+		return resp.FileResp{}, fmt.Errorf("保存文件信息失败:%v", err)
+	}
 	var res resp.FileResp
 	response.Copy(&res, fileAdd)
+	res.Url = util.UrlUtil.ToAbsoluteUrl(up.Uri, opt["engine_type"].(string), opt)
 	return res, nil
 }

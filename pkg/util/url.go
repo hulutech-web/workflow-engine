@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hulutech-web/workflow-engine/core/config"
 	"go.uber.org/zap"
+	"log"
 	"net/url"
 	"path"
 	"strings"
@@ -11,9 +12,8 @@ import (
 
 var (
 	UrlUtil      = urlUtil{}
-	confi        = config.NewConfig()
-	publicUrl    = confi.Storage.PublicUrl
-	publicPrefix = confi.Storage.PublicPrefix
+	publicUrl    = config.NewConfig().Server.PublicUrl
+	publicPrefix = config.NewConfig().Storage.PublicPrefix
 )
 
 // urlUtil 文件路径处理工具
@@ -37,22 +37,25 @@ func (uu urlUtil) ToAbsoluteUrl(u string, engine string, cfg map[string]interfac
 		}
 		uri = fmt.Sprintf("%s://%s", cfg["http_prefix"].(string), uri)
 		return uri
-	}
+	} else if engine == "local" {
+		log.Printf("ToAbsoluteUrl publicUrl=[%+v] publicPrefix=[%+v]", publicUrl, publicPrefix)
+		// 本地存储处理
+		up, err := url.Parse(publicUrl)
+		if err != nil {
+			log.Printf("ToAbsoluteUrl Parse publicUrl err: err=[%+v]", err)
+			zap.S().Errorf("ToAbsoluteUrl Parse err: err=[%+v]", err)
+			return u
+		}
+		zap.S().Info("ToAbsoluteUrl up=[%+v]", up)
+		if strings.HasPrefix(u, "/api/static/") {
+			up.Path = path.Join(up.Path, u)
+			return up.String()
+		}
 
-	// 本地存储处理
-	up, err := url.Parse(publicUrl)
-	if err != nil {
-		zap.S().Errorf("ToAbsoluteUrl Parse err: err=[%+v]", err)
-		return u
-	}
-
-	if strings.HasPrefix(u, "/api/static/") {
-		up.Path = path.Join(up.Path, u)
+		up.Path = path.Join(up.Path, publicPrefix, u)
 		return up.String()
 	}
-
-	up.Path = path.Join(up.Path, publicPrefix, u)
-	return up.String()
+	return u
 }
 
 func (uu urlUtil) ToRelativeUrl(u string, engine string) string {

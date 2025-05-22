@@ -10,6 +10,7 @@ type File struct {
 	Ext      string `gorm:"not null;default:'';comment:'文件扩展'"`
 	Size     int64  `gorm:"not null;default:0;comment:文件大小"`
 	Engine   string `gorm:"not null;default:'';comment:'存储引擎'"`
+	Path     string `gorm:"not null;default:'';comment:'访问路径'"`
 	TenantId uint   `gorm:"not null;default:0;comment:'租户ID'"`
 }
 

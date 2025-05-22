@@ -55,37 +55,53 @@ func (d *Driver) checkFile(file *multipart.FileHeader, fileType string) error {
 	fileName := file.Filename
 	fileExt := strings.ToLower(strings.Replace(path.Ext(fileName), ".", "", 1))
 	fileSize := file.Size
+	cSize, ok := d.conf["max_size"].(int64)
+	if !ok {
+		cSize = 1024 * 1024 * 1024 // 1G
+	}
 	switch fileType {
 	case "image":
-		exts := d.conf["image_ext"].([]string)
+		exts, ok := d.conf["image_ext"].([]string)
+		if !ok {
+			break
+		}
 		if !util.ToolsUtil.Contains(exts, fileExt) {
 			return fmt.Errorf("不支持的图片格式： %s", fileExt)
 		}
-		if fileSize > d.conf["max_size"].(int64) {
+		if fileSize > cSize {
 			return fmt.Errorf("图片大小超过限制： %dM", fileSize/1024/1024)
 		}
 	case "video":
-		exts := d.conf["video_ext"].([]string)
+		exts, ok := d.conf["video_ext"].([]string)
+		if !ok {
+			break
+		}
 		if !util.ToolsUtil.Contains(exts, fileExt) {
 			return fmt.Errorf("不支持的视频格式： %s", fileExt)
 		}
-		if fileSize > d.conf["max_size"].(int64) {
+		if fileSize > cSize {
 			return fmt.Errorf("视频大小超过限制： %dM", fileSize/1024/1024)
 		}
 	case "audio":
-		exts := d.conf["audio_ext"].([]string)
+		exts, ok := d.conf["audio_ext"].([]string)
+		if !ok {
+			break
+		}
 		if !util.ToolsUtil.Contains(exts, fileExt) {
 			return fmt.Errorf("不支持的音频格式： %s", fileExt)
 		}
-		if fileSize > d.conf["max_size"].(int64) {
+		if fileSize > cSize {
 			return fmt.Errorf("音频大小超过限制： %dM", fileSize/1024/1024)
 		}
 	case "file":
-		exts := d.conf["file_ext"].([]string)
+		exts, ok := d.conf["file_ext"].([]string)
+		if !ok {
+			break
+		}
 		if !util.ToolsUtil.Contains(exts, fileExt) {
 			return fmt.Errorf("不支持的文件格式： %s", fileExt)
 		}
-		if fileSize > d.conf["max_size"].(int64) {
+		if fileSize > cSize {
 			return fmt.Errorf("文件大小超过限制： %dM", fileSize/1024/1024)
 		}
 	default:
@@ -108,6 +124,9 @@ func (d *Driver) Upload(file *multipart.FileHeader, folder string, fileType stri
 		return nil, e
 	}
 	key := d.buildSaveName(file)
+	if engine == "" {
+		engine = "local"
+	}
 	switch engine {
 	case "local":
 		if err := d.uploadLocal(file, key, folder); err != nil {

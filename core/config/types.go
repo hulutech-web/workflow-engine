@@ -10,9 +10,10 @@ type Config struct {
 }
 
 type Server struct {
-	Port int    `yaml:"port" json:"port"`
-	Host string `yaml:"host" json:"host"`
-	Mode string `yaml:"module" json:"module"`
+	Port      int    `yaml:"port" json:"port"`
+	Host      string `yaml:"host" json:"host"`
+	Mode      string `yaml:"module" json:"module"`
+	PublicUrl string `yaml:"publicUrl" json:"publicUrl"`
 }
 
 // Logging 配置日志文件
@@ -55,7 +56,6 @@ type Jwt struct {
 }
 
 type Storage struct {
-	PublicUrl    string `yaml:"public_url" json:"public_url"`
-	PublicPrefix string `yaml:"public_prefix" json:"public_prefix"`
-	LocalPath    string `yaml:"local_path" json:"local_path"`
+	PublicPrefix string `yaml:"publicPrefix" json:"publicPrefix"`
+	LocalPath    string `yaml:"localPath" json:"localPath"`
 }

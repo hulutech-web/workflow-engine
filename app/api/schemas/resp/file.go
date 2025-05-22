@@ -9,5 +9,6 @@ type FileResp struct {
 	Uri      string `json:"uri" structs:"uri"`
 	Ext      string `json:"ext" structs:"ext"`
 	Size     int64  `json:"size" structs:"size"`
+	Path     string `json:"path" structs:"path"`
 	TenantId uint   `json:"tenant_id" structs:"tenant_id"`
 }

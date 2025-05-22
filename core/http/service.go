@@ -24,17 +24,28 @@ func NewService(c *config.Config) *Service {
 	eng.Use(middleware.Cors())
 	eng.Use(logging.GinLogging(), logging.GinRecovery(true))
 	// 设置静态资源
+	if c.Storage.LocalPath == "" {
+		c.Storage.LocalPath = "./public/uploads"
+	}
+	if c.Storage.PublicPrefix == "" {
+		c.Storage.PublicPrefix = "/uploads"
+	}
+
 	eng.StaticFS("/static", http.Dir("./public/webroot/static"))
-	//engine.StaticFS("/resource", http.Dir("./webroot/resource"))
 	eng.StaticFile("/favicon.ico", "./public/webroot/favicon.ico")
+
 	eng.GET("/", func(c *gin.Context) {
 		c.File("./public/webroot/index.html")
 	})
 	eng.NoRoute(func(c *gin.Context) {
 		c.File("./public/webroot/index.html")
 	})
+	eng.StaticFS(c.Storage.PublicPrefix, http.Dir(c.Storage.LocalPath))
 	// 添加swagger路由
-	eng.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	eng.GET("/docs/*any", gin.BasicAuth(gin.Accounts{
+		"admin": "123456",
+	}), ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	addr := fmt.Sprintf("%s:%d", c.Server.Host, c.Server.Port)
 	server := &http.Server{
 		Addr:         addr,
