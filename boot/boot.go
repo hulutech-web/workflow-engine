@@ -10,7 +10,7 @@ import (
 	"github.com/hulutech-web/workflow-engine/core/logging"
 	"github.com/hulutech-web/workflow-engine/core/orm"
 	"github.com/hulutech-web/workflow-engine/core/queue"
-	_ "github.com/hulutech-web/workflow-engine/public/webroot/swagger"
+	_ "github.com/hulutech-web/workflow-engine/docs"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

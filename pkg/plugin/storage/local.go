@@ -10,6 +10,9 @@ import (
 
 func (d *Driver) uploadLocal(file *multipart.FileHeader, key string, folder string) error {
 	directory := cfg.Storage.LocalPath
+	if len(directory) == 0 {
+		directory = "./public/uploads"
+	}
 	src, err := file.Open()
 	if err != nil {
 		return fmt.Errorf("打开文件失败: %v", err)

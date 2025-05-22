@@ -2,6 +2,7 @@ server:
   port: 8080
   host: 0.0.0.0
   mode: debug
+  publicUrl: http://localhost:8080
 
 database:
   driver: mysql
@@ -27,3 +28,7 @@ jwt:
 logging:
   level: "info"
   file_path: "./logs/app.log"
+
+storage:
+  publicPrefix: /uploads
+  localPath: ./public/uploads

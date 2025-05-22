@@ -447,6 +447,27 @@ definitions:
       userInfo:
         $ref: '#/definitions/resp.UserResp'
     type: object
+  resp.FileResp:
+    properties:
+      cid:
+        type: integer
+      ext:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      size:
+        type: integer
+      tenant_id:
+        type: integer
+      type:
+        type: string
+      uri:
+        type: string
+      user_id:
+        type: integer
+    type: object
   resp.MenuButton:
     properties:
       id:
@@ -1285,6 +1306,150 @@ paths:
       summary: 验证码验证
       tags:
       - 验证码
+  /upload/audio:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传音频
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 分类ID
+        in: formData
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/resp.FileResp'
+              type: object
+      summary: 上传音频
+      tags:
+      - 上传
+  /upload/file:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传文件
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 分类ID
+        in: formData
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/resp.FileResp'
+              type: object
+      summary: 上传文件
+      tags:
+      - 上传
+  /upload/image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传图片
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 分类ID
+        in: formData
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/resp.FileResp'
+              type: object
+      summary: 上传图片
+      tags:
+      - 上传
+  /upload/video:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传视频
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: 上传文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 分类ID
+        in: formData
+        name: cid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/resp.FileResp'
+              type: object
+      summary: 上传视频
+      tags:
+      - 上传
   /user/add:
     post:
       description: 添加用户相关接口

@@ -4,6 +4,8 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
+	"os"
+	"path/filepath"
 )
 
 const (
@@ -14,9 +16,10 @@ const (
 func NewConfig() *Config {
 	defaultConfig := &Config{
 		Server: Server{
-			Port: 8080,
-			Host: "0.0.0.0",
-			Mode: "debug",
+			Port:      8080,
+			Host:      "0.0.0.0",
+			Mode:      "debug",
+			PublicUrl: "http://localhost:8080",
 		},
 		Database: Database{
 			Driver:       "mysql",
@@ -49,10 +52,15 @@ func NewConfig() *Config {
 			MaxBackups: 10,
 			MaxAge:     5,
 		},
+		Storage: Storage{
+			PublicPrefix: "/uploads",
+			LocalPath:    "public/uploads",
+		},
 	}
 	conf := &Config{}
 	viper.SetConfigType(configType)
-	viper.SetConfigFile(configFile)
+	dir, _ := os.Getwd()
+	viper.SetConfigFile(filepath.Join(dir, configFile))
 	if err := viper.ReadInConfig(); err != nil {
 		return defaultConfig
 	}
