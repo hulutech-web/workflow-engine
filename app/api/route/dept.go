@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/service"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
@@ -29,6 +30,15 @@ func deptRoutes(a dept, r *types.ApiRouter) {
 	r.GET("/dept/:id/tree", a.DisplayTree)
 }
 
+// Index @BasePath /api
+// @Summary 部门
+// @Description 部门分页
+// @Tags Dept
+// @Tags 部门
+// @Id Index
+// @Produce json
+// @Success 200 {object} service.PageResult "成功"
+// @Router /dept [get]
 func (r *dept) Index(ctx *gin.Context) {
 	query := ctx.Request.URL.Query()
 	index, err := r.Srv.Index(ctx, query)
@@ -42,6 +52,15 @@ func (r *dept) Index(ctx *gin.Context) {
 	response.OkWithData(ctx, index)
 }
 
+// List @BasePath /api
+// @Summary 部门
+// @Description 部门列表
+// @Tags Dept
+// @Tags 部门
+// @Id List
+// @Produce json
+// @Success 200 {object}  "成功"
+// @Router /dept/list [get]
 func (r *dept) List(ctx *gin.Context) {
 	list, err := r.Srv.List(ctx)
 	if err != nil {
@@ -50,6 +69,16 @@ func (r *dept) List(ctx *gin.Context) {
 	response.OkWithData(ctx, list)
 }
 
+// Show @BasePath /api
+// @Summary 部门
+// @Description 单个部门
+// @Tags Dept
+// @Tags 部门
+// @Id Show
+// @Produce json
+// @Param id path int true "部门ID"
+// @Success 200 {object}  "成功"
+// @Router /dept/{id} [get]
 func (r *dept) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
 	idInt := cast.ToInt(id)
@@ -57,6 +86,16 @@ func (r *dept) Show(ctx *gin.Context) {
 	response.OkWithData(ctx, show)
 }
 
+// Store @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id Store
+// @Produce json
+// @Body request models.Dept
+// @Success 200 {object}  "成功"
+// @Router /dept [post]
 func (r *dept) Store(ctx *gin.Context) {
 	var dpt models.Dept
 	ctx.Bind(&dpt)
@@ -68,6 +107,17 @@ func (r *dept) Store(ctx *gin.Context) {
 	response.OkWithData(ctx, "操作成功")
 }
 
+// Update @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id Update
+// @Produce json
+// @Param id path int true "部门ID"
+// @Body request models.Dept
+// @Success 200 {object}  "成功"
+// @Router /dept/{id} [put]
 func (r *dept) Update(ctx *gin.Context) {
 	var dpt models.Dept
 	ctx.Bind(&dpt)
@@ -79,6 +129,16 @@ func (r *dept) Update(ctx *gin.Context) {
 	response.OkWithData(ctx, "操作成功")
 }
 
+// Destroy @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id Destroy
+// @Produce json
+// @Param id path int true "部门ID"
+// @Success 200 {object}  "成功"
+// @Router /dept/{id} [delete]
 func (r *dept) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := r.Srv.Destroy(ctx, cast.ToInt(id))
@@ -88,12 +148,19 @@ func (r *dept) Destroy(ctx *gin.Context) {
 	}
 	response.OkWithData(ctx, "操作成功")
 }
+
+// BindManager @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id BindManager
+// @Produce json
+// @Param request body req.BindManagerReq true "绑定参数"
+// @Success 200 {object}  "成功"
+// @Router /dept/bind_manager [post]
 func (r *dept) BindManager(ctx *gin.Context) {
-	type BindManagerReq struct {
-		ManagerID int `json:"manager_id" form:"manager_id"`
-		DeptID    int `json:"dept_id" form:"dept_id"`
-	}
-	var bindManagerReq BindManagerReq
+	var bindManagerReq req.BindManagerReq
 	if err2 := ctx.ShouldBindJSON(&bindManagerReq); err2 != nil {
 		response.FailWithMsg(ctx, response.Failed, err2.Error())
 		return
@@ -107,12 +174,18 @@ func (r *dept) BindManager(ctx *gin.Context) {
 	response.OkWithData(ctx, "操作成功")
 }
 
+// BindDirector @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id BindDirector
+// @Produce json
+// @Param request body req.BindDirectorReq true "绑定参数"
+// @Success 200 {object}  "成功"
+// @Router /dept/bind_director [post]
 func (r *dept) BindDirector(ctx *gin.Context) {
-	type BindDirectorReq struct {
-		DirectorID int `json:"director_id" form:"director_id"`
-		DeptID     int `json:"dept_id" form:"dept_id"`
-	}
-	var bindDirectorReq BindDirectorReq
+	var bindDirectorReq req.BindDirectorReq
 	if err2 := ctx.ShouldBindJSON(&bindDirectorReq); err2 != nil {
 		response.FailWithMsg(ctx, response.Failed, err2.Error())
 		return
@@ -128,6 +201,15 @@ func (r *dept) BindDirector(ctx *gin.Context) {
 	response.OkWithData(ctx, "操作成功")
 }
 
+// DisplayTree @BasePath /api
+// @Summary 部门
+// @Description 新增部门
+// @Tags Dept
+// @Tags 部门
+// @Id DisplayTree
+// @Param id path int true "部门ID"
+// @Success 200 {object}  "成功"
+// @Router /dept/{id}/tree [get]
 func (r *dept) DisplayTree(ctx *gin.Context) {
 	id := ctx.Param("id")
 	res, err := r.Srv.DisplayTree(ctx, cast.ToInt(id))

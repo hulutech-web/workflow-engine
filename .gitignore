@@ -1,10 +1,6 @@
-<<<<<<< .merge_file_4lG4OJ
 config.yaml
 /front-end/node_modules
 /front-end/.idea
 .idea
 .vscode
-=======
-./config.yaml
->>>>>>> .merge_file_VBzkGy
 node_modules
