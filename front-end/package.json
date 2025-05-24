@@ -4,6 +4,7 @@
   "version": "1.2.0-preview",
   "type": "module",
   "scripts": {
+    "openapi": "npx tsx openapi.config.ts",
     "dev": "vite --host",
     "api": "node service/index.js",
     "build": "vue-tsc --noEmit && vite build",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@umijs/openapi": "^1.13.0",
     "@vueuse/core": "^10.1.0",
     "ant-design-vue": "^3.2.15",
     "axios": "^0.21.1",

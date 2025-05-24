@@ -24,9 +24,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "账户管理"
+                    "Account 账户管理"
                 ],
                 "summary": "用户登录",
+                "operationId": "Login",
                 "parameters": [
                     {
                         "description": "登录参数",
@@ -68,9 +69,11 @@ const docTemplate = `{
                     }
                 ],
                 "tags": [
+                    "Account",
                     "账户管理"
                 ],
                 "summary": "用户登出",
+                "operationId": "Logout",
                 "parameters": [
                     {
                         "type": "string",
@@ -99,9 +102,11 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Account",
                     "账户管理"
                 ],
                 "summary": "用户注册",
+                "operationId": "Register",
                 "parameters": [
                     {
                         "description": "注册参数",
@@ -141,9 +146,11 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Account",
                     "账户管理"
                 ],
                 "summary": "租户列表",
+                "operationId": "Tenant",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -869,7 +876,7 @@ const docTemplate = `{
             }
         },
         "/auth/tenant/list": {
-            "get": {
+            "post": {
                 "description": "获取租户列表",
                 "produces": [
                     "application/json"
@@ -893,15 +900,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/req.PageReq"
-                        }
-                    },
-                    {
-                        "description": "查询请求参数",
-                        "name": "query",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.TenantQueryReq"
                         }
                     }
                 ],
@@ -937,9 +935,11 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Captcha",
                     "验证码"
                 ],
                 "summary": "生成验证码",
+                "operationId": "Get",
                 "responses": {
                     "200": {
                         "description": "成功",
@@ -970,9 +970,11 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+                    "Captcha",
                     "验证码"
                 ],
                 "summary": "验证码验证",
+                "operationId": "Validate",
                 "parameters": [
                     {
                         "type": "string",
@@ -1839,15 +1841,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/req.UserQueryReq"
                         }
-                    },
-                    {
-                        "description": "分页条件",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/req.PageReq"
-                        }
                     }
                 ],
                 "responses": {
@@ -2528,22 +2521,6 @@ const docTemplate = `{
                 },
                 "phone": {
                     "type": "string"
-                }
-            }
-        },
-        "req.TenantQueryReq": {
-            "type": "object",
-            "properties": {
-                "is_disable": {
-                    "type": "integer",
-                    "enum": [
-                        0,
-                        1
-                    ]
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 125
                 }
             }
         },

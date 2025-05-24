@@ -415,17 +415,6 @@ definitions:
     - name
     - phone
     type: object
-  req.TenantQueryReq:
-    properties:
-      is_disable:
-        enum:
-        - 0
-        - 1
-        type: integer
-      name:
-        maxLength: 125
-        type: string
-    type: object
   req.UserAddReq:
     properties:
       avatar:
@@ -789,6 +778,7 @@ paths:
     post:
       consumes:
       - application/json
+      operationId: Login
       parameters:
       - description: 登录参数
         in: body
@@ -810,9 +800,10 @@ paths:
               type: object
       summary: 用户登录
       tags:
-      - 账户管理
+      - Account 账户管理
   /account/logout:
     get:
+      operationId: Logout
       parameters:
       - description: 访问令牌
         in: header
@@ -828,11 +819,13 @@ paths:
       - ApiKeyAuth: []
       summary: 用户登出
       tags:
+      - Account
       - 账户管理
   /account/register:
     post:
       consumes:
       - application/json
+      operationId: Register
       parameters:
       - description: 注册参数
         in: body
@@ -854,9 +847,11 @@ paths:
               type: object
       summary: 用户注册
       tags:
+      - Account
       - 账户管理
   /account/tenant:
     get:
+      operationId: Tenant
       produces:
       - application/json
       responses:
@@ -873,6 +868,7 @@ paths:
               type: object
       summary: 租户列表
       tags:
+      - Account
       - 账户管理
   /auth/menu/add:
     post:
@@ -1327,7 +1323,7 @@ paths:
       tags:
       - 租户管理
   /auth/tenant/list:
-    get:
+    post:
       description: 获取租户列表
       parameters:
       - description: access_token
@@ -1341,12 +1337,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/req.PageReq'
-      - description: 查询请求参数
-        in: body
-        name: query
-        required: true
-        schema:
-          $ref: '#/definitions/req.TenantQueryReq'
       produces:
       - application/json
       responses:
@@ -1367,6 +1357,7 @@ paths:
   /captcha/get:
     get:
       description: 生成验证码
+      operationId: Get
       produces:
       - application/json
       responses:
@@ -1382,10 +1373,12 @@ paths:
               type: object
       summary: 生成验证码
       tags:
+      - Captcha
       - 验证码
   /captcha/validate:
     post:
       description: 验证码验证
+      operationId: Validate
       parameters:
       - description: 验证码角度
         in: query
@@ -1412,6 +1405,7 @@ paths:
               type: object
       summary: 验证码验证
       tags:
+      - Captcha
       - 验证码
   /common/file/cateAdd:
     post:
@@ -1936,12 +1930,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/req.UserQueryReq'
-      - description: 分页条件
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/req.PageReq'
       produces:
       - application/json
       responses:

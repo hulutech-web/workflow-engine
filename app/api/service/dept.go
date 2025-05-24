@@ -21,7 +21,7 @@ type DeptService interface {
 	Destroy(ctx *gin.Context, id int) error
 	BindManager(ctx *gin.Context, manager_id int, dept_id int) error
 	BindDirector(ctx *gin.Context, director_id int, dept_id int) error
-	DisplayTree(ctx *gin.Context, id int) ([]models.Dept, error)
+	DisplayTree(ctx *gin.Context, id int) ([]*models.Dept, error)
 }
 
 type deptService struct {
@@ -100,7 +100,7 @@ func (d deptService) BindDirector(ctx *gin.Context, director_id int, dept_id int
 	}
 	return nil
 }
-func (d deptService) DisplayTree(ctx *gin.Context, id int) ([]models.Dept, error) {
+func (d deptService) DisplayTree(ctx *gin.Context, id int) ([]*models.Dept, error) {
 	var depts []models.Dept
 	d.db.Model(&models.Dept{}).Find(&depts)
 
