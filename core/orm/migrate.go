@@ -1,14 +1,16 @@
 package orm
 
 import (
+	"io/ioutil"
+	"os"
+	"path"
+	"strings"
+
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
 	"github.com/sirupsen/logrus"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"io/ioutil"
-	"os"
-	"path"
 )
 
 func autoMigrate(db *gorm.DB) error {
@@ -89,14 +91,21 @@ func fillData(db *gorm.DB, m []interface{}) error {
 				zap.S().Error("读取SQL文件失败：%s", err.Error())
 				continue
 			}
-			if err = db.Exec(sqlContent).Error; err != nil {
-				zap.S().Error("执行SQL文件失败：%s", err.Error())
-				continue
+			statements := strings.Split(sqlContent, ";")
+			for _, stmt := range statements {
+				stmt = strings.TrimSpace(stmt)
+				if stmt == "" {
+					continue
+				}
+				// 处理表名, 如果语句中{table_name}存在，则替换成实际表名
+				stmt = strings.ReplaceAll(stmt, "{table_name}", tableName)
+				if err = db.Exec(stmt).Error; err != nil {
+					zap.S().Errorf("执行SQL语句失败：%s\n语句内容：%s", err.Error(), stmt)
+				}
 			}
 		}
 	}
 	return nil
-
 }
 
 func DBTableName(db *gorm.DB, model interface{}) string {

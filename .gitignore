@@ -3,4 +3,8 @@ config.yaml
 /front-end/.idea
 .idea
 .vscode
+./config.yaml
+
 node_modules
+__debug_bin712207768.exe
+
