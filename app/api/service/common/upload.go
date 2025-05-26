@@ -1,9 +1,10 @@
-package service
+package common
 
 import (
 	"fmt"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/service/system"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/storage"
@@ -22,7 +23,7 @@ type UploadService interface {
 
 type uploadService struct {
 	db     *gorm.DB
-	cfgSrv ConfigService
+	cfgSrv system.ConfigService
 }
 
 func (u uploadService) UploadImage(file *multipart.FileHeader, uReq *req.UploadReq, auth *req.AuthReq) (resp.FileResp, error) {
@@ -41,7 +42,7 @@ func (u uploadService) UploadVideo(file *multipart.FileHeader, uReq *req.UploadR
 	return u.upload(file, auth, "video", uReq.Cid)
 }
 
-func NewUploadService(db *gorm.DB, cfgSrv ConfigService) UploadService {
+func NewUploadService(db *gorm.DB, cfgSrv system.ConfigService) UploadService {
 	return &uploadService{db: db, cfgSrv: cfgSrv}
 }
 

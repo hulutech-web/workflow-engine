@@ -1,7 +1,8 @@
-package service
+package workflow
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hulutech-web/workflow-engine/app/api/service/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"gorm.io/gorm"
 )
@@ -10,7 +11,7 @@ import (
 用来操作数据库查表
 */
 type TemplateFormService interface {
-	Index(ctx *gin.Context) (*PageResult, error)
+	Index(ctx *gin.Context) (*common.PageResult, error)
 	List(ctx *gin.Context) ([]models.TemplateForm, error)
 	Store(ctx *gin.Context, part models.TemplateForm) error
 	Update(ctx *gin.Context, part models.TemplateForm) error
@@ -22,9 +23,9 @@ type templateFormService struct {
 	db *gorm.DB
 }
 
-func (d templateFormService) Index(ctx *gin.Context) (*PageResult, error) {
+func (d templateFormService) Index(ctx *gin.Context) (*common.PageResult, error) {
 	var tmpls []models.TemplateForm
-	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
+	paginatorService := common.NewPaginatorServiceImpl(d.db, ctx)
 	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&tmpls)
 	return result, err
 }

@@ -1,4 +1,4 @@
-package service
+package user
 
 import (
 	"errors"
@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/service/auth"
+	"github.com/hulutech-web/workflow-engine/app/api/service/common"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/core/cache"
@@ -19,7 +21,7 @@ import (
 type UserService interface {
 	FindByUsername(username string, tenantId uint) (*models.User, error)
 	List(page *req.PageReq, query *req.UserQueryReq, auth *req.AuthReq) (response.PageResp, error)
-	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
+	Index(ctx *gin.Context, query url.Values) (*common.PageResult, error)
 	Detail(userId uint) (resp.UserResp, error)
 	Add(userReq *req.UserAddReq, auth *req.AuthReq) error
 	Edit(userReq *req.UserEditReq, auth *req.AuthReq) error
@@ -33,12 +35,12 @@ type UserService interface {
 type userServiceImpl struct {
 	db      *gorm.DB
 	cache   *cache.Redis
-	permSrv AuthPermService
+	permSrv auth.AuthPermService
 }
 
-func (d userServiceImpl) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
+func (d userServiceImpl) Index(ctx *gin.Context, query url.Values) (*common.PageResult, error) {
 	var tmpls []models.User
-	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
+	paginatorService := common.NewPaginatorServiceImpl(d.db, ctx)
 
 	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls)
 	return result, err
@@ -275,6 +277,6 @@ func (u userServiceImpl) Self(auth *req.AuthReq) (*resp.UserSelfResp, error) {
 	}, nil
 }
 
-func NewUserService(db *gorm.DB, cache *cache.Redis, permSrv AuthPermService) UserService {
+func NewUserService(db *gorm.DB, cache *cache.Redis, permSrv auth.AuthPermService) UserService {
 	return &userServiceImpl{db: db, cache: cache, permSrv: permSrv}
 }

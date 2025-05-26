@@ -5,7 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/auth"
+	"github.com/hulutech-web/workflow-engine/app/api/service/user"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
@@ -17,8 +18,8 @@ import (
 )
 
 func AuthCheck(db *gorm.DB, cr *cache.Redis) gin.HandlerFunc {
-	permSrv := service.NewAuthPermService(db, cr)
-	userSrv := service.NewUserService(db, cr, permSrv)
+	permSrv := auth.NewAuthPermService(db, cr)
+	userSrv := user.NewUserService(db, cr, permSrv)
 	admin := types.Admin
 	return func(c *gin.Context) {
 		auths := strings.ReplaceAll(strings.Replace(c.Request.URL.Path, "/api/", "", 1), "/", "_")

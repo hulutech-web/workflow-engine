@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/common"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"go.uber.org/fx"
@@ -12,7 +12,7 @@ import (
 
 type captcha struct {
 	fx.In
-	Srv service.CaptchaService
+	Srv common.CaptchaService
 }
 
 func captchaRoutes(a captcha, r *types.ApiRouter) {

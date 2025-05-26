@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	account2 "github.com/hulutech-web/workflow-engine/app/api/service/account"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
@@ -12,7 +12,7 @@ import (
 
 type account struct {
 	fx.In
-	Srv service.AccountService
+	Srv account2.AccountService
 }
 
 func accountRoutes(a account, r *types.ApiRouter) {

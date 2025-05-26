@@ -1,11 +1,10 @@
-package service
+package workflow
 
 import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service/workflow"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"gorm.io/gorm"
 )
@@ -21,7 +20,7 @@ type ProcService interface {
 
 type procService struct {
 	db *gorm.DB
-	wf *workflow.Engine
+	wf *Engine
 }
 
 func (d procService) Index(ctx *gin.Context, entry_id int) ([]models.Proc, error) {
@@ -59,7 +58,7 @@ func (d procService) UnPass(ctx *gin.Context, r req.ProcUnPass) error {
 	return nil
 }
 
-func NewProcService(db *gorm.DB, wf *workflow.Engine) ProcService {
+func NewProcService(db *gorm.DB, wf *Engine) ProcService {
 	return &procService{
 		db: db,
 		wf: wf,

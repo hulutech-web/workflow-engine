@@ -1,7 +1,8 @@
-package service
+package workflow
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hulutech-web/workflow-engine/app/api/service/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/spf13/cast"
 	"gorm.io/gorm"
@@ -9,7 +10,7 @@ import (
 )
 
 type FlowTypeService interface {
-	Index(ctx *gin.Context, query url.Values) (*PageResult, error)
+	Index(ctx *gin.Context, query url.Values) (*common.PageResult, error)
 	List(ctx *gin.Context) ([]models.Flowtype, error)
 	Store(ctx *gin.Context, part models.Flowtype) error
 	Update(ctx *gin.Context, part models.Flowtype) error
@@ -21,9 +22,9 @@ type flowTypeService struct {
 	db *gorm.DB
 }
 
-func (d flowTypeService) Index(ctx *gin.Context, query url.Values) (*PageResult, error) {
+func (d flowTypeService) Index(ctx *gin.Context, query url.Values) (*common.PageResult, error) {
 	var tmpls []models.Flowtype
-	paginatorService := NewPaginatorServiceImpl(d.db, ctx)
+	paginatorService := common.NewPaginatorServiceImpl(d.db, ctx)
 
 	err, result := paginatorService.SearchByParams(query, nil).ResultPagination(&tmpls)
 	return result, err
