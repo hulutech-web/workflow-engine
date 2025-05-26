@@ -1,11 +1,10 @@
-package service
+package workflow
 
 import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service/workflow"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/spf13/cast"
@@ -27,7 +26,7 @@ type EntryService interface {
 type entryService struct {
 	db    *gorm.DB
 	cache *cache.Redis
-	wf    workflow.EngineImpl
+	wf    EngineImpl
 }
 
 func (d entryService) Create(ctx *gin.Context) (models.Flow, error) {
@@ -219,7 +218,7 @@ func (d *entryService) Resend(ctx *gin.Context, et req.EntryIDReq) error {
 	}
 	return nil
 }
-func NewEntryService(db *gorm.DB, cache *cache.Redis, wf workflow.EngineImpl) EntryService {
+func NewEntryService(db *gorm.DB, cache *cache.Redis, wf EngineImpl) EntryService {
 	//wf := workflow.NewEngin()
 	return &entryService{
 		db:    db,

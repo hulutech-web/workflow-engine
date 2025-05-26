@@ -1,10 +1,11 @@
-package service
+package account
 
 import (
 	"errors"
 	"fmt"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/resp"
+	"github.com/hulutech-web/workflow-engine/app/api/service/user"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/core/cache"
@@ -27,7 +28,7 @@ type authService struct {
 	db      *gorm.DB
 	cfg     *config.Config
 	cache   *cache.Redis
-	userSrv UserService
+	userSrv user.UserService
 }
 
 func (a authService) Login(loginReq *req.AccountLoginReq) (*resp.AccountLoginResp, error) {
@@ -135,6 +136,6 @@ func (a authService) Register(r *req.AccountRegisterReq) (*resp.AccountLoginResp
 	}, nil
 }
 
-func NewAccountService(db *gorm.DB, cfg *config.Config, cache *cache.Redis, userSrv UserService) AccountService {
+func NewAccountService(db *gorm.DB, cfg *config.Config, cache *cache.Redis, userSrv user.UserService) AccountService {
 	return &authService{db: db, cfg: cfg, cache: cache, userSrv: userSrv}
 }

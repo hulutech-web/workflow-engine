@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	user2 "github.com/hulutech-web/workflow-engine/app/api/service/user"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
@@ -13,7 +13,7 @@ import (
 
 type user struct {
 	fx.In
-	Srv service.UserService
+	Srv user2.UserService
 }
 
 func userRoutes(t user, r *types.ApiRouter) {

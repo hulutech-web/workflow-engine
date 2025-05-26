@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/workflow"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
@@ -14,7 +14,7 @@ import (
 
 type flow struct {
 	fx.In
-	Srv service.FlowService
+	Srv workflow.FlowService
 }
 
 func flowRoutes(a flow, r *types.ApiRouter) {

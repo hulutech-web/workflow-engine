@@ -1,4 +1,4 @@
-package service
+package workflow
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
+	common2 "github.com/hulutech-web/workflow-engine/app/api/service/common"
 	"github.com/hulutech-web/workflow-engine/app/api/service/workflow/common"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
@@ -16,7 +17,7 @@ import (
 )
 
 type ProcessService interface {
-	Index(ctx *gin.Context) (*PageResult, error)
+	Index(ctx *gin.Context) (*common2.PageResult, error)
 	List(ctx *gin.Context, req req.ProcessReq) ([]models.Process, error)
 	Store(ctx *gin.Context, req req.ProReq) (error, *models.Process)
 	Update(ctx *gin.Context, id int, processRequest common.ProcessRequest) error
@@ -30,9 +31,9 @@ type processService struct {
 	db *gorm.DB
 }
 
-func (f *processService) Index(ctx *gin.Context) (*PageResult, error) {
+func (f *processService) Index(ctx *gin.Context) (*common2.PageResult, error) {
 	var depts []models.Process
-	paginatorService := NewPaginatorServiceImpl(f.db, ctx)
+	paginatorService := common2.NewPaginatorServiceImpl(f.db, ctx)
 	err, result := paginatorService.SearchByParams(nil, nil).ResultPagination(&depts)
 	return result, err
 }

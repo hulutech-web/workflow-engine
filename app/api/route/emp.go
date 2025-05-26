@@ -2,7 +2,7 @@ package route
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/org"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/app/models"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
@@ -14,7 +14,7 @@ import (
 
 type emp struct {
 	fx.In
-	Srv service.EmpService
+	Srv org.EmpService
 }
 
 func empRoutes(a emp, r *types.ApiRouter) {

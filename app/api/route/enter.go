@@ -2,6 +2,7 @@ package route
 
 import (
 	"github.com/hulutech-web/workflow-engine/app/api/middleware"
+	"github.com/hulutech-web/workflow-engine/app/api/route/auth"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/core/cache"
 	"github.com/hulutech-web/workflow-engine/core/http"
@@ -18,9 +19,7 @@ var Module = fx.Module("api.route",
 	fx.Invoke(templateRoutes),
 	fx.Invoke(templateFormRoutes),
 	fx.Invoke(empRoutes),
-	fx.Invoke(tenantRoutes),
-	fx.Invoke(roleRoutes),
-	fx.Invoke(menuRoutes),
+	auth.Module,
 	fx.Invoke(flowRoutes),
 	fx.Invoke(processRoutes),
 	fx.Invoke(flowlinkRoutes),
