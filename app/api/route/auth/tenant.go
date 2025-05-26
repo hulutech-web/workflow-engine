@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/auth"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
@@ -12,7 +12,7 @@ import (
 
 type tenant struct {
 	fx.In
-	Srv service.AuthTenantService
+	Srv auth.AuthTenantService
 }
 
 func tenantRoutes(t tenant, r *types.ApiRouter) {

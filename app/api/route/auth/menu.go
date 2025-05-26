@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hulutech-web/workflow-engine/app/api/schemas/req"
-	"github.com/hulutech-web/workflow-engine/app/api/service"
+	"github.com/hulutech-web/workflow-engine/app/api/service/auth"
 	"github.com/hulutech-web/workflow-engine/app/api/types"
 	"github.com/hulutech-web/workflow-engine/pkg/plugin/response"
 	"github.com/hulutech-web/workflow-engine/pkg/util"
@@ -12,7 +12,7 @@ import (
 
 type menu struct {
 	fx.In
-	MenuSrv service.AuthMenuService
+	MenuSrv auth.AuthMenuService
 }
 
 func menuRoutes(t menu, r *types.ApiRouter) {
