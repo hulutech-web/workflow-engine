@@ -54,7 +54,7 @@
   import { reactive, ref, onMounted } from 'vue';
   import { useAccountStore } from '@/store';
   import { ThemeProvider } from 'stepin';
-  import {getTenant} from "@/api/account";
+  import {tenantService} from "@/api/account";
 const value1=ref("")
   const loading = ref(false);
 
@@ -66,7 +66,7 @@ const value1=ref("")
   const tenantList = ref<Base.SelectOption[]>([]);
 
   const fetchTenantList = async () => {
-   const { data } = await getTenant()
+   const { data } = await tenantService()
     tenantList.value = data;
   }
 

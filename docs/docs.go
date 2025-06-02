@@ -24,10 +24,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account 账户管理"
+                    "Account 用户管理"
                 ],
                 "summary": "用户登录",
-                "operationId": "Login",
+                "operationId": "AccountLogin",
                 "parameters": [
                     {
                         "description": "登录参数",
@@ -69,11 +69,10 @@ const docTemplate = `{
                     }
                 ],
                 "tags": [
-                    "Account",
-                    "账户管理"
+                    "Account 用户管理"
                 ],
                 "summary": "用户登出",
-                "operationId": "Logout",
+                "operationId": "AccountLogout",
                 "parameters": [
                     {
                         "type": "string",
@@ -102,11 +101,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account",
-                    "账户管理"
+                    "Account 用户注册"
                 ],
                 "summary": "用户注册",
-                "operationId": "Register",
+                "operationId": "AccountRegister",
                 "parameters": [
                     {
                         "description": "注册参数",
@@ -146,11 +144,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Account",
-                    "账户管理"
+                    "Account 租户列表"
                 ],
                 "summary": "租户列表",
-                "operationId": "Tenant",
+                "operationId": "AccountTenant",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -183,9 +180,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "添加菜单",
+                "operationId": "MenuAdd",
                 "parameters": [
                     {
                         "type": "string",
@@ -221,9 +219,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "删除菜单",
+                "operationId": "MenuDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -259,9 +258,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "获取菜单详情",
+                "operationId": "MenuDetail",
                 "parameters": [
                     {
                         "type": "string",
@@ -295,9 +295,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "编辑菜单",
+                "operationId": "MenuEdit",
                 "parameters": [
                     {
                         "type": "string",
@@ -333,9 +334,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "获取菜单列表",
+                "operationId": "MenuList",
                 "parameters": [
                     {
                         "type": "string",
@@ -365,9 +367,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "菜单权限"
+                    "Menu 账户管理"
                 ],
                 "summary": "获取当前用户的菜单权限",
+                "operationId": "MenuRoute",
                 "parameters": [
                     {
                         "type": "string",
@@ -394,9 +397,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "添加角色",
+                "operationId": "RoleAdd",
                 "parameters": [
                     {
                         "type": "string",
@@ -432,9 +436,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "获取所有角色",
+                "operationId": "RoleAll",
                 "parameters": [
                     {
                         "type": "string",
@@ -476,9 +481,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "角色状态修改",
+                "operationId": "RoleChange",
                 "parameters": [
                     {
                         "type": "string",
@@ -514,9 +520,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "删除角色",
+                "operationId": "RoleDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -552,9 +559,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "获取角色详情",
+                "operationId": "RoleDetail",
                 "parameters": [
                     {
                         "type": "string",
@@ -590,9 +598,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "编辑角色",
+                "operationId": "RoleEdit",
                 "parameters": [
                     {
                         "type": "string",
@@ -628,9 +637,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "角色管理"
+                    "Role 角色管理"
                 ],
                 "summary": "获取角色列表",
+                "operationId": "RoleList",
                 "parameters": [
                     {
                         "type": "string",
@@ -686,9 +696,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "添加租户",
+                "operationId": "TenantAdd",
                 "parameters": [
                     {
                         "type": "string",
@@ -724,9 +735,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "获取所有租户",
+                "operationId": "TenantAll",
                 "parameters": [
                     {
                         "type": "string",
@@ -768,9 +780,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "删除租户",
+                "operationId": "TenantDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -806,9 +819,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "获取租户详情",
+                "operationId": "TenantDetail",
                 "parameters": [
                     {
                         "type": "string",
@@ -844,9 +858,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "编辑租户",
+                "operationId": "TenantEdit",
                 "parameters": [
                     {
                         "type": "string",
@@ -882,9 +897,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "租户管理"
+                    "Tenant 租户管理"
                 ],
                 "summary": "获取租户列表",
+                "operationId": "TenantList",
                 "parameters": [
                     {
                         "type": "string",
@@ -935,11 +951,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Captcha",
-                    "验证码"
+                    "Captcha 验证码"
                 ],
                 "summary": "生成验证码",
-                "operationId": "Get",
+                "operationId": "CaptchaGet",
                 "responses": {
                     "200": {
                         "description": "成功",
@@ -970,11 +985,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Captcha",
-                    "验证码"
+                    "Captcha 验证码"
                 ],
                 "summary": "验证码验证",
-                "operationId": "Validate",
+                "operationId": "CaptchaValidate",
                 "parameters": [
                     {
                         "type": "string",
@@ -1021,9 +1035,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件分类添加",
+                "operationId": "CateAdd",
                 "parameters": [
                     {
                         "type": "string",
@@ -1059,9 +1074,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件分类删除",
+                "operationId": "CateDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -1097,9 +1113,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件分类列表",
+                "operationId": "CateList",
                 "parameters": [
                     {
                         "type": "string",
@@ -1131,9 +1148,7 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "type": "array",
-                                            "items": {
-                                                "type": "object"
-                                            }
+                                            "items": {}
                                         }
                                     }
                                 }
@@ -1150,9 +1165,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件分类重命名",
+                "operationId": "CateRename",
                 "parameters": [
                     {
                         "type": "string",
@@ -1188,9 +1204,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件删除",
+                "operationId": "FileDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -1226,9 +1243,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件列表",
+                "operationId": "FileList",
                 "parameters": [
                     {
                         "type": "string",
@@ -1314,9 +1332,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件移动",
+                "operationId": "FileMove",
                 "parameters": [
                     {
                         "type": "string",
@@ -1352,9 +1371,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "附件管理"
+                    "File 附件管理"
                 ],
                 "summary": "附件重命名",
+                "operationId": "FileRename",
                 "parameters": [
                     {
                         "type": "string",
@@ -1383,6 +1403,368 @@ const docTemplate = `{
                 }
             }
         },
+        "/dept": {
+            "get": {
+                "description": "部门分页",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptIndex",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/service.PageResult"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新增部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptStore",
+                "parameters": [
+                    {
+                        "description": "部门信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Dept"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/bind_director": {
+            "post": {
+                "description": "新增部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptBindDirector",
+                "parameters": [
+                    {
+                        "description": "绑定参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.BindDirectorReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/bind_manager": {
+            "post": {
+                "description": "新增部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptBindManager",
+                "parameters": [
+                    {
+                        "description": "绑定参数",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.BindManagerReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/list": {
+            "get": {
+                "description": "部门列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptList",
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/{id}": {
+            "get": {
+                "description": "单个部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptShow",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "新增部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptUpdate",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "部门信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Dept"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "新增部门",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptDestroy",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/dept/{id}/tree": {
+            "get": {
+                "description": "新增部门",
+                "tags": [
+                    "Dept 部门"
+                ],
+                "summary": "部门",
+                "operationId": "DeptDisplayTree",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "部门ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/upload/audio": {
             "post": {
                 "description": "上传音频",
@@ -1393,9 +1775,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "上传"
+                    "Upload 上传管理"
                 ],
                 "summary": "上传音频",
+                "operationId": "UploadAudio",
                 "parameters": [
                     {
                         "type": "string",
@@ -1451,9 +1834,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "上传"
+                    "Upload 上传管理"
                 ],
                 "summary": "上传文件",
+                "operationId": "UploadFile",
                 "parameters": [
                     {
                         "type": "string",
@@ -1509,9 +1893,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "上传"
+                    "Upload 上传管理"
                 ],
                 "summary": "上传图片",
+                "operationId": "UploadImage",
                 "parameters": [
                     {
                         "type": "string",
@@ -1567,9 +1952,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "上传"
+                    "Upload 上传管理"
                 ],
                 "summary": "上传视频",
+                "operationId": "UploadVideo",
                 "parameters": [
                     {
                         "type": "string",
@@ -1615,6 +2001,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/user": {
+            "get": {
+                "description": "用户分页",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User 用户"
+                ],
+                "summary": "用户分页",
+                "operationId": "UserIndex",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "access_token",
+                        "name": "token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/resp.UserResp"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/user/add": {
             "post": {
                 "description": "添加用户相关接口",
@@ -1622,9 +2050,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "添加用户",
+                "operationId": "UserAdd",
                 "parameters": [
                     {
                         "type": "string",
@@ -1660,9 +2089,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "删除用户",
+                "operationId": "UserDelete",
                 "parameters": [
                     {
                         "type": "string",
@@ -1698,9 +2128,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "用户详情",
+                "operationId": "UserDetail",
                 "parameters": [
                     {
                         "type": "string",
@@ -1746,9 +2177,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "禁用用户",
+                "operationId": "UserDisable",
                 "parameters": [
                     {
                         "type": "string",
@@ -1784,9 +2216,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "编辑用户",
+                "operationId": "UserEdit",
                 "parameters": [
                     {
                         "type": "string",
@@ -1822,9 +2255,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "用户列表",
+                "operationId": "UserList",
                 "parameters": [
                     {
                         "type": "string",
@@ -1872,9 +2306,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "用户权限",
+                "operationId": "UserSelf",
                 "parameters": [
                     {
                         "type": "string",
@@ -1913,9 +2348,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "用户管理"
+                    "User 用户"
                 ],
                 "summary": "更新用户",
+                "operationId": "UserUpdate",
                 "parameters": [
                     {
                         "type": "string",
@@ -1946,6 +2382,43 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.Dept": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "$ref": "#/definitions/types.DateTime"
+                },
+                "dept_name": {
+                    "type": "string"
+                },
+                "director_id": {
+                    "description": "部门主管",
+                    "type": "integer"
+                },
+                "html": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "level": {
+                    "type": "integer"
+                },
+                "manager_id": {
+                    "description": "部门经理",
+                    "type": "integer"
+                },
+                "pid": {
+                    "type": "integer"
+                },
+                "rank": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "$ref": "#/definitions/types.DateTime"
+                }
+            }
+        },
         "req.AccountLoginReq": {
             "type": "object",
             "required": [
@@ -2001,6 +2474,28 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 32,
                     "minLength": 4
+                }
+            }
+        },
+        "req.BindDirectorReq": {
+            "type": "object",
+            "properties": {
+                "dept_id": {
+                    "type": "integer"
+                },
+                "director_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "req.BindManagerReq": {
+            "type": "object",
+            "properties": {
+                "dept_id": {
+                    "type": "integer"
+                },
+                "manager_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -3033,6 +3528,57 @@ const docTemplate = `{
                 }
             }
         },
+        "service.Links": {
+            "type": "object",
+            "properties": {
+                "first": {
+                    "type": "string"
+                },
+                "last": {
+                    "type": "string"
+                },
+                "next": {
+                    "type": "string"
+                },
+                "prev": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.Meta": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer"
+                },
+                "per_page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_page": {
+                    "type": "integer"
+                }
+            }
+        },
+        "service.PageResult": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "List of data"
+                },
+                "links": {
+                    "$ref": "#/definitions/service.Links"
+                },
+                "meta": {
+                    "$ref": "#/definitions/service.Meta"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "types.DateTime": {
             "type": "object",
             "properties": {
@@ -3046,12 +3592,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "1.0",
-	Host:             "localhost:8080",
-	BasePath:         "/api",
+	Version:          "",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Workflow Engine API",
-	Description:      "工作流引擎接口文档",
+	Title:            "",
+	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

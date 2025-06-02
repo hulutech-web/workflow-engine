@@ -25,9 +25,9 @@ func accountRoutes(a account, r *types.ApiRouter) {
 
 // @BasePath /api
 // @Summary 用户登录
-// @Tags Account 账户管理
+// @Tags Account 用户管理
+// @Id AccountLogin
 // @Accept json
-// @Id Login
 // @Produce json
 // @Param request body req.AccountLoginReq true "登录参数"
 // @Success 200 {object} response.Response{data=resp.AccountLoginResp}
@@ -43,9 +43,8 @@ func (a account) login(c *gin.Context) {
 
 // @BasePath /api
 // @Summary 用户登出
-// @Tags Account
-// @Tags 账户管理
-// @Id Logout
+// @Tags Account 用户管理
+// @Id AccountLogout
 // @Security ApiKeyAuth
 // @Param token header string true "访问令牌"
 // @Success 200 {object} response.Response
@@ -61,9 +60,8 @@ func (a account) logout(c *gin.Context) {
 
 // @BasePath /api
 // @Summary 租户列表
-// @Tags Account
-// @Tags 账户管理
-// @Id Tenant
+// @Tags Account 租户列表
+// @Id AccountTenant
 // @Produce json
 // @Success 200 {object} response.Response{data=[]resp.SelectOption}
 // @Router /account/tenant [get]
@@ -74,10 +72,9 @@ func (a account) tenant(c *gin.Context) {
 
 // @BasePath /api
 // @Summary 用户注册
-// @Tags Account
-// @Tags 账户管理
+// @Tags Account 用户注册
+// @Id AccountRegister
 // @Accept json
-// @Id Register
 // @Produce json
 // @Param request body req.AccountRegisterReq true "注册参数"
 // @Success 200 {object} response.Response{data=resp.AccountLoginResp}

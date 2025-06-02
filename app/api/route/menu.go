@@ -29,7 +29,8 @@ func menuRoutes(t menu, r *types.ApiRouter) {
 // @BasePath /api
 // @Summary 获取当前用户的菜单权限
 // @Description 获取当前用户的菜单权限
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuRoute
 // @Produce  json
 // @Param token header string true "access_token"
 // @Success 200 {object} resp.MenuResp "成功"
@@ -42,7 +43,8 @@ func (t menu) route(c *gin.Context) {
 // @BasePath /api
 // @Summary 获取菜单列表
 // @Description 获取菜单列表
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuList
 // @Produce  json
 // @Param token header string true "access_token"
 // @Success 200 {object} []resp.MenuResp "成功"
@@ -55,7 +57,8 @@ func (t menu) list(c *gin.Context) {
 // @BasePath /api
 // @Summary 获取菜单详情
 // @Description 获取菜单详情
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuDetail
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param id path uint true "菜单ID"
@@ -73,7 +76,8 @@ func (t menu) detail(c *gin.Context) {
 // @BasePath /api
 // @Summary 添加菜单
 // @Description 添加菜单
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuAdd
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.MenuAddReq true "菜单信息"
@@ -91,7 +95,8 @@ func (t menu) add(c *gin.Context) {
 // @BasePath /api
 // @Summary 编辑菜单
 // @Description 编辑菜单
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuEdit
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.MenuEditReq true "菜单信息"
@@ -109,7 +114,8 @@ func (t menu) edit(c *gin.Context) {
 // @BasePath /api
 // @Summary 删除菜单
 // @Description 删除菜单
-// @Tags 菜单权限
+// @Tags Menu 账户管理
+// @Id MenuDelete
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "菜单ID"

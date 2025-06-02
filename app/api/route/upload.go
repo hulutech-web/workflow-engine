@@ -26,7 +26,8 @@ func uploadRoutes(t upload, r *types.ApiRouter) {
 // @BasePath /api
 // @Summary 上传图片
 // @Description 上传图片
-// @Tags 上传
+// @Tags Upload 上传管理
+// @Id UploadImage
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param token header string true "access_token"
@@ -50,7 +51,8 @@ func (t upload) image(c *gin.Context) {
 // @BasePath /api
 // @Summary 上传文件
 // @Description 上传文件
-// @Tags 上传
+// @Tags Upload 上传管理
+// @Id UploadFile
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param token header string true "access_token"
@@ -74,7 +76,8 @@ func (t upload) file(c *gin.Context) {
 // @BasePath /api
 // @Summary 上传音频
 // @Description 上传音频
-// @Tags 上传
+// @Tags Upload 上传管理
+// @Id UploadAudio
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param token header string true "access_token"
@@ -98,7 +101,8 @@ func (t upload) audio(c *gin.Context) {
 // @BasePath /api
 // @Summary 上传视频
 // @Description 上传视频
-// @Tags 上传
+// @Tags Upload 上传管理
+// @Id UploadVideo
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param token header string true "access_token"

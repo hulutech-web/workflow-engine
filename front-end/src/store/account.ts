@@ -3,7 +3,7 @@ import http from '../utils/request/http';
 import { useMenuStore } from './menu';
 import { useAuthStore } from '@/plugins';
 import { useLoadingStore } from './loading';
-import {login} from "@/api/account";
+import {loginService} from "@/api/accountzhanghuguanli.ts";
 
 export interface Profile {
   user: Account;
@@ -47,7 +47,7 @@ export const useAccountStore = defineStore('account', {
         username: username,
         password: password,
       } as Account.LoginForm;
-      const res = await login(data)
+      const res = await loginService(data)
       if (res) {
         this.logged = true;
         http.setAuthorization(`${res.data.token}`, 7200 * 1000, 'token');

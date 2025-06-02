@@ -33,9 +33,8 @@ func deptRoutes(a dept, r *types.ApiRouter) {
 // Index @BasePath /api
 // @Summary 部门
 // @Description 部门分页
-// @Tags Dept
-// @Tags 部门
-// @Id Index
+// @Tags Dept 部门
+// @Id DeptIndex
 // @Produce json
 // @Success 200 {object} service.PageResult "成功"
 // @Router /dept [get]
@@ -55,11 +54,10 @@ func (r *dept) Index(ctx *gin.Context) {
 // List @BasePath /api
 // @Summary 部门
 // @Description 部门列表
-// @Tags Dept
-// @Tags 部门
-// @Id List
+// @Tags Dept 部门
+// @Id DeptList
 // @Produce json
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/list [get]
 func (r *dept) List(ctx *gin.Context) {
 	list, err := r.Srv.List(ctx)
@@ -72,12 +70,11 @@ func (r *dept) List(ctx *gin.Context) {
 // Show @BasePath /api
 // @Summary 部门
 // @Description 单个部门
-// @Tags Dept
-// @Tags 部门
-// @Id Show
+// @Tags Dept 部门
+// @Id DeptShow
 // @Produce json
 // @Param id path int true "部门ID"
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/{id} [get]
 func (r *dept) Show(ctx *gin.Context) {
 	id := ctx.Param("id")
@@ -89,12 +86,11 @@ func (r *dept) Show(ctx *gin.Context) {
 // Store @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id Store
+// @Tags Dept 部门
+// @Id DeptStore
 // @Produce json
-// @Body request models.Dept
-// @Success 200 {object}  "成功"
+// @Param request body models.Dept true "部门信息"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept [post]
 func (r *dept) Store(ctx *gin.Context) {
 	var dpt models.Dept
@@ -110,13 +106,12 @@ func (r *dept) Store(ctx *gin.Context) {
 // Update @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id Update
+// @Tags Dept 部门
+// @Id DeptUpdate
 // @Produce json
 // @Param id path int true "部门ID"
-// @Body request models.Dept
-// @Success 200 {object}  "成功"
+// @Param request body models.Dept true "部门信息"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/{id} [put]
 func (r *dept) Update(ctx *gin.Context) {
 	var dpt models.Dept
@@ -132,12 +127,11 @@ func (r *dept) Update(ctx *gin.Context) {
 // Destroy @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id Destroy
+// @Tags Dept 部门
+// @Id DeptDestroy
 // @Produce json
 // @Param id path int true "部门ID"
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/{id} [delete]
 func (r *dept) Destroy(ctx *gin.Context) {
 	id := ctx.Param("id")
@@ -152,12 +146,11 @@ func (r *dept) Destroy(ctx *gin.Context) {
 // BindManager @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id BindManager
+// @Tags Dept 部门
+// @Id DeptBindManager
 // @Produce json
 // @Param request body req.BindManagerReq true "绑定参数"
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/bind_manager [post]
 func (r *dept) BindManager(ctx *gin.Context) {
 	var bindManagerReq req.BindManagerReq
@@ -177,12 +170,11 @@ func (r *dept) BindManager(ctx *gin.Context) {
 // BindDirector @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id BindDirector
+// @Tags Dept 部门
+// @Id DeptBindDirector
 // @Produce json
 // @Param request body req.BindDirectorReq true "绑定参数"
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/bind_director [post]
 func (r *dept) BindDirector(ctx *gin.Context) {
 	var bindDirectorReq req.BindDirectorReq
@@ -204,11 +196,10 @@ func (r *dept) BindDirector(ctx *gin.Context) {
 // DisplayTree @BasePath /api
 // @Summary 部门
 // @Description 新增部门
-// @Tags Dept
-// @Tags 部门
-// @Id DisplayTree
+// @Tags Dept 部门
+// @Id DeptDisplayTree
 // @Param id path int true "部门ID"
-// @Success 200 {object}  "成功"
+// @Success 200 {object} response.Response{data=map[string]interface{}} "成功"
 // @Router /dept/{id}/tree [get]
 func (r *dept) DisplayTree(ctx *gin.Context) {
 	id := ctx.Param("id")

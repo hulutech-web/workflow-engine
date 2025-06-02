@@ -7,53 +7,59 @@ generateService({
     requestOptionsType: 'RequestOptions',
     hook: {
         afterOpenApiDataInited(openAPIData) {
-            // 深度清理所有 GET 方法的 requestBody
-            Object.entries(openAPIData.paths || {}).forEach(([path, pathItem]) => {
-                Object.entries(pathItem || {}).forEach(([method, operation]) => {
-                    const methodLower = method.toLowerCase();
-                    if (methodLower === 'get' && operation.requestBody) {
-                        console.warn(`[安全修复] 移除 ${method} ${path} 的非法请求体`);
-                        delete operation.requestBody;
-                        // 深度删除 content 相关定义
-                        if (operation.parameters) {
-                            operation.parameters = operation.parameters.filter(
-                                (p: any) => p.in !== 'body'
-                            );
-                        }
-                    }
-                });
-            });
-
-            // 处理二进制上传参数（保留原有逻辑）
             const schemas = openAPIData.components?.schemas;
             if (schemas) {
                 Object.values(schemas).forEach((schema) => {
-                    if ('$ref' in schema || !schema.properties) return;
-                    Object.values(schema.properties).forEach((prop) => {
-                        if ('$ref' in prop) return;
-                        if (prop.format === 'binary') {
-                            prop.type = 'object';
-                            prop.format = undefined;
-                        }
-                    });
+                    if ('$ref' in schema) {
+                        return;
+                    }
+                    if (schema.properties) {
+                        Object.values(schema.properties).forEach((prop) => {
+                            if ('$ref' in prop) {
+                                return;
+                            }
+                            // 匡正文件上传的参数类型
+                            if (prop.format === 'binary') {
+                                prop.type = 'object';
+                            }
+                        });
+                    }
                 });
             }
             return openAPIData;
         },
-
+        // @ts-ignore
         customFunctionName(operationObject) {
-            console.log('[openapi]', operationObject)
             const { operationId, tags } = operationObject;
-            if (!operationId || !tags?.[0]) return 'unnamedApi';
-            return `${operationId}Service`;
-        },
 
+
+            return operationId;
+        },
+        customType(schemaObject, namespace, defaultGetType) {
+            const type = defaultGetType(schemaObject, namespace);
+            // 提取出 data 的类型
+            const regex = /API\.ResOp & { 'data'\?: (.+); }/;
+            return type.replace(regex, '$1');
+        },
+        customFileNames(operationObject,
+                        apiPath,
+                        _apiMethod){
+            const { tags } = operationObject;
+            console.log(tags[0].split(" ")[0])
+            if (tags[0] &&  tags[0].split(" ").length<1) {
+                console.warn('[Warning] no operationId', apiPath);
+                return;
+            }
+            const controllerName = tags[0].split(" ")[0];
+            console.log("customFileNames",controllerName)
+            return [controllerName];
+        },
         customOptionsDefaultValue(data) {
-            const { summary } = data;
+            const {summary} = data;
             if (!summary) return {};
-            if (summary.startsWith('创建') || summary.startsWith('新增')) return { successMsg: '创建成功' };
-            if (summary.startsWith('更新')) return { successMsg: '更新成功' };
-            if (summary.startsWith('删除')) return { successMsg: '删除成功' };
+            if (summary.startsWith('创建') || summary.startsWith('新增')) return {successMsg: '创建成功'};
+            if (summary.startsWith('更新')) return {successMsg: '更新成功'};
+            if (summary.startsWith('删除')) return {successMsg: '删除成功'};
             return {};
         }
     }

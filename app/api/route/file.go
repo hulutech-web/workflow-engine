@@ -31,7 +31,8 @@ func fileRoutes(t file, r *types.ApiRouter) {
 // @BasePath /api
 // @Summary 附件列表
 // @Description 获取附件列表
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id FileList
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request query req.PageReq true "分页参数"
@@ -51,7 +52,8 @@ func (t file) fileList(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件重命名
 // @Description 附件重命名
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id FileRename
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.FileRenameReq true "附件重命名参数"
@@ -69,7 +71,8 @@ func (t file) fileRename(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件移动
 // @Description 附件移动
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id FileMove
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.FileMoveReq true "附件移动参数"
@@ -87,7 +90,8 @@ func (t file) fileMove(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件删除
 // @Description 附件删除
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id FileDelete
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdListReq true "附件删除参数"
@@ -105,7 +109,8 @@ func (t file) fileDelete(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件分类列表
 // @Description 获取附件分类列表
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id CateList
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.FileCateListReq true "附件分类列表参数"
@@ -123,7 +128,8 @@ func (t file) cateList(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件分类添加
 // @Description 附件分类添加
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id CateAdd
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.FileCateAddReq true "附件分类添加参数"
@@ -141,7 +147,8 @@ func (t file) cateAdd(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件分类重命名
 // @Description 附件分类重命名
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id CateRename
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.FileCateRenameReq true "附件分类重命名参数"
@@ -159,7 +166,8 @@ func (t file) cateRename(c *gin.Context) {
 // @BasePath /api
 // @Summary 附件分类删除
 // @Description 附件分类删除
-// @Tags 附件管理
+// @Tags File 附件管理
+// @Id CateDelete
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdListReq true "附件分类删除参数"

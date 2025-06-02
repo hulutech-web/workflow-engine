@@ -29,7 +29,8 @@ func roleRoutes(t role, r *types.ApiRouter) {
 // @BasePath /api
 // @Summary 获取所有角色
 // @Description 获取所有角色
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleAll
 // @Produce  json
 // @Param token header string true "access_token"
 // @Success 200 {object} response.PageResp{data=[]resp.RoleSimpleResp} "成功"
@@ -42,7 +43,8 @@ func (t role) all(ctx *gin.Context) {
 // @BasePath /api
 // @Summary 获取角色列表
 // @Description 获取角色列表
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleList
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request query req.PageReq true "分页请求参数"
@@ -60,7 +62,8 @@ func (t role) list(c *gin.Context) {
 // @BasePath /api
 // @Summary 获取角色详情
 // @Description 获取角色详情
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleDetail
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "角色ID"
@@ -78,7 +81,8 @@ func (t role) detail(c *gin.Context) {
 // @BasePath /api
 // @Summary 添加角色
 // @Description 添加角色
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleAdd
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.RoleAddReq true "角色信息"
@@ -96,7 +100,8 @@ func (t role) add(c *gin.Context) {
 // @BasePath /api
 // @Summary 编辑角色
 // @Description 编辑角色
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleEdit
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.RoleEditReq true "角色信息"
@@ -114,7 +119,8 @@ func (t role) edit(c *gin.Context) {
 // @BasePath /api
 // @Summary 删除角色
 // @Description 删除角色
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleDelete
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "角色ID"
@@ -132,7 +138,8 @@ func (t role) delete(c *gin.Context) {
 // @BasePath /api
 // @Summary 角色状态修改
 // @Description 角色状态修改
-// @Tags 角色管理
+// @Tags Role 角色管理
+// @Id RoleChange
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "角色ID"

@@ -19,8 +19,113 @@ declare namespace API {
     username: string;
   };
 
+  type BindDirectorReq = {
+    dept_id?: number;
+    director_id?: number;
+  };
+
+  type BindManagerReq = {
+    dept_id?: number;
+    manager_id?: number;
+  };
+
+  type CaptchaValidateParams = {
+    /** 验证码角度 */
+    angle: string;
+    /** 验证码key */
+    captcha_key: string;
+  };
+
   type DateTime = {
     'time.Time'?: string;
+  };
+
+  type Dept = {
+    created_at?: DateTime;
+    dept_name?: string;
+    /** 部门主管 */
+    director_id?: number;
+    html?: string;
+    id?: number;
+    level?: number;
+    /** 部门经理 */
+    manager_id?: number;
+    pid?: number;
+    rank?: number;
+    updated_at?: DateTime;
+  };
+
+  type DeptDestroyParams = {
+    /** 部门ID */
+    id: number;
+  };
+
+  type DeptDisplayTreeParams = {
+    /** 部门ID */
+    id: number;
+  };
+
+  type DeptShowParams = {
+    /** 部门ID */
+    id: number;
+  };
+
+  type DeptUpdateParams = {
+    /** 部门ID */
+    id: number;
+  };
+
+  type FileCateAddReq = {
+    /** 分类名称 */
+    name: string;
+    /** 父级ID */
+    pid?: number;
+    /** 分类类型: [10=图片,20=视频] */
+    type: 10 | 20 | 30;
+  };
+
+  type FileCateListReq = {
+    /** 分类名称 */
+    keyword?: string;
+    /** 分类类型: [10=图片,20=视频] */
+    type?: 10 | 20 | 30;
+  };
+
+  type FileCateRenameReq = {
+    /** 主键 */
+    id: number;
+    /** 分类名称 */
+    keyword: string;
+  };
+
+  type FileListParams = {
+    /** 页码 */
+    pageNo?: number;
+    /** 每页大小 */
+    pageSize?: number;
+  };
+
+  type FileListReq = {
+    /** 类目ID */
+    cid?: number;
+    /** 文件名称 */
+    keyword?: string;
+    /** 文件类型: [10=图片, 20=视频] */
+    type?: 10 | 20;
+  };
+
+  type FileMoveReq = {
+    /** 类目ID */
+    cid?: number;
+    /** 主键 */
+    ids: number[];
+  };
+
+  type FileRenameReq = {
+    /** 主键 */
+    id: number;
+    /** 文件名称 */
+    keyword: string;
   };
 
   type FileResp = {
@@ -36,9 +141,21 @@ declare namespace API {
     user_id?: number;
   };
 
+  type IdListReq = {
+    /** 主键ID列表 */
+    ids: number[];
+  };
+
   type IdReq = {
     /** 主键ID */
     id: number;
+  };
+
+  type Links = {
+    first?: string;
+    last?: string;
+    next?: string;
+    prev?: string;
   };
 
   type MenuAddReq = {
@@ -70,6 +187,11 @@ declare namespace API {
     name?: string;
     sort?: number;
     title?: string;
+  };
+
+  type MenuDetailParams = {
+    /** 菜单ID */
+    id: number;
   };
 
   type MenuEditReq = {
@@ -109,6 +231,13 @@ declare namespace API {
     title?: string;
   };
 
+  type Meta = {
+    current_page?: number;
+    per_page?: number;
+    total?: number;
+    total_page?: number;
+  };
+
   type PageReq = {
     /** 页码 */
     pageNo?: number;
@@ -125,6 +254,14 @@ declare namespace API {
     pageNo?: number;
     /** 每页Size */
     pageSize?: number;
+  };
+
+  type PageResult = {
+    /** List of data */
+    data?: any;
+    links?: Links;
+    meta?: Meta;
+    total?: number;
   };
 
   type Response = {
@@ -150,6 +287,13 @@ declare namespace API {
     name: string;
     remark?: string;
     sort?: number;
+  };
+
+  type RoleListParams = {
+    /** 页码 */
+    pageNo?: number;
+    /** 每页大小 */
+    pageSize?: number;
   };
 
   type RoleResp = {
@@ -229,16 +373,6 @@ declare namespace API {
     updated_at?: DateTime;
   };
 
-  type unnamedApiParams = {
-    /** 菜单ID */
-    id: number;
-  };
-
-  type unnamedApiParams = {
-    /** 用户ID */
-    id: number;
-  };
-
   type UserAddReq = {
     avatar?: string;
     email?: string;
@@ -250,6 +384,11 @@ declare namespace API {
     role_id?: number;
     tenant_id?: number;
     username: string;
+  };
+
+  type UserDetailParams = {
+    /** 用户ID */
+    id: number;
   };
 
   type UserEditReq = {
@@ -299,12 +438,5 @@ declare namespace API {
     confirm_password?: string;
     id: number;
     password?: string;
-  };
-
-  type ValidateServiceParams = {
-    /** 验证码角度 */
-    angle: string;
-    /** 验证码key */
-    captcha_key: string;
   };
 }

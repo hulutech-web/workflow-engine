@@ -1,5 +1,29 @@
-basePath: /api
 definitions:
+  models.Dept:
+    properties:
+      created_at:
+        $ref: '#/definitions/types.DateTime'
+      dept_name:
+        type: string
+      director_id:
+        description: 部门主管
+        type: integer
+      html:
+        type: string
+      id:
+        type: integer
+      level:
+        type: integer
+      manager_id:
+        description: 部门经理
+        type: integer
+      pid:
+        type: integer
+      rank:
+        type: integer
+      updated_at:
+        $ref: '#/definitions/types.DateTime'
+    type: object
   req.AccountLoginReq:
     properties:
       password:
@@ -42,6 +66,20 @@ definitions:
     - phone
     - tenantId
     - username
+    type: object
+  req.BindDirectorReq:
+    properties:
+      dept_id:
+        type: integer
+      director_id:
+        type: integer
+    type: object
+  req.BindManagerReq:
+    properties:
+      dept_id:
+        type: integer
+      manager_id:
+        type: integer
     type: object
   req.FileCateAddReq:
     properties:
@@ -762,23 +800,52 @@ definitions:
       msg:
         type: string
     type: object
+  service.Links:
+    properties:
+      first:
+        type: string
+      last:
+        type: string
+      next:
+        type: string
+      prev:
+        type: string
+    type: object
+  service.Meta:
+    properties:
+      current_page:
+        type: integer
+      per_page:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  service.PageResult:
+    properties:
+      data:
+        description: List of data
+      links:
+        $ref: '#/definitions/service.Links'
+      meta:
+        $ref: '#/definitions/service.Meta'
+      total:
+        type: integer
+    type: object
   types.DateTime:
     properties:
       time.Time:
         type: string
     type: object
-host: localhost:8080
 info:
   contact: {}
-  description: 工作流引擎接口文档
-  title: Workflow Engine API
-  version: "1.0"
 paths:
   /account/login:
     post:
       consumes:
       - application/json
-      operationId: Login
+      operationId: AccountLogin
       parameters:
       - description: 登录参数
         in: body
@@ -800,10 +867,10 @@ paths:
               type: object
       summary: 用户登录
       tags:
-      - Account 账户管理
+      - Account 用户管理
   /account/logout:
     get:
-      operationId: Logout
+      operationId: AccountLogout
       parameters:
       - description: 访问令牌
         in: header
@@ -819,13 +886,12 @@ paths:
       - ApiKeyAuth: []
       summary: 用户登出
       tags:
-      - Account
-      - 账户管理
+      - Account 用户管理
   /account/register:
     post:
       consumes:
       - application/json
-      operationId: Register
+      operationId: AccountRegister
       parameters:
       - description: 注册参数
         in: body
@@ -847,11 +913,10 @@ paths:
               type: object
       summary: 用户注册
       tags:
-      - Account
-      - 账户管理
+      - Account 用户注册
   /account/tenant:
     get:
-      operationId: Tenant
+      operationId: AccountTenant
       produces:
       - application/json
       responses:
@@ -868,11 +933,11 @@ paths:
               type: object
       summary: 租户列表
       tags:
-      - Account
-      - 账户管理
+      - Account 租户列表
   /auth/menu/add:
     post:
       description: 添加菜单
+      operationId: MenuAdd
       parameters:
       - description: access_token
         in: header
@@ -894,10 +959,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 添加菜单
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/menu/delete:
     post:
       description: 删除菜单
+      operationId: MenuDelete
       parameters:
       - description: access_token
         in: header
@@ -919,10 +985,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 删除菜单
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/menu/detail/{id}:
     get:
       description: 获取菜单详情
+      operationId: MenuDetail
       parameters:
       - description: access_token
         in: header
@@ -943,10 +1010,11 @@ paths:
             $ref: '#/definitions/resp.MenuResp'
       summary: 获取菜单详情
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/menu/edit:
     post:
       description: 编辑菜单
+      operationId: MenuEdit
       parameters:
       - description: access_token
         in: header
@@ -968,10 +1036,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 编辑菜单
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/menu/list:
     get:
       description: 获取菜单列表
+      operationId: MenuList
       parameters:
       - description: access_token
         in: header
@@ -989,10 +1058,11 @@ paths:
             type: array
       summary: 获取菜单列表
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/menu/route:
     get:
       description: 获取当前用户的菜单权限
+      operationId: MenuRoute
       parameters:
       - description: access_token
         in: header
@@ -1008,10 +1078,11 @@ paths:
             $ref: '#/definitions/resp.MenuResp'
       summary: 获取当前用户的菜单权限
       tags:
-      - 菜单权限
+      - Menu 账户管理
   /auth/role/add:
     post:
       description: 添加角色
+      operationId: RoleAdd
       parameters:
       - description: access_token
         in: header
@@ -1033,10 +1104,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 添加角色
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/all:
     get:
       description: 获取所有角色
+      operationId: RoleAll
       parameters:
       - description: access_token
         in: header
@@ -1059,10 +1131,11 @@ paths:
               type: object
       summary: 获取所有角色
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/change:
     post:
       description: 角色状态修改
+      operationId: RoleChange
       parameters:
       - description: access_token
         in: header
@@ -1084,10 +1157,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 角色状态修改
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/delete:
     post:
       description: 删除角色
+      operationId: RoleDelete
       parameters:
       - description: access_token
         in: header
@@ -1109,10 +1183,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 删除角色
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/detail/{id}:
     get:
       description: 获取角色详情
+      operationId: RoleDetail
       parameters:
       - description: access_token
         in: header
@@ -1134,10 +1209,11 @@ paths:
             $ref: '#/definitions/resp.RoleResp'
       summary: 获取角色详情
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/edit:
     post:
       description: 编辑角色
+      operationId: RoleEdit
       parameters:
       - description: access_token
         in: header
@@ -1159,10 +1235,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 编辑角色
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/role/list:
     get:
       description: 获取角色列表
+      operationId: RoleList
       parameters:
       - description: access_token
         in: header
@@ -1195,10 +1272,11 @@ paths:
               type: object
       summary: 获取角色列表
       tags:
-      - 角色管理
+      - Role 角色管理
   /auth/tenant/add:
     post:
       description: 添加租户
+      operationId: TenantAdd
       parameters:
       - description: access_token
         in: header
@@ -1220,10 +1298,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 添加租户
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /auth/tenant/all:
     get:
       description: 获取所有租户
+      operationId: TenantAll
       parameters:
       - description: access_token
         in: header
@@ -1246,10 +1325,11 @@ paths:
               type: object
       summary: 获取所有租户
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /auth/tenant/delete:
     post:
       description: 删除租户
+      operationId: TenantDelete
       parameters:
       - description: access_token
         in: header
@@ -1271,10 +1351,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 删除租户
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /auth/tenant/detail:
     get:
       description: 获取租户详情
+      operationId: TenantDetail
       parameters:
       - description: access_token
         in: header
@@ -1296,10 +1377,11 @@ paths:
             $ref: '#/definitions/resp.TenantResp'
       summary: 获取租户详情
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /auth/tenant/edit:
     post:
       description: 编辑租户
+      operationId: TenantEdit
       parameters:
       - description: access_token
         in: header
@@ -1321,10 +1403,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 编辑租户
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /auth/tenant/list:
     post:
       description: 获取租户列表
+      operationId: TenantList
       parameters:
       - description: access_token
         in: header
@@ -1353,11 +1436,11 @@ paths:
               type: object
       summary: 获取租户列表
       tags:
-      - 租户管理
+      - Tenant 租户管理
   /captcha/get:
     get:
       description: 生成验证码
-      operationId: Get
+      operationId: CaptchaGet
       produces:
       - application/json
       responses:
@@ -1373,12 +1456,11 @@ paths:
               type: object
       summary: 生成验证码
       tags:
-      - Captcha
-      - 验证码
+      - Captcha 验证码
   /captcha/validate:
     post:
       description: 验证码验证
-      operationId: Validate
+      operationId: CaptchaValidate
       parameters:
       - description: 验证码角度
         in: query
@@ -1405,11 +1487,11 @@ paths:
               type: object
       summary: 验证码验证
       tags:
-      - Captcha
-      - 验证码
+      - Captcha 验证码
   /common/file/cateAdd:
     post:
       description: 附件分类添加
+      operationId: CateAdd
       parameters:
       - description: access_token
         in: header
@@ -1431,10 +1513,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件分类添加
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/cateDelete:
     post:
       description: 附件分类删除
+      operationId: CateDelete
       parameters:
       - description: access_token
         in: header
@@ -1456,10 +1539,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件分类删除
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/cateList:
     get:
       description: 获取附件分类列表
+      operationId: CateList
       parameters:
       - description: access_token
         in: header
@@ -1482,16 +1566,16 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  items:
-                    type: object
+                  items: {}
                   type: array
               type: object
       summary: 附件分类列表
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/cateRename:
     post:
       description: 附件分类重命名
+      operationId: CateRename
       parameters:
       - description: access_token
         in: header
@@ -1513,10 +1597,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件分类重命名
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/fileDelete:
     post:
       description: 附件删除
+      operationId: FileDelete
       parameters:
       - description: access_token
         in: header
@@ -1538,10 +1623,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件删除
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/fileList:
     get:
       description: 获取附件列表
+      operationId: FileList
       parameters:
       - description: access_token
         in: header
@@ -1591,10 +1677,11 @@ paths:
               type: object
       summary: 附件列表
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/fileMove:
     post:
       description: 附件移动
+      operationId: FileMove
       parameters:
       - description: access_token
         in: header
@@ -1616,10 +1703,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件移动
       tags:
-      - 附件管理
+      - File 附件管理
   /common/file/fileRename:
     post:
       description: 附件重命名
+      operationId: FileRename
       parameters:
       - description: access_token
         in: header
@@ -1641,12 +1729,233 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 附件重命名
       tags:
-      - 附件管理
+      - File 附件管理
+  /dept:
+    get:
+      description: 部门分页
+      operationId: DeptIndex
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/service.PageResult'
+      summary: 部门
+      tags:
+      - Dept 部门
+    post:
+      description: 新增部门
+      operationId: DeptStore
+      parameters:
+      - description: 部门信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Dept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+  /dept/{id}:
+    delete:
+      description: 新增部门
+      operationId: DeptDestroy
+      parameters:
+      - description: 部门ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+    get:
+      description: 单个部门
+      operationId: DeptShow
+      parameters:
+      - description: 部门ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+    put:
+      description: 新增部门
+      operationId: DeptUpdate
+      parameters:
+      - description: 部门ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 部门信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Dept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+  /dept/{id}/tree:
+    get:
+      description: 新增部门
+      operationId: DeptDisplayTree
+      parameters:
+      - description: 部门ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+  /dept/bind_director:
+    post:
+      description: 新增部门
+      operationId: DeptBindDirector
+      parameters:
+      - description: 绑定参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.BindDirectorReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+  /dept/bind_manager:
+    post:
+      description: 新增部门
+      operationId: DeptBindManager
+      parameters:
+      - description: 绑定参数
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/req.BindManagerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
+  /dept/list:
+    get:
+      description: 部门列表
+      operationId: DeptList
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+              type: object
+      summary: 部门
+      tags:
+      - Dept 部门
   /upload/audio:
     post:
       consumes:
       - multipart/form-data
       description: 上传音频
+      operationId: UploadAudio
       parameters:
       - description: access_token
         in: header
@@ -1677,12 +1986,13 @@ paths:
               type: object
       summary: 上传音频
       tags:
-      - 上传
+      - Upload 上传管理
   /upload/file:
     post:
       consumes:
       - multipart/form-data
       description: 上传文件
+      operationId: UploadFile
       parameters:
       - description: access_token
         in: header
@@ -1713,12 +2023,13 @@ paths:
               type: object
       summary: 上传文件
       tags:
-      - 上传
+      - Upload 上传管理
   /upload/image:
     post:
       consumes:
       - multipart/form-data
       description: 上传图片
+      operationId: UploadImage
       parameters:
       - description: access_token
         in: header
@@ -1749,12 +2060,13 @@ paths:
               type: object
       summary: 上传图片
       tags:
-      - 上传
+      - Upload 上传管理
   /upload/video:
     post:
       consumes:
       - multipart/form-data
       description: 上传视频
+      operationId: UploadVideo
       parameters:
       - description: access_token
         in: header
@@ -1785,10 +2097,36 @@ paths:
               type: object
       summary: 上传视频
       tags:
-      - 上传
+      - Upload 上传管理
+  /user:
+    get:
+      description: 用户分页
+      operationId: UserIndex
+      parameters:
+      - description: access_token
+        in: header
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/resp.UserResp'
+              type: object
+      summary: 用户分页
+      tags:
+      - User 用户
   /user/add:
     post:
       description: 添加用户相关接口
+      operationId: UserAdd
       parameters:
       - description: access_token
         in: header
@@ -1810,10 +2148,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 添加用户
       tags:
-      - 用户管理
+      - User 用户
   /user/delete/{id}:
     post:
       description: 删除用户相关接口
+      operationId: UserDelete
       parameters:
       - description: access_token
         in: header
@@ -1835,10 +2174,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 删除用户
       tags:
-      - 用户管理
+      - User 用户
   /user/detail/{id}:
     get:
       description: 用户详情相关接口
+      operationId: UserDetail
       parameters:
       - description: access_token
         in: header
@@ -1864,10 +2204,11 @@ paths:
               type: object
       summary: 用户详情
       tags:
-      - 用户管理
+      - User 用户
   /user/disable:
     post:
       description: 禁用用户相关接口
+      operationId: UserDisable
       parameters:
       - description: access_token
         in: header
@@ -1889,10 +2230,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 禁用用户
       tags:
-      - 用户管理
+      - User 用户
   /user/edit:
     post:
       description: 编辑用户相关接口
+      operationId: UserEdit
       parameters:
       - description: access_token
         in: header
@@ -1914,10 +2256,11 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 编辑用户
       tags:
-      - 用户管理
+      - User 用户
   /user/list:
     get:
       description: 用户列表相关接口
+      operationId: UserList
       parameters:
       - description: access_token
         in: header
@@ -1944,10 +2287,11 @@ paths:
               type: object
       summary: 用户列表
       tags:
-      - 用户管理
+      - User 用户
   /user/self:
     get:
       description: 用户权限相关接口
+      operationId: UserSelf
       parameters:
       - description: access_token
         in: header
@@ -1968,10 +2312,11 @@ paths:
               type: object
       summary: 用户权限
       tags:
-      - 用户管理
+      - User 用户
   /user/update:
     post:
       description: 更新用户相关接口
+      operationId: UserUpdate
       parameters:
       - description: access_token
         in: header
@@ -1993,5 +2338,5 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: 更新用户
       tags:
-      - 用户管理
+      - User 用户
 swagger: "2.0"

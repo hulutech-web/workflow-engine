@@ -28,7 +28,8 @@ func tenantRoutes(t tenant, r *types.ApiRouter) {
 // @BasePath /api
 // @Summary 获取所有租户
 // @Description 获取所有租户
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantAll
 // @Produce  json
 // @Param token header string true "access_token"
 // @Success 200 {object} response.PageResp{data=[]resp.TenantResp} "成功"
@@ -41,7 +42,8 @@ func (t tenant) all(ctx *gin.Context) {
 // @BasePath /api
 // @Summary 获取租户列表
 // @Description 获取租户列表
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantList
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.PageReq true "分页请求参数"
@@ -60,7 +62,8 @@ func (t tenant) list(c *gin.Context) {
 // @BasePath /api
 // @Summary 获取租户详情
 // @Description 获取租户详情
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantDetail
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "请求参数"
@@ -78,7 +81,8 @@ func (t tenant) detail(c *gin.Context) {
 // @BasePath /api
 // @Summary 添加租户
 // @Description 添加租户
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantAdd
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.TenantAddReq true "请求参数"
@@ -96,7 +100,8 @@ func (t tenant) add(c *gin.Context) {
 // @BasePath /api
 // @Summary 编辑租户
 // @Description 编辑租户
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantEdit
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.TenantEditReq true "请求参数"
@@ -114,7 +119,8 @@ func (t tenant) edit(c *gin.Context) {
 // @BasePath /api
 // @Summary 删除租户
 // @Description 删除租户
-// @Tags 租户管理
+// @Tags Tenant 租户管理
+// @Id TenantDelete
 // @Produce  json
 // @Param token header string true "access_token"
 // @Param request body req.IdReq true "请求参数"
