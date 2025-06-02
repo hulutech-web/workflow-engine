@@ -4,42 +4,44 @@
     <div class="login-box rounded-sm">
 
       <a-form
-        :model="form"
-        :wrapperCol="{ span: 24 }"
-        @finish="login"
-        class="login-form w-[400px] p-lg xl:w-[440px] xl:p-xl h-fit text-text"
+          :model="form"
+          :wrapperCol="{ span: 24 }"
+          @finish="login"
+          class="login-form w-[400px] p-lg xl:w-[440px] xl:p-xl h-fit text-text"
       >
         <a-form-item :required="true" name="tenantId">
           <a-select
-            size="large"
-            :getPopupcontainer="(triggerNode) => {return triggerNode.parentNode || document.body}"
-            v-model:value="form.tenantId"
-            :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body;}"
-            placeholder="请选择租户"
+              size="large"
+              :getPopupcontainer="(triggerNode) => {return triggerNode.parentNode || document.body}"
+              v-model:value="form.tenantId"
+              :getPopupContainer="triggerNode => {return triggerNode.parentNode || document.body;}"
+              placeholder="请选择租户"
           >
             <a-select-option :value="0">请选择租户</a-select-option>
-            <a-select-option v-for="(item,ind) in tenantList" :key="ind" :value="item.value" :disabled="item.disabled">{{ item.label }}</a-select-option>
+            <a-select-option v-for="(item,ind) in tenantList" :key="ind" :value="item.value" :disabled="item.disabled">
+              {{ item.label }}
+            </a-select-option>
           </a-select>
         </a-form-item>
 
         <a-form-item :required="true" name="username">
           <a-input
-            v-model:value="form.username"
-            autocomplete="new-username"
-            placeholder="请输入用户名或邮箱: admin"
-            class="login-input h-[40px]"
+              v-model:value="form.username"
+              autocomplete="new-username"
+              placeholder="请输入用户名或邮箱: admin"
+              class="login-input h-[40px]"
           />
         </a-form-item>
         <a-form-item :required="true" name="password">
           <a-input
-            v-model:value="form.password"
-            autocomplete="new-password"
-            placeholder="请输入登录密码: 888888"
-            class="login-input h-[40px]"
-            type="password"
+              v-model:value="form.password"
+              autocomplete="new-password"
+              placeholder="请输入登录密码: 888888"
+              class="login-input h-[40px]"
+              type="password"
           />
         </a-form-item>
-        <a-button htmlType="submit" class="h-[40px] w-full" type="primary" :loading="loading"> 登录 </a-button>
+        <a-button htmlType="submit" class="h-[40px] w-full" type="primary" :loading="loading"> 登录</a-button>
         <a-divider></a-divider>
         <div class="terms">
           登录即代表您同意我们的
@@ -51,34 +53,36 @@
   </ThemeProvider>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, onMounted } from 'vue';
-  import { useAccountStore } from '@/store';
-  import { ThemeProvider } from 'stepin';
-  import {tenantService} from "@/api/account";
-const value1=ref("")
-  const loading = ref(false);
+import {onMounted, reactive, ref} from 'vue';
+import {useAccountStore} from '@/store';
+import {ThemeProvider} from 'stepin';
+import {account} from "@/api";
 
-  const form = reactive<Account.LoginForm>({
-    username: 'admin',
-    password: 'admin888',
-    tenantId: 1,
-  });
-  const tenantList = ref<Base.SelectOption[]>([]);
+const value1 = ref("")
+const loading = ref(false);
 
-  const fetchTenantList = async () => {
-   const { data } = await tenantService()
-    tenantList.value = data;
-  }
+const form = reactive<Account.LoginForm>({
+  username: 'admin',
+  password: 'admin888',
+  tenantId: 1,
+});
+const tenantList = ref<Base.SelectOption[]>([]);
 
-  const emit = defineEmits<{
-    (e: 'success', fields: Account.LoginForm): void;
-    (e: 'failure', reason: string, fields: Account.LoginForm): void;
-  }>();
+const fetchTenantList = async () => {
+  const {data} = await account.accountLogin()
+  tenantList.value = data;
+}
 
-  const accountStore = useAccountStore();
-  function login(params: Account.LoginForm) {
-    loading.value = true;
-    accountStore
+const emit = defineEmits<{
+  (e: 'success', fields: Account.LoginForm): void;
+  (e: 'failure', reason: string, fields: Account.LoginForm): void;
+}>();
+
+const accountStore = useAccountStore();
+
+function login(params: Account.LoginForm) {
+  loading.value = true;
+  accountStore
       .login(params.username, params.password)
       .then((res) => {
         emit('success', params);
@@ -87,9 +91,9 @@ const value1=ref("")
         emit('failure', e.message, params);
       })
       .finally(() => (loading.value = false));
-  }
+}
 
-  onMounted(() => {
-    fetchTenantList();
-  })
+onMounted(() => {
+  fetchTenantList();
+})
 </script>
